@@ -1,0 +1,102 @@
+'use client';
+// components/Navbar.tsx
+//
+import React, {useState} from 'react';
+import {AppBar, Toolbar, Box, CssBaseline, IconButton} from '@mui/material';
+import {styled} from '@mui/material/styles';
+import Link from 'next/link';
+import {
+    DropdownMenu,
+    MobileMenu,
+    WebMenu,
+    HideOnScroll,
+    SidebarMenu,
+    CartButton,
+    MailButton,
+    NotificationButton,
+} from './menu';
+import {APP_NAME, DEFAULT_HOME_REDIRECT} from '@/app/hooks/useConstant';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import MenuIcon from '@mui/icons-material/Menu';
+
+// Styled components
+const StyledLink = styled(Link)(({theme}) => ({
+    color: 'inherit',
+    textDecoration: 'none',
+    '&:hover': {
+        color: theme.palette.primary.main,
+    },
+    '&:visited': {
+        color: theme.palette.primary.dark,
+    },
+    '&:focus': {
+        color: theme.palette.primary.light,
+    },
+}));
+
+const Navbar: React.FC = () => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
+    const [openSidebar, setOpenSidebar] = useState<boolean>(false);
+
+    const handleMenuToggle = (setter: React.Dispatch<React.SetStateAction<null | HTMLElement>>) => (event: React.MouseEvent<HTMLElement>) => {
+        setter(event.currentTarget);
+    };
+
+    const handleSidebarToggle = () => setOpenSidebar((prev) => !prev);
+
+    return (
+        <Box sx={{flexGrow: 1}}>
+            <CssBaseline/>
+            <HideOnScroll isOpen={openSidebar}>
+                <AppBar color="secondary">
+                    <Toolbar>
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            sx={{mr: 2}}
+                            onClick={handleSidebarToggle}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                        <StyledLink href={DEFAULT_HOME_REDIRECT}>
+                            <Box sx={{flexGrow: 1, fontFamily: 'monospace', fontSize: '2rem', fontWeight: 1000}}>
+                                {APP_NAME}
+                            </Box>
+                        </StyledLink>
+                        <WebMenu/>
+                        <Box sx={{display: {xs: 'none', md: 'flex'}}}>
+                            <CartButton count={5}/>
+                            <MailButton count={2}/>
+                            <NotificationButton count={4}/>
+                            <IconButton size="large" edge="end" aria-label="account of current user"
+                                        aria-controls="primary-search-account-menu" aria-haspopup="true"
+                                        onClick={handleMenuToggle(setAnchorEl)} color="inherit">
+                                <AccountCircle/>
+                            </IconButton>
+                        </Box>
+                        <Box sx={{display: {xs: 'flex', md: 'none'}}}>
+                            <IconButton size="large" aria-label="show more"
+                                        aria-controls="primary-search-account-menu-mobile" aria-haspopup="true"
+                                        onClick={handleMenuToggle(setMobileMoreAnchorEl)} color="inherit">
+                                <MoreIcon/>
+                            </IconButton>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+            </HideOnScroll>
+
+            {/* Using Sidebar component */}
+            <SidebarMenu open={openSidebar} onClose={handleSidebarToggle}/>
+            {/* Render Menu Components */}
+            <DropdownMenu anchorEl={anchorEl} handleMenuToggle={handleMenuToggle} setAnchorEl={setAnchorEl}/>
+            <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle}
+                        setMobileMoreAnchorEl={setMobileMoreAnchorEl}/>
+        </Box>
+    );
+};
+
+export default Navbar;
