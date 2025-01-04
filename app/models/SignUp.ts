@@ -26,3 +26,9 @@ export class SignUp {
         this.role = form.account_type;
     }
 }
+
+export interface SignUpResponse {
+    data?: unknown;
+    message: string;
+    status: number;
+}

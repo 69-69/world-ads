@@ -1,6 +1,6 @@
 import {Drawer, Box, Button} from '@mui/material';
 import Link from 'next/link';
-import {PAGE_LINKS} from "@/app/hooks/useConstant";
+import {PAGE_LINKS} from "@/app/hooks/useConstants";
 
 // Sidebar Component
 const SidebarMenu: React.FC<{ open: boolean, onClose: () => void }> = ({open, onClose}) => {

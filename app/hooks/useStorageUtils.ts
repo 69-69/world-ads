@@ -1,14 +1,64 @@
-// Set Profile in Local Storage
+import Cookies from 'js-cookie';
 import {Profile} from "@/app/models/Profile";
 
-const setProfile = (profile: Profile): void => localStorage.setItem('profile', JSON.stringify(profile));
+// Set a cookie with secure settings (expires in 7 days by default, secure, and sameSite: 'Strict')
+const setCookie = (name: string, value: string, days: number = 7): void => {
+    Cookies.set(name, value, {expires: days, secure: true, sameSite: 'Strict'});
+};
 
-const getProfile = (): Profile | null => JSON.parse(localStorage.getItem('profile') || '')
+// Retrieve the cookie by name
+const getCookie = (name: string): string | null => {
+    return Cookies.get(name) || null;
+};
 
-// Set Access Token in Local Storage
-const setAccessToken = (access_token: string): void => localStorage.setItem('access_token', access_token);
+// Check if the user signed in via credentials (not social media)
+const getSignedInVia = (): 'credentials' | 'social' | null => {
+    const signedType = getCookie('signed_type');
+    return signedType === 'credentials' || signedType === 'social' ? signedType : null;
+};
 
-// Get Access Token from Local Storage
-const getAccessToken = (): string | null => localStorage.getItem('access_token');
+// Set the sign-in type (either 'credentials' or 'social')
+const setSignedInVia = (signInMethod: 'credentials' | 'social'): void => {
+    setCookie('signed_type', signInMethod);
+};
 
-export {setProfile, getProfile, setAccessToken, getAccessToken};
+// Set the access token cookie securely
+const setAccessToken = (access_token: string): void => {
+    setCookie('access_token', access_token);
+};
+
+// Retrieve the access token from cookies
+const getAccessToken = (): string | null => {
+    return getCookie('access_token');
+};
+
+// Set the profile cookie securely (stringifies)
+const setProfile = (profile: Profile): void => {
+    setCookie('profile', JSON.stringify(profile));
+};
+
+// Retrieve the profile from cookies and parse it back into a Profile object
+const getProfile = (): Profile | null => {
+    const profileCookie = getCookie('profile');
+
+    if (profileCookie) {
+        try {
+            return JSON.parse(profileCookie) as Profile;  // Safely parse profile
+        } catch (error) {
+            console.error('Error parsing profile cookie:', error);
+            return null;
+        }
+    }
+    return null;
+};
+
+export {
+    setCookie,
+    getCookie,
+    setSignedInVia,
+    getSignedInVia,
+    setProfile,
+    getProfile,
+    setAccessToken,
+    getAccessToken,
+};

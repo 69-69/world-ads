@@ -2,7 +2,7 @@
 //
 import {Box, Button} from '@mui/material';
 import Link from 'next/link';
-import {PAGE_LINKS} from "@/app/hooks/useConstant";
+import {PAGE_LINKS} from "@/app/hooks/useConstants";
 
 type Nav = {
     name: string;

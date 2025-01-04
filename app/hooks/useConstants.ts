@@ -1,4 +1,5 @@
 const APP_NAME = 'WAC';
+const DEFAULT_POLICY_REDIRECT = '/terms-and-conditions';
 const DEFAULT_HOME_REDIRECT = '/';
 const DEFAULT_SIGNIN_REDIRECT = '/signin';
 const DEFAULT_SIGNUP_REDIRECT = '/signup';
@@ -10,16 +11,16 @@ const DEFAULT_CART_REDIRECT = '/cart';
 const DEFAULT_SHOP_REDIRECT = '/shop';
 
 const PAGE_LINKS = [
-    {id: 3, name: 'Home', path: DEFAULT_SHOP_REDIRECT},
+    {id: 3, name: 'Home', path: DEFAULT_HOME_REDIRECT},
     {id: 5, name: 'Post Ads', path: DEFAULT_POST_ADS_REDIRECT},
     {id: 1, name: 'My Account', path: DEFAULT_SIGNIN_REDIRECT},
-    {id: 1, name: 'My Cart', path: DEFAULT_CART_REDIRECT},
 ];
 
 export {
     APP_NAME,
     PAGE_LINKS,
     DEFAULT_HOME_REDIRECT,
+    DEFAULT_POLICY_REDIRECT,
     DEFAULT_SHOP_REDIRECT,
     DEFAULT_SIGNIN_REDIRECT,
     DEFAULT_SIGNUP_REDIRECT,

@@ -15,7 +15,7 @@ import {
     MailButton,
     NotificationButton,
 } from './menu';
-import {APP_NAME, DEFAULT_HOME_REDIRECT} from '@/app/hooks/useConstant';
+import {APP_NAME, DEFAULT_HOME_REDIRECT} from '@/app/hooks/useConstants';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -67,6 +67,7 @@ const Navbar: React.FC = () => {
                                 {APP_NAME}
                             </Box>
                         </StyledLink>
+                        {/* Web menu */}
                         <WebMenu/>
                         <Box sx={{display: {xs: 'none', md: 'flex'}}}>
                             <CartButton count={5}/>
@@ -78,6 +79,7 @@ const Navbar: React.FC = () => {
                                 <AccountCircle/>
                             </IconButton>
                         </Box>
+                        {/*Dropdown menu*/}
                         <Box sx={{display: {xs: 'flex', md: 'none'}}}>
                             <IconButton size="large" aria-label="show more"
                                         aria-controls="primary-search-account-menu-mobile" aria-haspopup="true"

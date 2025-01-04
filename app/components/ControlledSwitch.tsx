@@ -1,2 +1,0 @@
-// app/components/ControlledSwitch.tsx
-//

@@ -1,5 +1,5 @@
-// models/Profile.ts
-
+// app/models/Profile.ts
+//
 import { User } from './User';
 
 export class Profile extends User {

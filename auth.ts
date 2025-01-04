@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "@auth/core/providers/google";
 import Credentials from "@auth/core/providers/credentials";
-import {signInWithCredentials} from "@/app/api/auth/backend";
+import {signInWithCredentials, signOutFromCredentials} from "@/app/api/auth/backend";
 import {ApiResponse, User, Profile} from "@/app/models";
 
 const authOptions = [
@@ -73,3 +73,16 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
         },
     },
 });
+
+// Sign out from the backend-account server via API
+export const signOutServer = async () => {
+    try {
+        const response = await signOutFromCredentials();
+        console.log("Sign out response: ", response);
+        return response;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Something went wrong, please try again"
+        );
+    }
+};

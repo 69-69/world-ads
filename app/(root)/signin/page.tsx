@@ -1,9 +1,11 @@
 import React from 'react';
+import Container from "@mui/material/Container";
+import SignInForm from "@/app/components/SignInForm";
 
 const SignInPage = () => (
-    <h1 style={{ margin: "0 auto",  textAlign: 'center' }}>
-        Sign In Page
-    </h1>
-)
+    <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>
+        <SignInForm/>
+    </Container>
+);
 
-export default SignInPage
+export default SignInPage;

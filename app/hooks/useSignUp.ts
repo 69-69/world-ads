@@ -1,12 +1,11 @@
-'use server';
 // app/hooks/useSignUp.ts
 //
 import {signUpWithCredentials} from "@/app/api/auth/backend";
 import {SignUp} from "@/app/models/SignUp";
 
 export const useSignUp = async (formData: SignUp) => {
-    // const { firstname, lastname, phone, email, password, account_type } = formData;
 
+    console.log('Sign up response: ', formData.email);
     try {
 
         // Call the authentication service from BACKEND.ts

@@ -1,7 +1,12 @@
+import SignUpForm from "@/app/components/SignUpForm";
+import Container from "@mui/material/Container";
+import React from "react";
+
 const SignUpPage = () => (
-    <h1 style={{ margin: "0 auto", textAlign: "center" }}>
-        Sign up page
-    </h1>
-)
+    <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>
+        <SignUpForm/>
+    </Container>
+);
 
 export default SignUpPage;
+

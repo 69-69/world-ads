@@ -7,10 +7,11 @@ import {SignIn} from "@/app/models/SignIn";
 export const useSignIn = async (formData: SignIn) => {
 
     try {
+        console.log('steve-1: Sign in with response: ', formData.email, formData.password);
         // Call the authentication service from AUTH.ts
         const response = await signIn("credentials", formData);
 
-        console.log('Sign in with response: ', response);
+        console.log('steve-2: Sign in with response: ', response);
 
         return response;
     } catch (error) {

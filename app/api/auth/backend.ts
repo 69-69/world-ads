@@ -2,7 +2,8 @@ import {AxiosError, AxiosResponse} from 'axios';
 import apiClient from './apiClient';
 import {ApiResponse, Profile, SignUp, User, SignIn} from '@/app/models';
 import {Post} from "@/app/models/Post";
-import {getProfile, setAccessToken, setProfile} from "@/app/hooks/useStorageUtils";
+import {getProfile, setAccessToken, setProfile, setSignedInVia} from "@/app/hooks/useStorageUtils";
+import {SignUpResponse} from "@/app/models/SignUp";
 
 
 function throwError(error: unknown) {
@@ -28,10 +29,11 @@ export const postAd = async (formData: FormData): Promise<unknown> => {
 };
 
 // Sign Up API Call
-export const signUpWithCredentials = async (formData: SignUp): Promise<ApiResponse> => {
+export const signUpWithCredentials = async (formData: SignUp): Promise<ApiResponse<SignUpResponse>> => {
     try {
         const {firstname, lastname, phone, email, password, role} = formData;
-        const response: AxiosResponse = await apiClient.post('/signup', {
+
+        const response: AxiosResponse<SignUpResponse> = await apiClient.post('/signup', {
             phone: phone,
             email: email,
             password: password,
@@ -41,21 +43,17 @@ export const signUpWithCredentials = async (formData: SignUp): Promise<ApiRespon
         });
 
         if (response.status >= 200 && response.status < 300) {
-            return {
-                data: {},
-                message: 'Sign-up successful',
-                status: response.status,
-            };
+            return response;
         }
         // Handle unsuccessful status codes (non-2xx), return error message instead of throwing
-        return {data: 'Sign-up failed', status: response.status};
+        return {message: 'Sign-up failed', status: response.status};
 
     } catch (error: unknown) {
         throwError(error);
         // Handle errors (e.g., network issues)
         const errorMessage = error instanceof Error ? error.message : 'An error occurred during sign-in';
         return {
-            data: errorMessage,
+            message: errorMessage,
             status: 500, // Internal Server Error status in case of a catchable exception
         };
     }
@@ -68,6 +66,9 @@ export const signInWithCredentials = async ({email, password}: SignIn): Promise<
 
         // Check if the response status is within the 2xx range (successful)
         if (response.status >= 200 && response.status < 300) {
+            // Store the access token in the local storage
+            setSignedInVia('credentials');
+
             // Directly return the response data as the User object
             return {
                 data: response.data as User,
@@ -97,8 +98,8 @@ export const confirmSignup = async (code: string): Promise<unknown> => {
     }
 };
 
-// Function to log-out user
-export const signOut = async (): Promise<void> => {
+// log-out user from the backend server
+export const signOutFromCredentials = async (): Promise<void> => {
     try {
         const response = await apiClient.post('/sign-out', {});
         if (response.status === 200) {
@@ -115,9 +116,12 @@ export const signOut = async (): Promise<void> => {
 export const autoSignIn = async (): Promise<unknown> => {
     try {
         const response: AxiosResponse = await apiClient.post('/auto-sign-in');
+
         const {access_token, user} = response.data;
+
         setAccessToken(access_token);
         setProfile(user);
+
         return response.data;
     } catch (error: unknown) {
         console.error('Error reactivating session:', error);
