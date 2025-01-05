@@ -2,10 +2,18 @@
 // app/components/Footer.tsx
 //
 import React from 'react';
-import {Box, Typography, Link, Container, IconButton, Grid2 as Grid} from '@mui/material';
+import Link from 'next/link';
+import {Box, Typography, Container, IconButton, Grid2 as Grid} from '@mui/material';
 import {Facebook, Twitter, Instagram, LinkedIn} from '@mui/icons-material';
+import {APP_NAME, FOOTER_LINKS} from "@/app/hooks/useConstants";
 
 const Footer = () => {
+
+    // Group the links by their sections
+    const leftLinks = FOOTER_LINKS.slice(0, 4);
+    const centerLinks = FOOTER_LINKS.slice(4, 7);
+    const rightLinks = FOOTER_LINKS.slice(7);
+
     return (
         <Box
             sx={{
@@ -18,29 +26,66 @@ const Footer = () => {
         >
             <Container>
                 <Grid container spacing={4} justifyContent="space-between">
-                    {/* Left Section - Links */}
+                    {/* Left Section - Links (First Link Group) */}
                     <Grid size={{xs: 12, sm: 6, md: 4}}>
-                        <Typography variant="h6" sx={{mb: 2}}>
-                            World Ads Center
+                        <Typography variant="h6" sx={{mb: 2, fontWeight: 'bold'}}>
+                            {APP_NAME}
+                        </Typography>
+
+                        <Box>
+                            {
+                                /* First Link Group (Left Aligned) */
+                                leftLinks.map((link) => (
+                                    <Link key={link.title} href={link.url} passHref>
+                                        <Typography variant="body2" sx={{mb: 1}}>
+                                            {link.title}
+                                        </Typography>
+                                    </Link>
+                                ))
+                            }
+                        </Box>
+                    </Grid>
+
+                    {/* Center Section - Links (Second Link Group) */}
+                    <Grid size={{xs: 12, sm: 6, md: 4}} sx={{textAlign: 'center'}}>
+                        <Typography variant="h6" sx={{mb: 2, fontWeight: 'bold'}}>
+                            Account Links
                         </Typography>
                         <Box>
-                            <Link href="/" color="inherit" sx={{display: 'block', mb: 1}}>
-                                Home
-                            </Link>
-                            <Link href="#" color="inherit" sx={{display: 'block', mb: 1}}>
-                                About Us
-                            </Link>
-                            <Link href="#" color="inherit" sx={{display: 'block', mb: 1}}>
-                                Careers
-                            </Link>
-                            <Link href="#" color="inherit" sx={{display: 'block', mb: 1}}>
-                                Blog
-                            </Link>
+                            {
+                                /* Second Link Group (Right Aligned) */
+                                centerLinks.map((link) => (
+                                    <Link key={link.title} href={link.url} passHref>
+                                        <Typography variant="body2" sx={{mb: 1}}>
+                                            {link.title}
+                                        </Typography>
+                                    </Link>
+                                ))
+                            }
+                        </Box>
+                    </Grid>
+
+                    {/* Right Section - Links (Third Link Group) */}
+                    <Grid size={{xs: 12, sm: 6, md: 4}} sx={{textAlign: 'right'}}>
+                        <Box>
+                            <Typography variant="h6" sx={{mb: 2, fontWeight: 'bold'}}>
+                                Other Links
+                            </Typography>
+                            {
+                                /* Second Link Group (Right Aligned) */
+                                rightLinks.map((link) => (
+                                    <Link key={link.title} href={link.url} passHref>
+                                        <Typography variant="body2" sx={{mb: 1}}>
+                                            {link.title}
+                                        </Typography>
+                                    </Link>
+                                ))
+                            }
                         </Box>
                     </Grid>
 
                     {/* Center Section - Social Media Icons */}
-                    <Grid size={{xs: 12, sm: 6, md: 4}} sx={{textAlign: 'center'}}>
+                    <Grid size={{xs: 12, sm: 12, md: 12}} sx={{textAlign: 'center'}}>
                         <Typography variant="h6" sx={{mb: 2}}>
                             Follow Us
                         </Typography>
@@ -61,7 +106,7 @@ const Footer = () => {
                     </Grid>
 
                     {/* Right Section - Copyright */}
-                    <Grid size={{xs: 12, sm: 6, md: 4}} sx={{textAlign: 'right'}}>
+                    <Grid size={{xs: 12, sm: 12, md: 12}} sx={{textAlign: 'right'}}>
                         <Typography variant="body2">
                             &copy; {new Date().getFullYear()} Your Company. All rights reserved.
                         </Typography>

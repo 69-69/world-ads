@@ -6,7 +6,7 @@ import {toSentenceCase} from '@/app/hooks/useValidation';
 interface TextAreaFieldProps {
     onChangeText: (value: string) => void;
     name: string;
-    isError?: string | boolean;
+    isError?: string | null;
 }
 
 const TextAreaField: React.FC<TextAreaFieldProps> = ({onChangeText, name, isError}) => {

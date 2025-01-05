@@ -21,11 +21,11 @@ const SidebarMenu: React.FC<{ open: boolean, onClose: () => void }> = ({open, on
                 },
             }}
         >
-            <Box sx={{width: 280, mt: 10}}>
-                {PAGE_LINKS.map((link: { name: string; path: string; }) => (
-                    <Link key={link.name} href={link.path}>
+            <Box sx={{width: 280, mt: 1}}>
+                {PAGE_LINKS.map((link: { title: string; url: string; }) => (
+                    <Link key={link.title} href={link.url}>
                         <Button fullWidth sx={{p: 1}} onClick={onClose}>
-                            {link.name}
+                            {link.title}
                         </Button>
                     </Link>
                 ))}

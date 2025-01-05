@@ -2,7 +2,14 @@ import {AxiosError, AxiosResponse} from 'axios';
 import apiClient from './apiClient';
 import {ApiResponse, Profile, SignUp, User, SignIn} from '@/app/models';
 import {Post} from "@/app/models/Post";
-import {getProfile, setAccessToken, setProfile, setSignedInVia} from "@/app/hooks/useStorageUtils";
+import {
+    getProfile,
+    setAccessToken,
+    setProfile,
+    setSignedInVia,
+    deleteSignedInVia,
+    deleteAccessToken, deleteProfile
+} from "@/app/hooks/useStorageUtils";
 import {SignUpResponse} from "@/app/models/SignUp";
 
 
@@ -22,7 +29,20 @@ function throwError(error: unknown) {
 export const postAd = async (formData: FormData): Promise<unknown> => {
     try {
         const response: AxiosResponse = await apiClient.post('/post-ad', formData);
-        return response.data;
+        // Check if the response status is within the 2xx range (successful)
+        if (response.status >= 200 && response.status < 300) {
+            // Store the access token in the local storage
+            setSignedInVia('credentials');
+
+            // Directly return the response data as the User object
+            return {
+                data: JSON.stringify(response.data),
+                status: response.status,
+                message: 'Sign-up successful',
+            };
+        }
+        // Handle unsuccessful status codes (non-2xx), return error message instead of throwing
+        return {message: 'Sign-in failed', status: response.status};
     } catch (error: unknown) {
         throwError(error);
     }
@@ -73,6 +93,7 @@ export const signInWithCredentials = async ({email, password}: SignIn): Promise<
             return {
                 data: response.data as User,
                 status: response.status,
+                message: 'Sign-in successful',
             };
         }
         // Handle unsuccessful status codes (non-2xx), return error message instead of throwing
@@ -89,12 +110,31 @@ export const signInWithCredentials = async ({email, password}: SignIn): Promise<
 };
 
 // Confirm Sign Up API Call (Verification code for Email & Phone)
-export const confirmSignup = async (code: string): Promise<unknown> => {
+export const confirmSignup = async (code: string): Promise<ApiResponse<string>> => {
     try {
-        const response: AxiosResponse = await apiClient.post('/confirm-signup', {code: code});
-        return response.data;
+        const response = await apiClient.post('/confirm-signup', {code: code});
+        // Check if the response status is within the 2xx range (successful)
+        if (response.status >= 200 && response.status < 300) {
+            // Store the access token in the local storage
+            setSignedInVia('credentials');
+
+            // Directly return the response data as the User object
+            return {
+                data: JSON.stringify(response.data),
+                status: response.status,
+                message: 'Sign-up successful',
+            };
+        }
+        // Handle unsuccessful status codes (non-2xx), return error message instead of throwing
+        return {message: 'Sign-in failed', status: response.status};
     } catch (error: unknown) {
         throwError(error);
+        // Handle errors (e.g., network issues)
+        const errorMessage = error instanceof Error ? error.message : 'An error occurred during signup verification';
+        return {
+            message: errorMessage,
+            status: 500, // Internal Server Error status in case of a catchable exception
+        };
     }
 };
 
@@ -103,8 +143,9 @@ export const signOutFromCredentials = async (): Promise<void> => {
     try {
         const response = await apiClient.post('/sign-out', {});
         if (response.status === 200) {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
+            deleteAccessToken();
+            deleteProfile();
+            deleteSignedInVia();
             window.location.href = '/signin';
         }
     } catch (error: unknown) {

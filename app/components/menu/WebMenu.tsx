@@ -4,17 +4,12 @@ import {Box, Button} from '@mui/material';
 import Link from 'next/link';
 import {PAGE_LINKS} from "@/app/hooks/useConstants";
 
-type Nav = {
-    name: string;
-    path: string;
-};
-
 const WebMenu: React.FC = () => {
     return (
         <Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'flex-end'}}>
-            {PAGE_LINKS.map((link: Nav) => (
-                <Link key={link.name} href={link.path}>
-                    <Button sx={{fontWeight: 600}}>{link.name}</Button>
+            {PAGE_LINKS.map((link) => (
+                <Link key={link.title} href={link.url}>
+                    <Button sx={{fontWeight: 600}}>{link.title}</Button>
                 </Link>
             ))}
         </Box>

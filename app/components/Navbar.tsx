@@ -1,9 +1,9 @@
 'use client';
 // components/Navbar.tsx
 //
-import React, {useState} from 'react';
-import {AppBar, Toolbar, Box, CssBaseline, IconButton} from '@mui/material';
-import {styled} from '@mui/material/styles';
+import React, { useState, MouseEvent } from 'react';
+import { AppBar, Toolbar, Box, IconButton } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 import {
     DropdownMenu,
@@ -15,13 +15,13 @@ import {
     MailButton,
     NotificationButton,
 } from './menu';
-import {APP_NAME, DEFAULT_HOME_REDIRECT} from '@/app/hooks/useConstants';
+import { APP_NAME_SHORT, DEFAULT_HOME_REDIRECT } from '@/app/hooks/useConstants';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 
 // Styled components
-const StyledLink = styled(Link)(({theme}) => ({
+const StyledLink = styled(Link)(({ theme }) => ({
     color: 'inherit',
     textDecoration: 'none',
     '&:hover': {
@@ -35,20 +35,27 @@ const StyledLink = styled(Link)(({theme}) => ({
     },
 }));
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+    session?: { user?: unknown } | undefined;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ session }) => {
+    if (session && session?.user) {
+        console.log('User session:', session.user);
+    }
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
     const [openSidebar, setOpenSidebar] = useState<boolean>(false);
 
-    const handleMenuToggle = (setter: React.Dispatch<React.SetStateAction<null | HTMLElement>>) => (event: React.MouseEvent<HTMLElement>) => {
+    const handleMenuToggle = (setter: React.Dispatch<React.SetStateAction<null | HTMLElement>>) => (event: MouseEvent<HTMLElement>) => {
         setter(event.currentTarget);
     };
 
     const handleSidebarToggle = () => setOpenSidebar((prev) => !prev);
 
     return (
-        <Box sx={{flexGrow: 1}}>
-            <CssBaseline/>
+        <Box sx={{ flexGrow: 1 }}>
             <HideOnScroll isOpen={openSidebar}>
                 <AppBar color="secondary">
                     <Toolbar>
@@ -57,48 +64,59 @@ const Navbar: React.FC = () => {
                             edge="start"
                             color="inherit"
                             aria-label="open drawer"
-                            sx={{mr: 2}}
+                            sx={{ mr: 2 }}
                             onClick={handleSidebarToggle}
                         >
-                            <MenuIcon/>
+                            <MenuIcon />
                         </IconButton>
                         <StyledLink href={DEFAULT_HOME_REDIRECT}>
-                            <Box sx={{flexGrow: 1, fontFamily: 'monospace', fontSize: '2rem', fontWeight: 1000}}>
-                                {APP_NAME}
+                            <Box sx={{ flexGrow: 1, fontFamily: 'monospace', fontSize: '2rem', fontWeight: 1000 }}>
+                                {APP_NAME_SHORT}
                             </Box>
                         </StyledLink>
                         {/* Web menu */}
-                        <WebMenu/>
-                        <Box sx={{display: {xs: 'none', md: 'flex'}}}>
-                            <CartButton count={5}/>
-                            <MailButton count={2}/>
-                            <NotificationButton count={4}/>
-                            <IconButton size="large" edge="end" aria-label="account of current user"
-                                        aria-controls="primary-search-account-menu" aria-haspopup="true"
-                                        onClick={handleMenuToggle(setAnchorEl)} color="inherit">
-                                <AccountCircle/>
+                        <WebMenu />
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                            <CartButton count={5} />
+                            <MailButton count={2} />
+                            <NotificationButton count={4} />
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls="primary-search-account-menu"
+                                aria-haspopup="true"
+                                onClick={handleMenuToggle(setAnchorEl)}
+                                color="inherit"
+                            >
+                                <AccountCircle />
                             </IconButton>
                         </Box>
-                        {/*Dropdown menu*/}
-                        <Box sx={{display: {xs: 'flex', md: 'none'}}}>
-                            <IconButton size="large" aria-label="show more"
-                                        aria-controls="primary-search-account-menu-mobile" aria-haspopup="true"
-                                        onClick={handleMenuToggle(setMobileMoreAnchorEl)} color="inherit">
-                                <MoreIcon/>
+                        {/* Dropdown menu */}
+                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="show more"
+                                aria-controls="primary-search-account-menu-mobile"
+                                aria-haspopup="true"
+                                onClick={handleMenuToggle(setMobileMoreAnchorEl)}
+                                color="inherit"
+                            >
+                                <MoreIcon />
                             </IconButton>
                         </Box>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
 
-            {/* Using Sidebar component */}
-            <SidebarMenu open={openSidebar} onClose={handleSidebarToggle}/>
+            {/* Sidebar */}
+            <SidebarMenu open={openSidebar} onClose={handleSidebarToggle} />
             {/* Render Menu Components */}
-            <DropdownMenu anchorEl={anchorEl} handleMenuToggle={handleMenuToggle} setAnchorEl={setAnchorEl}/>
-            <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle}
-                        setMobileMoreAnchorEl={setMobileMoreAnchorEl}/>
+            <DropdownMenu anchorEl={anchorEl} handleMenuToggle={handleMenuToggle} setAnchorEl={setAnchorEl} />
+            <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle} setMobileMoreAnchorEl={setMobileMoreAnchorEl} />
         </Box>
     );
 };
 
 export default Navbar;
+
