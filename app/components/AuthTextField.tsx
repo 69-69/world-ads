@@ -35,7 +35,7 @@ const AuthTextField = ({fields, formData, handleChange, errors}: AuthInterface) 
             ? (showPassword ? 'text' : 'password')
             : (field.type || 'text');
 
-        console.log('steve fieldType:', formData[field.name]);
+        // console.log('steve fieldType:', formData[field.name]);
 
         return (
             <TextField

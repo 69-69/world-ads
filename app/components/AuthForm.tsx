@@ -9,7 +9,8 @@ import AuthTextField from "@/app/components/AuthTextField";
 import OrSeparator from "@/app/components/OrSeparator";
 import {GoogleSignInButton} from "@/app/components/SocialAuthButton";
 import {googleSignIn} from "@/app/hooks/useSocialAuthButton";
-import {DEFAULT_POLICY_REDIRECT} from "@/app/hooks/useConstants";
+import {useRouter} from "next/navigation";
+import {DEFAULT_HOME_REDIRECT, DEFAULT_POLICY_REDIRECT} from "@/app/hooks/useConstants";
 
 interface Field {
     name: string;
@@ -49,7 +50,10 @@ const AuthForm = <T, U extends { data?: unknown }>({
                                                        auxButton,
                                                        hasTextArea,
                                                        isSignUp,
+                                                       redirectTo,
                                                    }: AuthFormProps<T, U>) => {
+    const router = useRouter();
+
     const [formData, setFormData] = useState<Record<string, string>>(
         fields.reduce((acc, field) => {
             acc[field.name] = '';
@@ -101,7 +105,18 @@ const AuthForm = <T, U extends { data?: unknown }>({
 
         try {
             const response = await onSubmit(formData as T);
+
+            /*
+                Redirect to the specified `redirectTo` URL if it exists and is truthy.
+                If `redirectTo` is falsy (e.g., null, undefined, or empty),
+                fall back to `response.data` if it's not null or undefined,
+                otherwise, use the default redirection URL `DEFAULT_HOME_REDIRECT`.
+            */
+            router.push(redirectTo || (response.data as string ?? DEFAULT_HOME_REDIRECT));
+
+
             setMessage({success: response.data as string, error: ''});
+
         } catch (err: unknown) {
             setMessage({
                 success: '',

@@ -27,21 +27,23 @@ const authOptions = [
                 email: email,
                 password: password
             });
+            // console.log("Sign in with credentials: ", JSON.stringify(result));
 
             if (result.status !== 200) {
                 throw new Error("Invalid email or password.");
             }
 
             const user = result.data as Profile;
+            const profile = new Profile(user);
 
             // Return user object with their profile data
             return {
-                id: user.id,
-                role: user.role,
-                email: user.email,
-                name: user.fullName(),
-                image: user.image,
-                access_token: user.access_token,
+                id: profile.id,
+                role: profile.role,
+                email: profile.email,
+                name: profile.fullName(),
+                access_token: profile.access_token,
+                image: profile.image,
             };
         },
     }),
@@ -52,7 +54,21 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
     session: {
         strategy: "jwt",
     },
+    pages: {
+        signIn: '/signin', // Custom sign-in page
+        error: '/error', // Custom error page
+    },
     callbacks: {
+        async redirect({url, baseUrl}) {
+            // Ensure that the redirect URL is valid and points to a safe location
+            if (url.startsWith(baseUrl)) return url; // If the URL starts with the base URL, allow redirection
+
+            // Allows callback URLs on the same origin
+            if (new URL(url).origin === baseUrl) return url
+
+            return baseUrl;  // Otherwise, fall back to the base URL
+        },
+
         async jwt({token, user}) {
             // Add user to token on first sign-in
             if (user) {

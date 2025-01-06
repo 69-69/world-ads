@@ -2,6 +2,7 @@
 //
 import {signUpWithCredentials} from "@/app/api/auth/backend";
 import {SignUp} from "@/app/models/SignUp";
+import {handleFrontendError} from "@/app/hooks/useThrowError";
 
 export const useSignUp = async (formData: SignUp) => {
 
@@ -14,7 +15,7 @@ export const useSignUp = async (formData: SignUp) => {
 
         return response;
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : 'Something went wrong, please try again');
+        handleFrontendError(error, 'Sign-up');
     }
 };
 

@@ -34,14 +34,13 @@ const StyledBox = styled(Box, {
     background: `url(${bgImage}) no-repeat center center`,
     backgroundSize: 'cover',
     textAlign: 'center',
-    padding: '0 20px',
 }));
 
 const Hero: React.FC<HeroProps> = ({title, subtitle, buttonText, buttonLink, backgroundImage}) => {
     return (
-        <StyledBox bgImage={backgroundImage}>
+        <StyledBox bgImage={backgroundImage}  sx={{my:8}}>
             <Box sx={{maxWidth: '600px', color: 'red'}}>
-                <Typography variant="h2" sx={{fontWeight: 'bold', mb: 2}}>
+                <Typography variant="h3" sx={{fontWeight: 'bold', mb: 2}}>
                     {title}
                 </Typography>
                 <Typography variant="h5" sx={{mb: 4}}>

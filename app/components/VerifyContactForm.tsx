@@ -1,3 +1,6 @@
+// app/components/PostForm.tsx
+//
+'use client';
 import React, {ChangeEvent, useState} from 'react';
 import {TextField, InputAdornment, Button, Paper, Box, Typography} from '@mui/material';
 

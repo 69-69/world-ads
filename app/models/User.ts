@@ -2,11 +2,11 @@
 
 type UserInterface = {
     id: string;
-    username: string;
-    first_name: string;
-    last_name: string;
-    email: string;
     role?: string;
+    username: string;
+    firstname: string;
+    lastname: string;
+    email: string;
     phone?: string;
     image?: string;
     is_verified?: boolean;
@@ -15,11 +15,11 @@ type UserInterface = {
 
 export class User {
     id: string;
-    username: string;
-    first_name: string;
-    last_name: string;
-    email: string;
     role?: string;
+    username: string;
+    firstname: string;
+    lastname: string;
+    email: string;
     phone?: string;
     image?: string;
     is_verified?: boolean;
@@ -27,11 +27,11 @@ export class User {
 
     constructor({
                     id,
-                    username,
-                    first_name,
-                    last_name,
-                    email,
                     role,
+                    username,
+                    firstname,
+                    lastname,
+                    email,
                     phone,
                     image,
                     is_verified,
@@ -39,8 +39,8 @@ export class User {
                 }: UserInterface) {
         this.id = id;
         this.username = username;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.email = email;
         this.role = role;
         this.phone = phone;
@@ -50,7 +50,7 @@ export class User {
     }
 
     fullName(): string {
-        return `${this.first_name} ${this.last_name}`;
+        return `${this.firstname} ${this.lastname}`;
     }
 }
 

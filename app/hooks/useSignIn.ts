@@ -3,19 +3,41 @@
 //
 import {signIn} from '@/auth';
 import {SignIn} from "@/app/models/SignIn";
+import {handleFrontendError} from "@/app/hooks/useThrowError";
+// import {DEFAULT_POST_ADS_REDIRECT} from "@/app/hooks/useConstants";
+import {ApiResponse} from "@/app/models";
+import {DEFAULT_POST_ADS_REDIRECT} from "@/app/hooks/useConstants";
 
-export const useSignIn = async (formData: SignIn) => {
+export const useSignIn = async (formData: SignIn): Promise<ApiResponse> => {
+
 
     try {
-        console.log('steve-1: Sign in with response: ', formData.email, formData.password);
+        /*
+        const [navigate, response]: [ReturnType<typeof useRouter>, SignInResponse] = await Promise.all([useRouter(), signIn("credentials", formData)]);
+
         // Call the authentication service from AUTH.ts
-        const response = await signIn("credentials", formData);
 
-        console.log('steve-2: Sign in with response: ', response);
+        if (response.status === 200) {
+            console.log('SignIn successful:');
+            navigate.push('/posts');
+        }*/
 
-        return response;
+        // Call the authentication service from AUTH.ts
+        const response: ApiResponse = await signIn("credentials",
+            {
+                ...formData,
+                redirect: false, // Prevent automatic redirect
+                redirectTo: DEFAULT_POST_ADS_REDIRECT, // Set custom redirect URL after sign-in
+            });
+
+
+        return {
+            data: response,
+            status: 200,
+            message: 'Sign-in successful',
+        };
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : 'Something went wrong, please try again');
+        handleFrontendError(error, 'Sign-in');
     }
 };
 

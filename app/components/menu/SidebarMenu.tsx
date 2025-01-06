@@ -3,19 +3,25 @@ import Link from 'next/link';
 import {PAGE_LINKS} from "@/app/hooks/useConstants";
 
 // Sidebar Component
-const SidebarMenu: React.FC<{ open: boolean, onClose: () => void }> = ({open, onClose}) => {
+const SidebarMenu: React.FC<{ isOpen: boolean, isScrollingUp: boolean, onClose: () => void }> = ({
+                                                                                                     isOpen,
+                                                                                                     isScrollingUp,
+                                                                                                     onClose
+                                                                                                 }) => {
+    const marginTop = isOpen && isScrollingUp ? 0 : 8;
+
     return (
         <Drawer
             variant="temporary"
             anchor="left"
-            open={open}
+            open={isOpen}
             onClose={onClose}
             sx={{
                 width: 280,
                 flexShrink: 0,
                 zIndex: 1, // Ensures Drawer stays behind AppBar
                 '& .MuiDrawer-paper': {
-                    mt: 8,
+                    mt: marginTop,
                     width: 280,
                     boxSizing: 'border-box',
                 },

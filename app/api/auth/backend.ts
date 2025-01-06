@@ -1,4 +1,4 @@
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosResponse} from 'axios';
 import apiClient from './apiClient';
 import {ApiResponse, Profile, SignUp, User, SignIn} from '@/app/models';
 import {Post} from "@/app/models/Post";
@@ -11,24 +11,13 @@ import {
     deleteAccessToken, deleteProfile
 } from "@/app/hooks/useStorageUtils";
 import {SignUpResponse} from "@/app/models/SignUp";
+import {handleBackendError} from "@/app/hooks/useThrowError";
 
-
-function throwError(error: unknown) {
-    const msg = 'Something went wrong, please try again';
-
-    if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || msg);
-    } else if (error instanceof Error) {
-        throw new Error(error.message || msg);
-    } else {
-        throw new Error('An unexpected error occurred');
-    }
-}
 
 // Post Ad API Call
-export const postAd = async (formData: FormData): Promise<unknown> => {
+export const postAd = async (formData: FormData): Promise<ApiResponse> => {
     try {
-        const response: AxiosResponse = await apiClient.post('/post-ad', formData);
+        const response = await apiClient.post('/post-ad', formData);
         // Check if the response status is within the 2xx range (successful)
         if (response.status >= 200 && response.status < 300) {
             // Store the access token in the local storage
@@ -38,13 +27,17 @@ export const postAd = async (formData: FormData): Promise<unknown> => {
             return {
                 data: JSON.stringify(response.data),
                 status: response.status,
-                message: 'Sign-up successful',
+                message: 'Post successful',
             };
         }
         // Handle unsuccessful status codes (non-2xx), return error message instead of throwing
         return {message: 'Sign-in failed', status: response.status};
     } catch (error: unknown) {
-        throwError(error);
+        handleBackendError(error);
+        return {
+            message: 'An error occurred during sign-in',
+            status: 500, // Internal Server Error status in case of a catchable exception
+        }
     }
 };
 
@@ -69,7 +62,7 @@ export const signUpWithCredentials = async (formData: SignUp): Promise<ApiRespon
         return {message: 'Sign-up failed', status: response.status};
 
     } catch (error: unknown) {
-        throwError(error);
+        handleBackendError(error);
         // Handle errors (e.g., network issues)
         const errorMessage = error instanceof Error ? error.message : 'An error occurred during sign-in';
         return {
@@ -99,7 +92,7 @@ export const signInWithCredentials = async ({email, password}: SignIn): Promise<
         // Handle unsuccessful status codes (non-2xx), return error message instead of throwing
         return {data: 'Sign-in failed', status: response.status};
     } catch (error: unknown) {
-        throwError(error);
+        handleBackendError(error);
         // Handle errors (e.g., network issues)
         const errorMessage = error instanceof Error ? error.message : 'An error occurred during sign-in';
         return {
@@ -128,7 +121,7 @@ export const confirmSignup = async (code: string): Promise<ApiResponse<string>> 
         // Handle unsuccessful status codes (non-2xx), return error message instead of throwing
         return {message: 'Sign-in failed', status: response.status};
     } catch (error: unknown) {
-        throwError(error);
+        handleBackendError(error);
         // Handle errors (e.g., network issues)
         const errorMessage = error instanceof Error ? error.message : 'An error occurred during signup verification';
         return {
@@ -149,7 +142,7 @@ export const signOutFromCredentials = async (): Promise<void> => {
             window.location.href = '/signin';
         }
     } catch (error: unknown) {
-        throwError(error);
+        handleBackendError(error);
     }
 };
 
@@ -177,8 +170,7 @@ export const getUserProfile = async ({user_id}: { user_id: string }): Promise<un
         setProfile(response.data);
         return response.data; // Ensure this always returns a Profile
     } catch (error: unknown) {
-        throwError(error); // Properly throw error to terminate execution
-        // Note: We never reach this line, as throwError will stop execution
+        handleBackendError(error);
     }
 };
 
@@ -206,6 +198,6 @@ export const getAds = async (): Promise<unknown> => {
         const response: AxiosResponse<Post[]> = await apiClient.get('/ads');
         return response.data;
     } catch (error: unknown) {
-        throwError(error);
+        handleBackendError(error);
     }
 };

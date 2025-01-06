@@ -1,14 +1,7 @@
 'use server';
 import {signIn, signOut, signOutServer} from "@/auth";
 import {getSignedInVia} from "@/app/hooks/useStorageUtils";
-
-// Helper function to throw a standardized error
-function throwError(error: unknown): never {
-    const pleaseTryAgain = 'Something went wrong, please try again';
-    const errorMessage = error instanceof Error ? error.message : pleaseTryAgain;
-    console.error("Error occurred:", errorMessage); // Optionally log the error for debugging
-    throw new Error(errorMessage);
-}
+import {handleFrontendError} from "@/app/hooks/useThrowError";
 
 // Google Sign-In function
 const googleSignIn = async () => {
@@ -17,7 +10,7 @@ const googleSignIn = async () => {
         console.log('Google Sign-In response:', response); // Optional: remove in production
         return response;
     } catch (error) {
-        throwError(error);
+        handleFrontendError(error, 'Google Sign-In');
     }
 }
 
@@ -28,7 +21,7 @@ const googleSignOut = async () => {
         console.log('Google Sign-Out response:', response); // Optional: remove in production
         return response;
     } catch (error) {
-        throwError(error);
+        handleFrontendError(error, 'Google Sign-Out');
     }
 }
 
@@ -39,7 +32,7 @@ const accountSignOut = async () => {
         console.log("Account Sign-Out response:", response); // Optional: remove in production
         return response;
     } catch (error) {
-        throwError(error);
+        handleFrontendError(error, 'Account Sign-Out');
     }
 }
 

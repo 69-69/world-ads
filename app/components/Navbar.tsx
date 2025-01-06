@@ -1,9 +1,9 @@
 'use client';
 // components/Navbar.tsx
 //
-import React, { useState, MouseEvent } from 'react';
-import { AppBar, Toolbar, Box, IconButton } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import React, {useState, MouseEvent} from 'react';
+import {AppBar, Toolbar, Box, IconButton} from '@mui/material';
+import {styled} from '@mui/material/styles';
 import Link from 'next/link';
 import {
     DropdownMenu,
@@ -15,13 +15,13 @@ import {
     MailButton,
     NotificationButton,
 } from './menu';
-import { APP_NAME_SHORT, DEFAULT_HOME_REDIRECT } from '@/app/hooks/useConstants';
+import {APP_NAME_SHORT, DEFAULT_HOME_REDIRECT} from '@/app/hooks/useConstants';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 
 // Styled components
-const StyledLink = styled(Link)(({ theme }) => ({
+const StyledLink = styled(Link)(({theme}) => ({
     color: 'inherit',
     textDecoration: 'none',
     '&:hover': {
@@ -39,11 +39,12 @@ interface NavbarProps {
     session?: { user?: unknown } | undefined;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ session }) => {
+const Navbar: React.FC<NavbarProps> = ({session}) => {
     if (session && session?.user) {
         console.log('User session:', session.user);
     }
 
+    const [isScrollUp, setIsScrollUp] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
     const [openSidebar, setOpenSidebar] = useState<boolean>(false);
@@ -52,11 +53,13 @@ const Navbar: React.FC<NavbarProps> = ({ session }) => {
         setter(event.currentTarget);
     };
 
+    const handleScrollUp = (isScrollUp: boolean) => setIsScrollUp(isScrollUp)
+
     const handleSidebarToggle = () => setOpenSidebar((prev) => !prev);
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <HideOnScroll isOpen={openSidebar}>
+        <Box sx={{flexGrow: 1}}>
+            <HideOnScroll isDrawerOpen={openSidebar} onScrollUp={handleScrollUp}>
                 <AppBar color="secondary">
                     <Toolbar>
                         <IconButton
@@ -64,22 +67,22 @@ const Navbar: React.FC<NavbarProps> = ({ session }) => {
                             edge="start"
                             color="inherit"
                             aria-label="open drawer"
-                            sx={{ mr: 2 }}
+                            sx={{mr: 2}}
                             onClick={handleSidebarToggle}
                         >
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                         <StyledLink href={DEFAULT_HOME_REDIRECT}>
-                            <Box sx={{ flexGrow: 1, fontFamily: 'monospace', fontSize: '2rem', fontWeight: 1000 }}>
+                            <Box sx={{flexGrow: 1, fontFamily: 'monospace', fontSize: '2rem', fontWeight: 1000}}>
                                 {APP_NAME_SHORT}
                             </Box>
                         </StyledLink>
                         {/* Web menu */}
-                        <WebMenu />
-                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                            <CartButton count={5} />
-                            <MailButton count={2} />
-                            <NotificationButton count={4} />
+                        <WebMenu/>
+                        <Box sx={{display: {xs: 'none', md: 'flex'}}}>
+                            <CartButton count={5}/>
+                            <MailButton count={2}/>
+                            <NotificationButton count={4}/>
                             <IconButton
                                 size="large"
                                 edge="end"
@@ -89,11 +92,11 @@ const Navbar: React.FC<NavbarProps> = ({ session }) => {
                                 onClick={handleMenuToggle(setAnchorEl)}
                                 color="inherit"
                             >
-                                <AccountCircle />
+                                <AccountCircle/>
                             </IconButton>
                         </Box>
                         {/* Dropdown menu */}
-                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                        <Box sx={{display: {xs: 'flex', md: 'none'}}}>
                             <IconButton
                                 size="large"
                                 aria-label="show more"
@@ -102,7 +105,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) => {
                                 onClick={handleMenuToggle(setMobileMoreAnchorEl)}
                                 color="inherit"
                             >
-                                <MoreIcon />
+                                <MoreIcon/>
                             </IconButton>
                         </Box>
                     </Toolbar>
@@ -110,10 +113,11 @@ const Navbar: React.FC<NavbarProps> = ({ session }) => {
             </HideOnScroll>
 
             {/* Sidebar */}
-            <SidebarMenu open={openSidebar} onClose={handleSidebarToggle} />
+            <SidebarMenu isOpen={openSidebar} onClose={handleSidebarToggle} isScrollingUp={isScrollUp}/>
             {/* Render Menu Components */}
-            <DropdownMenu anchorEl={anchorEl} handleMenuToggle={handleMenuToggle} setAnchorEl={setAnchorEl} />
-            <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle} setMobileMoreAnchorEl={setMobileMoreAnchorEl} />
+            <DropdownMenu anchorEl={anchorEl} handleMenuToggle={handleMenuToggle} setAnchorEl={setAnchorEl}/>
+            <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle}
+                        setMobileMoreAnchorEl={setMobileMoreAnchorEl}/>
         </Box>
     );
 };

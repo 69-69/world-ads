@@ -2,26 +2,20 @@ import React from 'react';
 import {Typography, Container, Box} from '@mui/material';
 import Hero from '@/app/components/Hero';
 import HomeContent from "@/app/components/HomeContent";
+import {APP_NAME, DEFAULT_SIGNUP_REDIRECT} from "@/app/hooks/useConstants";
 
 // Importing the local image
 const heroImage = '../assets/images/ads-bg.png';
 
 const heroBanner = () => {
     return (
-        <Box sx={{mt:8}}>
-            <Hero
-                title="World Ads Center (WAC)"
-                subtitle="We are glad to have you here. Explore our platform and get started."
-                buttonText="Get Started"
-                buttonLink="/signup" // Replace with your target link
-                backgroundImage={heroImage}
-            />
-
-            <Container>
-                <h2>Your App Content</h2>
-                <p>This is the content below the hero section.</p>
-            </Container>
-        </Box>
+        <Hero
+            title={APP_NAME}
+            subtitle="Global platform to connect advertisers with audiences across various digital channels."
+            buttonText="Get Started"
+            buttonLink={DEFAULT_SIGNUP_REDIRECT}
+            backgroundImage={heroImage}
+        />
     );
 };
 

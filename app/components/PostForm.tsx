@@ -1,3 +1,4 @@
+'use client';
 import React, {useState, ChangeEvent, FormEvent} from 'react';
 import {TextField, Button, Paper, Box, Typography} from '@mui/material';
 import ImageUpload from './ImageUpload';
