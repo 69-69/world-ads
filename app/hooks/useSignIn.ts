@@ -4,7 +4,6 @@
 import {signIn} from '@/auth';
 import {SignIn} from "@/app/models/SignIn";
 import {handleFrontendError} from "@/app/hooks/useThrowError";
-// import {DEFAULT_POST_ADS_REDIRECT} from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
 import {DEFAULT_POST_ADS_REDIRECT} from "@/app/hooks/useConstants";
 
@@ -12,15 +11,7 @@ export const useSignIn = async (formData: SignIn): Promise<ApiResponse> => {
 
 
     try {
-        /*
-        const [navigate, response]: [ReturnType<typeof useRouter>, SignInResponse] = await Promise.all([useRouter(), signIn("credentials", formData)]);
-
-        // Call the authentication service from AUTH.ts
-
-        if (response.status === 200) {
-            console.log('SignIn successful:');
-            navigate.push('/posts');
-        }*/
+        //const [navigate, response]: [ReturnType<typeof useRouter>, SignInResponse] = await Promise.all([useRouter(), signIn("credentials", formData)]);
 
         // Call the authentication service from AUTH.ts
         const response: ApiResponse = await signIn("credentials",

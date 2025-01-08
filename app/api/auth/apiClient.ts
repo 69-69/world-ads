@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError} from "axios";
-import {getAccessToken, setAccessToken} from "@/app/hooks/useStorageUtils";
+import {getAccessToken, setAccessToken} from "@/app/hooks/useCookies";
 
 // Environment variable
 const API_URL = process.env.BACKEND_API_ENDPOINT || 'http://localhost:8080/api';
@@ -16,6 +16,7 @@ apiClient.interceptors.request.use(
         const accessToken = getAccessToken();
         if (accessToken) {
             if (config.headers) {
+                // JWT Authorization: Inject the access token into the Authorization header for each request
                 config.headers['Authorization'] = `Bearer ${accessToken}`;
             }
         }

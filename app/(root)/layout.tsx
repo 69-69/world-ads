@@ -1,24 +1,26 @@
 import React from 'react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
-// import {auth} from '@/auth';
+import {auth} from '@/auth';
 
 interface LayoutProps {
     children: React.ReactNode;
     // userSession: { user?: unknown } | undefined;
 }
 
-const Layout: React.FC<LayoutProps> = ({children}) => {
-    // const session = auth();
-    
+const Layout: React.FC<LayoutProps> = async ({children}) => {
+    const session = await auth();
+
     return (
         <main>
-            <Navbar/>
+            <Navbar user={session && session?.user}/>
             {children}
             <Footer/>
         </main>
     );
 };
+
+export default Layout;
 
 /* export async function getServerSideProps() {
     const session = await auth(); // Wait for the session asynchronously
@@ -31,5 +33,3 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         },
     };
 } */
-
-export default Layout;

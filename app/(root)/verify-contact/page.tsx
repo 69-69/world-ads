@@ -13,8 +13,8 @@ const VerifyContactPage = () => {
                 title="Verify Contacts"
                 buttonText="Verify"
                 fields={[
-                    {name: 'email', label: 'Email Verification Code'},
-                    {name: 'phone', label: 'Mobile Verification Code'},
+                    {name: 'email_code', label: 'Email Verification Code'},
+                    {name: 'phone_code', label: 'Mobile Verification Code'},
                 ]}
                 onSubmit={useVerifyContact}
             />

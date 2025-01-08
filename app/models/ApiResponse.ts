@@ -1,7 +1,7 @@
 // models/ApiResponse.ts
 
 export class ApiResponse<T = unknown> {
-    data?: T;
+    data?: T | null;
     status?: number;
     message?: string;
     meta?: Record<string, unknown>;

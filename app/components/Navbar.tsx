@@ -19,6 +19,7 @@ import {APP_NAME_SHORT, DEFAULT_HOME_REDIRECT} from '@/app/hooks/useConstants';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
+import SessionStatusSnackbar from "@/app/components/SessionStatusSnackbar";
 
 // Styled components
 const StyledLink = styled(Link)(({theme}) => ({
@@ -36,12 +37,17 @@ const StyledLink = styled(Link)(({theme}) => ({
 }));
 
 interface NavbarProps {
-    session?: { user?: unknown } | undefined;
+    user?: {
+        id: string;
+        email: string;
+        name: string;
+        access_token?: string | undefined;
+    } | null;
 }
 
-const Navbar: React.FC<NavbarProps> = ({session}) => {
-    if (session && session?.user) {
-        console.log('User session:', session.user);
+const Navbar: React.FC<NavbarProps> = ({user}) => {
+    if (user) {
+        console.log('User session:', user);
     }
 
     const [isScrollUp, setIsScrollUp] = useState<boolean>(false);
@@ -79,35 +85,47 @@ const Navbar: React.FC<NavbarProps> = ({session}) => {
                         </StyledLink>
                         {/* Web menu */}
                         <WebMenu/>
+                        {/* Cart, Mail, Notification, Account */}
                         <Box sx={{display: {xs: 'none', md: 'flex'}}}>
                             <CartButton count={5}/>
-                            <MailButton count={2}/>
-                            <NotificationButton count={4}/>
-                            <IconButton
-                                size="large"
-                                edge="end"
-                                aria-label="account of current user"
-                                aria-controls="primary-search-account-menu"
-                                aria-haspopup="true"
-                                onClick={handleMenuToggle(setAnchorEl)}
-                                color="inherit"
-                            >
-                                <AccountCircle/>
-                            </IconButton>
+                            {
+                                user &&
+                                <>
+                                    <MailButton count={3}/>
+                                    <NotificationButton count={2}/>
+                                    <MailButton count={2}/>
+                                    <NotificationButton count={4}/>
+                                    <IconButton
+                                        size="large"
+                                        edge="end"
+                                        aria-label="account of current user"
+                                        aria-controls="primary-search-account-menu"
+                                        aria-haspopup="true"
+                                        onClick={handleMenuToggle(setAnchorEl)}
+                                        color="inherit"
+                                    >
+                                        <AccountCircle/>
+                                    </IconButton>
+                                </>
+                            }
                         </Box>
-                        {/* Dropdown menu */}
-                        <Box sx={{display: {xs: 'flex', md: 'none'}}}>
-                            <IconButton
-                                size="large"
-                                aria-label="show more"
-                                aria-controls="primary-search-account-menu-mobile"
-                                aria-haspopup="true"
-                                onClick={handleMenuToggle(setMobileMoreAnchorEl)}
-                                color="inherit"
-                            >
-                                <MoreIcon/>
-                            </IconButton>
-                        </Box>
+                        {
+                            /* Dropdown menu */
+                            !user &&
+                            <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}, justifyContent: 'flex-end'}}>
+                                <IconButton
+                                    size="large"
+                                    aria-label="show more"
+                                    aria-controls="primary-search-account-menu-mobile"
+                                    aria-haspopup="true"
+                                    onClick={handleMenuToggle(setMobileMoreAnchorEl)}
+                                    color="inherit"
+                                >
+                                    <MoreIcon/>
+                                </IconButton>
+                            </Box>
+                        }
+
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
@@ -118,6 +136,9 @@ const Navbar: React.FC<NavbarProps> = ({session}) => {
             <DropdownMenu anchorEl={anchorEl} handleMenuToggle={handleMenuToggle} setAnchorEl={setAnchorEl}/>
             <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle}
                         setMobileMoreAnchorEl={setMobileMoreAnchorEl}/>
+
+            {/* Snackbar */}
+            <SessionStatusSnackbar isSignIn={Boolean(user)}/>
         </Box>
     );
 };

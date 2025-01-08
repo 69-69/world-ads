@@ -11,6 +11,12 @@ interface RenderMobileMenuProps {
     setMobileMoreAnchorEl: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
 }
 
+const menu = [
+    {label: 'Messages', icon: MailIcon, badge: 4},
+    {label: 'Notifications', icon: NotificationsIcon, badge: 4},
+    {label: 'Profile', icon: AccountCircle, badge: 4},
+];
+
 const RenderMobileMenu: React.FC<RenderMobileMenuProps> = ({
                                                                mobileMoreAnchorEl,
                                                                handleMenuToggle,
@@ -27,29 +33,19 @@ const RenderMobileMenu: React.FC<RenderMobileMenuProps> = ({
             open={isMobileMenuOpen}
             onClose={() => setMobileMoreAnchorEl(null)}
         >
-            <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon/>
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon/>
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem onClick={handleMenuToggle(setMobileMoreAnchorEl)}>
-                <IconButton size="large" aria-label="account of current user"
-                            aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit">
-                    <AccountCircle/>
-                </IconButton>
-                <p>Profile</p>
-            </MenuItem>
+            {
+                menu.map((item, index) => (
+                    <MenuItem key={index} onClick={handleMenuToggle(setMobileMoreAnchorEl)}>
+                        <IconButton size="large" aria-label={`show ${item.label}`} color="inherit">
+                            <Badge badgeContent={item.badge} color="error">
+                                <item.icon/>
+                            </Badge>
+                        </IconButton>
+                        <p>{item.label}</p>
+                    </MenuItem>
+                ))
+            }
+
         </Menu>
     );
 };

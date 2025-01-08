@@ -2,19 +2,19 @@
 //
 import {Box, Divider, Typography} from '@mui/material';
 
-const OrSeparator = ({text = 'OR', className = '', sx = {}}) => {
+const OrSeparator = ({text = 'OR', className = '', sx = {}, sxd = {}}) => {
     return (
         <Box
             sx={{
                 display: 'flex',
                 alignItems: 'center',
                 textAlign: 'center',
-                my: 2, // margin top and bottom
+                my: 2,
                 ...sx, // Allow for additional customization via sx prop
             }}
             className={className}
         >
-            <Divider sx={{flexGrow: 1, borderColor: 'gray'}}/>
+            <Divider sx={{flexGrow: 1, borderColor: 'gray', ...sxd}}/>
             <Typography
                 variant="body2"
                 sx={{
@@ -25,7 +25,7 @@ const OrSeparator = ({text = 'OR', className = '', sx = {}}) => {
             >
                 {text}
             </Typography>
-            <Divider sx={{flexGrow: 1, borderColor: 'gray'}}/>
+            <Divider sx={{flexGrow: 1, borderColor: 'gray', ...sxd}}/>
         </Box>
     );
 };

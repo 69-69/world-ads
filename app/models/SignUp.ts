@@ -28,7 +28,12 @@ export class SignUp {
 }
 
 export interface SignUpResponse {
-    data?: unknown;
-    message: string;
-    status: number;
+    status?: number;
+    message?: string;
+    emailStatus?: string;
+    emailMessage?: string;
+    smsCode?: string;
+    smsStatus?: string;
+    smsMessage?: string;
+    emailCode?: string;
 }

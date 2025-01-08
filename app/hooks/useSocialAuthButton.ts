@@ -1,35 +1,46 @@
 'use server';
 import {signIn, signOut, signOutServer} from "@/auth";
-import {getSignedInVia} from "@/app/hooks/useStorageUtils";
+import {getSignedInVia} from "@/app/hooks/useCookies";
 import {handleFrontendError} from "@/app/hooks/useThrowError";
 
 // Google Sign-In function
 const googleSignIn = async () => {
     try {
         const response = await signIn("google");
-        console.log('Google Sign-In response:', response); // Optional: remove in production
+        console.log('Google Sign-In response:', response);
         return response;
     } catch (error) {
         handleFrontendError(error, 'Google Sign-In');
     }
 }
 
-// Google Sign-Out function
-const googleSignOut = async () => {
+// GitHub Sign-In function
+const githubSignIn = async () => {
     try {
-        const response = await signOut();
-        console.log('Google Sign-Out response:', response); // Optional: remove in production
+        const response = await signIn("github");
+        console.log('GitHub Sign-In response:', response);
         return response;
     } catch (error) {
-        handleFrontendError(error, 'Google Sign-Out');
+        handleFrontendError(error, 'GitHub Sign-In');
     }
 }
 
-// Account (credentials) Sign-Out function
+// Social (Google & GitHub) Sign-Out function
+const socialSignOut = async () => {
+    try {
+        const response = await signOut();
+        console.log('Social Sign-Out response:', response);
+        return response;
+    } catch (error) {
+        handleFrontendError(error, 'Social Sign-Out');
+    }
+}
+
+// Backend Account (credentials) Sign-Out function
 const accountSignOut = async () => {
     try {
         const response = await signOutServer();
-        console.log("Account Sign-Out response:", response); // Optional: remove in production
+        console.log("Account Sign-Out response:", response);
         return response;
     } catch (error) {
         handleFrontendError(error, 'Account Sign-Out');
@@ -45,8 +56,8 @@ const userSignOut = async () => {
         return accountSignOut();  // If signed in via credentials, call account sign-out
     }
 
-    // Default to Google sign-out if no specific sign-in method is identified
-    return googleSignOut();
+    // Default to Social (Google & GitHub) sign-out if no specific sign-in method is identified
+    return socialSignOut();
 }
 
-export {googleSignIn, userSignOut};
+export {googleSignIn, githubSignIn, userSignOut};

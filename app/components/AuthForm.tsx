@@ -7,10 +7,12 @@ import SwitchButton from './SwitchButton';
 import CheckButton from './CheckButton';
 import AuthTextField from "@/app/components/AuthTextField";
 import OrSeparator from "@/app/components/OrSeparator";
-import {GoogleSignInButton} from "@/app/components/SocialAuthButton";
-import {googleSignIn} from "@/app/hooks/useSocialAuthButton";
+import {GitHubSignInButton, GoogleSignInButton} from "@/app/components/SocialAuthButton";
+import {githubSignIn, googleSignIn} from "@/app/hooks/useSocialAuthButton";
 import {useRouter} from "next/navigation";
 import {DEFAULT_HOME_REDIRECT, DEFAULT_POLICY_REDIRECT} from "@/app/hooks/useConstants";
+import {ApiResponse} from "@/app/models";
+import {inRange} from "@/app/hooks/useValidation";
 
 interface Field {
     name: string;
@@ -22,11 +24,6 @@ interface AuxButton {
     title: string;
     link: string;
 }
-
-/*type optU = {
-    data: string;
-    [key: string]: unknown; // This allows to accept extra properties
-};*/
 
 /*NOTE: T is the type of the form data, U is the type of the response data*/
 interface AuthFormProps<T = unknown, U = unknown> {
@@ -42,16 +39,16 @@ interface AuthFormProps<T = unknown, U = unknown> {
 
 const toFullWidth = '1/-1';
 
-const AuthForm = <T, U extends { data?: unknown }>({
-                                                       onSubmit,
-                                                       title,
-                                                       buttonText,
-                                                       fields,
-                                                       auxButton,
-                                                       hasTextArea,
-                                                       isSignUp,
-                                                       redirectTo,
-                                                   }: AuthFormProps<T, U>) => {
+const AuthForm = <T, U extends ApiResponse>({
+                                                onSubmit,
+                                                title,
+                                                buttonText,
+                                                fields,
+                                                auxButton,
+                                                hasTextArea,
+                                                isSignUp,
+                                                redirectTo,
+                                            }: AuthFormProps<T, U>) => {
     const router = useRouter();
 
     const [formData, setFormData] = useState<Record<string, string>>(
@@ -62,7 +59,7 @@ const AuthForm = <T, U extends { data?: unknown }>({
     );
 
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [message, setMessage] = useState<{ success: string; error: string }>({success: '', error: ''});
+    const [message, setMessage] = useState<{ success?: string; error?: string }>({success: '', error: ''});
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -112,10 +109,16 @@ const AuthForm = <T, U extends { data?: unknown }>({
                 fall back to `response.data` if it's not null or undefined,
                 otherwise, use the default redirection URL `DEFAULT_HOME_REDIRECT`.
             */
-            router.push(redirectTo || (response.data as string ?? DEFAULT_HOME_REDIRECT));
 
+            if (response.status && inRange(response.status, 200, 299)) {
+                setMessage({success: 'Please wait...'});
 
-            setMessage({success: response.data as string, error: ''});
+                const data = typeof response.data === 'string' ? response.data as string : null;
+                router.push(redirectTo || (data ?? DEFAULT_HOME_REDIRECT));
+                return;
+            }
+            setMessage({error: 'Something went wrong, please try again'});
+
 
         } catch (err: unknown) {
             setMessage({
@@ -145,6 +148,13 @@ const AuthForm = <T, U extends { data?: unknown }>({
                                     color="primary"
                                     variant="outlined"
                                     onSubmit={googleSignIn}/>
+
+                <OrSeparator text={'||'} sxd={{borderColor: '#ddd'}} sx={{my: 0, mx:20}}/>
+                <GitHubSignInButton text={buttonText + ' With GitHub'}
+                                    size="medium"
+                                    color="secondary"
+                                    variant="contained"
+                                    onSubmit={githubSignIn}/>
                 <OrSeparator/>
             </Box>
             <Box

@@ -3,11 +3,16 @@ import Google from "@auth/core/providers/google";
 import Credentials from "@auth/core/providers/credentials";
 import {signInWithCredentials, signOutFromCredentials} from "@/app/api/auth/backend";
 import {ApiResponse, User, Profile} from "@/app/models";
+import GitHub from "@auth/core/providers/github";
 
-const authOptions = [
+const authConfig = [
     Google({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        clientId: process.env.AUTH_GOOGLE_ID,
+        clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
+    GitHub({
+        clientId: process.env.AUTH_GITHUB_ID,
+        clientSecret: process.env.AUTH_GITHUB_SECRET,
     }),
     Credentials({
         credentials: {
@@ -50,7 +55,7 @@ const authOptions = [
 ];
 
 export const {handlers, signIn, signOut, auth} = NextAuth({
-    providers: authOptions,
+    providers: authConfig,
     session: {
         strategy: "jwt",
     },

@@ -13,14 +13,10 @@ interface Field {
 }
 
 interface PostFormProps {
-    onSubmit: (formData: FormData) => Promise<unknown>;
+    onSubmit: (formData: FormData) => unknown;
     title: string;
     buttonText: string;
     fields: Field[];
-}
-
-interface CustomFormData {
-    [key: string]: string | number | File[];
 }
 
 interface Errors {
@@ -29,8 +25,8 @@ interface Errors {
 
 const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, onSubmit}) => {
     // Manage state dynamically for each field
-    const [formData, setFormData] = useState<CustomFormData>(
-        fields.reduce<CustomFormData>((acc, field) => {
+    const [formData, setFormData] = useState<Record<string, string>>(
+        fields.reduce<Record<string, string>>((acc, field) => {
             acc[field.name] = field.value || ''; // Initialize field values
             return acc;
         }, {})
@@ -54,7 +50,7 @@ const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, 
         if (!value || value.length !== 6 || isNaN(Number(value))) {
             setErrors((prevErrors) => ({
                 ...prevErrors,
-                [field.name]: `Please enter the 6-digit code sent to your ${field.name}.`
+                [field.name]: `Please enter the 6-digit code sent to your ${field.name.replace('_code', '')}.`
             }));
         } else {
             setErrors((prevErrors) => {
@@ -63,10 +59,17 @@ const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, 
                 return rest;
             });
 
+            // Convert formData to FormData instance
+            const formDataToSubmit = new FormData();
+
+            // Populate FormData with the current form data
+            for (const [key, value] of Object.entries(formData)) {
+                formDataToSubmit.append(key, value as string);
+
+            }
+
             // Call onSubmit function with form data when validation passes
-            onSubmit(new FormData()).then(() => {
-                // Do something after successful submission
-            });
+            onSubmit(formDataToSubmit);
         }
     };
 

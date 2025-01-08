@@ -1,21 +1,9 @@
-// Convert JSON string to object for use in the UI (or return an error)
-const parseJSON = (json: string): unknown | Error => {
-    try {
-        return JSON.parse(json);
-    } catch (error: unknown) {
-        return error instanceof Error ? error : new Error('Invalid JSON format');
-    }
-};
-
-// Convert data to JSON string for storage (or return an error)
-const stringifyJSON = (data: unknown): string | Error => {
-    try {
-        return JSON.stringify(data);
-    } catch (error: unknown) {
-        return error instanceof Error ? error : new Error('Failed to stringify');
-    }
-};
-
+// app/hooks/useValidation.ts
+//
+// Check if a number is within a specified range
+const inRange = (value: number, min: number, max: number) => {
+    return value >= min && value <= max;
+}
 // Convert a string to sentence case
 const toSentenceCase = (str: string) => {
     return str
@@ -47,8 +35,7 @@ const validatePassword = (value: string) => {
 };
 
 export {
-    parseJSON,
-    stringifyJSON,
+    inRange,
     toSentenceCase,
     validateName,
     validateText,
