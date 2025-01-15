@@ -2,7 +2,6 @@
 //
 
 import {AxiosResponse} from 'axios';
-import apiClient from './apiClient';
 import fetchWithRetry from "./fetchWithRetry";
 import {ApiResponse, Profile, SignIn, SignUp, User} from '@/app/models';
 import {Post} from "@/app/models/Post";
@@ -325,7 +324,10 @@ const signOutFromCredentials = async (): Promise<void> => {
 // Auto Login after Auto Logout (Refresh Token) API Call
 const autoSignIn = async (): Promise<unknown> => {
     try {
-        const response: AxiosResponse = await apiClient.post(autoSigninEndpoint, {});
+        const response: AxiosResponse = await fetchWithRetry('/api/external', {
+            method: 'POST',
+            endpoint: autoSigninEndpoint,
+        });
 
         const {access_token, user} = response.data;
 
@@ -343,7 +345,11 @@ const autoSignIn = async (): Promise<unknown> => {
 // Get Profile API Call
 const getUserProfile = async ({user_id}: { user_id: string }): Promise<unknown> => {
     try {
-        const response: AxiosResponse<Profile> = await apiClient.get(`/user/${user_id}`);
+        const response: AxiosResponse<Profile> = await fetchWithRetry('/api/external', {
+            method: 'GET',
+            endpoint: `/user/${user_id}`,
+        });
+
         cacheProfile({profile: response.data});
         return response.data; // Ensure this always returns a Profile
     } catch (error: unknown) {
@@ -404,7 +410,11 @@ const postAd = async (formData: FormData): Promise<ApiResponse> => {
 // Function to get all ads
 const getAds = async (): Promise<unknown> => {
     try {
-        const response: AxiosResponse<Post[]> = await apiClient.get(adsEndpoint);
+        const response: AxiosResponse<Post[]> = await fetchWithRetry('/api/external', {
+            method: 'GET',
+            endpoint: adsEndpoint,
+        });
+
         return response.data;
     } catch (error: unknown) {
         handleBackendError(error);

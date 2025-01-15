@@ -1,4 +1,4 @@
-import {apiClient} from "@/app/api/external/apiClient";
+import apiClient from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 import {parseJSON, stringifyJSON} from "@/app/hooks/useCookies";
 import axios, {AxiosResponse} from "axios";
