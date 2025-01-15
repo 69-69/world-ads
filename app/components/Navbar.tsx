@@ -85,8 +85,14 @@ const Navbar: React.FC<NavbarProps> = ({user}) => {
                         </StyledLink>
                         {/* Web menu */}
                         <WebMenu/>
-                        {/* Cart, Mail, Notification, Account */}
-                        <Box sx={{display: {xs: 'none', md: 'flex'}}}>
+
+                        <Box sx={{
+                            flexGrow: 1,
+                            display: {xs: 'none', sm: 'flex', md: 'flex'},
+                            justifyContent: 'flex-end'
+                        }}>
+
+                            {/* Cart, Mail, Notification, Account */}
                             <CartButton count={5}/>
                             {
                                 user &&
@@ -106,25 +112,22 @@ const Navbar: React.FC<NavbarProps> = ({user}) => {
                                     >
                                         <AccountCircle/>
                                     </IconButton>
+
+                                    {/* Dropdown Mobile menu */}
+                                    <IconButton
+                                        size="large"
+                                        aria-label="show more"
+                                        aria-controls="primary-search-account-menu-mobile"
+                                        aria-haspopup="true"
+                                        onClick={handleMenuToggle(setMobileMoreAnchorEl)}
+                                        color="inherit"
+                                        sx={{display: {xs: 'flex', md: 'none'}}}
+                                    >
+                                        <MoreIcon/>
+                                    </IconButton>
                                 </>
                             }
                         </Box>
-                        {
-                            /* Dropdown menu */
-                            !user &&
-                            <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}, justifyContent: 'flex-end'}}>
-                                <IconButton
-                                    size="large"
-                                    aria-label="show more"
-                                    aria-controls="primary-search-account-menu-mobile"
-                                    aria-haspopup="true"
-                                    onClick={handleMenuToggle(setMobileMoreAnchorEl)}
-                                    color="inherit"
-                                >
-                                    <MoreIcon/>
-                                </IconButton>
-                            </Box>
-                        }
 
                     </Toolbar>
                 </AppBar>

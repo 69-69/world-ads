@@ -1,7 +1,7 @@
 import React from 'react';
 import {Typography, Container, Box} from '@mui/material';
-import Hero from '@/app/components/Hero';
-import HomeContent from "@/app/components/HomeContent";
+import Hero from '@/app/components/home/Hero';
+import HomeContent from "@/app/components/home/HomeContent";
 import {APP_NAME, DEFAULT_SIGNUP_REDIRECT} from "@/app/hooks/useConstants";
 
 // Importing the local image

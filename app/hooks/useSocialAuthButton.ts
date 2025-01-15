@@ -1,6 +1,6 @@
 'use server';
 import {signIn, signOut, signOutServer} from "@/auth";
-import {getSignedInVia} from "@/app/hooks/useCookies";
+import {getSignedInVia} from "@/app/hooks/useCache";
 import {handleFrontendError} from "@/app/hooks/useThrowError";
 
 // Google Sign-In function

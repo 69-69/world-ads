@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from "@mui/material/Container";
-import SignInForm from "@/app/components/SignInForm";
+import SignInForm from "@/app/components/auth/SignInForm";
 
 const SignInPage = () => (
     <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>

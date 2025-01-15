@@ -9,7 +9,12 @@ const CartButton = ({count}: { count: number }) => {
     };
 
     return (
-        <IconButton size="large" aria-label={`show ${count} items`} color="inherit" onClick={handleClick}>
+        <IconButton
+            size="large"
+            aria-label={`show ${count} items`}
+            color="inherit"
+            onClick={handleClick}
+        >
             <Badge badgeContent={count} color="error">
                 <ShoppingBag/>
             </Badge>

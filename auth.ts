@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "@auth/core/providers/google";
 import Credentials from "@auth/core/providers/credentials";
-import {signInWithCredentials, signOutFromCredentials} from "@/app/api/auth/backend";
+import {signInWithCredentials, signOutFromCredentials} from "@/app/api/external/backend";
 import {ApiResponse, User, Profile} from "@/app/models";
 import GitHub from "@auth/core/providers/github";
 
@@ -32,7 +32,6 @@ const authConfig = [
                 email: email,
                 password: password
             });
-            // console.log("Sign in with credentials: ", JSON.stringify(result));
 
             if (result.status !== 200) {
                 throw new Error("Invalid email or password.");
@@ -49,6 +48,7 @@ const authConfig = [
                 name: profile.fullName(),
                 access_token: profile.access_token,
                 image: profile.image,
+                signin_method: "credentials",
             };
         },
     }),
@@ -80,6 +80,7 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
                 token.id = user.id;
                 token.email = user.email;
                 token.access_token = user.access_token;
+                token.signin_method = user.signin_method;
             }
             return token;
         },

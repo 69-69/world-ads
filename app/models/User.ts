@@ -1,6 +1,6 @@
 // models/User.ts
 
-type UserInterface = {
+type _UserInterface = {
     id: string;
     role?: string;
     username: string;
@@ -36,7 +36,7 @@ export class User {
                     image,
                     is_verified,
                     access_token,
-                }: UserInterface) {
+                }: _UserInterface) {
         this.id = id;
         this.username = username;
         this.firstname = firstname;

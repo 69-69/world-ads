@@ -3,7 +3,7 @@
 //
 import React from 'react';
 import {useSignUp} from '@/app/hooks/useSignUp';
-import AuthForm from '@/app/components/AuthForm';
+import AuthForm from '@/app/components/auth/AuthForm';
 import {DEFAULT_SIGNIN_REDIRECT, DEFAULT_VERIFICATION_REDIRECT} from '@/app/hooks/useConstants';
 import {ApiResponse, SignUp} from "@/app/models";
 import {SignUpResponse} from "@/app/models/SignUp";
@@ -24,7 +24,8 @@ const SignInForm = () => {
                 {name: 'phone', label: 'Phone number', type: 'tel'},
                 {name: 'email', label: 'Email', type: 'email'},
                 {name: 'password', label: 'Password', type: 'password'},
-                {name: 'account_type', type: 'hidden'},
+                {name: 'confirmPassword', label: 'Confirm Password', type: 'password'},
+                {name: 'account_type', type: 'hidden', label: 'att'},
             ]}
             onSubmit={useSignUp}
         />

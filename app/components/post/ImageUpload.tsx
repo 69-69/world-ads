@@ -1,7 +1,7 @@
 'use client';
 import React, {useState} from 'react';
 import {IconButton, Avatar, Box} from '@mui/material';
-import ToastMessage from './ToastMessage';
+import ToastMessage from '../ToastMessage';
 import {Close, PhotoCamera} from "@mui/icons-material";
 
 interface ImageUploadProps {

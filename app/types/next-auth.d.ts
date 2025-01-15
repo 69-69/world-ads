@@ -7,6 +7,7 @@ declare module "next-auth" {
 
     interface User extends DefaultUser {
         access_token?: string;
+        signin_method?: string;
     }
 
     interface Session extends DefaultSession {

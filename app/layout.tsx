@@ -18,7 +18,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: APP_NAME,
-    description: "World Ads Center is a global platform designed to connect advertisers with audiences across various digital channels. It offers targeted advertising solutions, data analytics, and tools to help businesses optimize their marketing campaigns and reach a worldwide customer base effectively.",
+    description: "Shop and sell with ease! Our platform combines the best of eCommerce and classifieds, offering a marketplace for both new products and second-hand goods, services, job listings, and local deals. Join a community of buyers and sellers today.",
+    keywords: "e-commerce, classifieds, marketplace, buy, sell, shop, trade, local deals, job listings, services, second-hand goods",
+    // description: "Discover a seamless experience where you can buy, sell, and trade. From brand-new products to used items, services, and job ads, our platform bridges eCommerce and classifieds for every need."
 };
 
 export default function RootLayout({

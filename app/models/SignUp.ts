@@ -1,6 +1,6 @@
 // models/SignUp.ts
 //
-type SignUpForm = {
+type _SignUpForm = {
     email: string;
     phone: string;
     password: string;
@@ -17,7 +17,7 @@ export class SignUp {
     firstname: string;
     lastname: string;
 
-    constructor(form: SignUpForm) {
+    constructor(form: _SignUpForm) {
         this.email = form.email;
         this.password = form.password
         this.firstname = form.firstname;
@@ -28,12 +28,11 @@ export class SignUp {
 }
 
 export interface SignUpResponse {
+    id?: string;
     status?: number;
     message?: string;
     emailStatus?: string;
     emailMessage?: string;
-    smsCode?: string;
     smsStatus?: string;
     smsMessage?: string;
-    emailCode?: string;
 }

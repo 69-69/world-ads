@@ -2,29 +2,31 @@
 // app/components/SignInForm.tsx
 //
 import React from 'react';
-import {useSignUp} from '@/app/hooks/useSignUp';
-import AuthForm from '@/app/components/AuthForm';
+import StoreForm from '@/app/components/store-setup/StoreForm';
 import {ApiResponse, SignUp} from "@/app/models";
 import {SignUpResponse} from "@/app/models/SignUp";
+import {useSetupStore} from "@/app/hooks/useSetupStore";
 
 
 const SetupStoreForm = () => {
 
     return (
-        <AuthForm<SignUp, ApiResponse<SignUpResponse>>
-            title="Setup Store"
-            hasTextArea={true}
+        <StoreForm<SignUp, ApiResponse<SignUpResponse>>
+            title="Setup Online Store"
             buttonText="Setup Store"
             fields={[
                 { name: 'name', label: 'Store name' },
                 { name: 'url', label: 'Website / Social' },
-                { name: 'address', label: 'Address' },
                 { name: 'city', label: 'City' },
-                { name: 'state', label: 'State' },
+                { name: 'state_region', label: 'State or Region' },
                 { name: 'zipcode', label: 'Zip code' },
+                { name: 'address', label: 'Address' },
+                { name: 'description', label: 'Description', isTextArea: true },
+                // logo is a file upload field for the store logo image file (jpg, png, etc.)
             ]}
-            onSubmit={useSignUp}
+            onSubmit={useSetupStore}
         />
     );
 }
+
 export default SetupStoreForm;

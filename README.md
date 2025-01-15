@@ -2,6 +2,43 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+```markdown
+/app
+├── (auth)
+│   ├── login.js
+│   ├── register.js
+│   └── reset-password.js
+├── (account)
+│   ├── index.js  (user dashboard)
+│   ├── orders.js
+│   ├── profile.js
+│   └── wishlist.js
+├── (cart)
+│   ├── index.js  (cart overview)
+│   ├── checkout.js
+│   └── success.js
+├── (admin)
+│   ├── dashboard.js
+│   ├── products.js
+│   ├── orders.js
+│   ├── customers.js
+│   └── reports.js
+├── products
+│   ├── index.js  (all products listing)
+│   ├── [category].js  (dynamic category-based route)
+│   └── [productId].js  (dynamic product details route)
+├── search
+│   ├── index.js  (search page)
+│   └── [query].js  (dynamic search results for a query)
+├── sale.js
+├── new-arrivals.js
+├── about.js
+├── contact.js
+├── terms.js
+└── privacy.js
+```
+
+
 First, run the development server:
 
 ```bash

@@ -1,23 +1,29 @@
-import React, {useState, ChangeEvent, FormEvent} from 'react';
+import React, {useState, FormEvent, ChangeEvent} from 'react';
 import {Button, Paper, Box, Typography, Divider} from '@mui/material';
 import Link from 'next/link';
-import ToastMessage from './ToastMessage';
-import TextAreaField from './TextAreaField';
-import SwitchButton from './SwitchButton';
-import CheckButton from './CheckButton';
-import AuthTextField from "@/app/components/AuthTextField";
+import ToastMessage from '../ToastMessage';
+import CustomSwitch from '../CustomSwitch';
+import CheckButton from '../CheckButton';
+import CustomTextField from "@/app/components/CustomTextField";
 import OrSeparator from "@/app/components/OrSeparator";
-import {GitHubSignInButton, GoogleSignInButton} from "@/app/components/SocialAuthButton";
+import {GitHubSignInButton, GoogleSignInButton} from "@/app/components/auth/SocialAuthButton";
 import {githubSignIn, googleSignIn} from "@/app/hooks/useSocialAuthButton";
 import {useRouter} from "next/navigation";
-import {DEFAULT_HOME_REDIRECT, DEFAULT_POLICY_REDIRECT} from "@/app/hooks/useConstants";
+import {
+    ACC_ROLE,
+    DEFAULT_HOME_REDIRECT,
+    DEFAULT_POLICY_REDIRECT
+} from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
 import {inRange} from "@/app/hooks/useValidation";
+import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 
 interface Field {
     name: string;
     label?: string;
     type?: string;
+    value?: string;
+    isTextArea?: boolean;
 }
 
 interface AuxButton {
@@ -34,7 +40,10 @@ interface AuthFormProps<T = unknown, U = unknown> {
     redirectTo?: string;
     auxButton?: AuxButton[];
     isSignUp?: boolean;
-    hasTextArea?: boolean;
+}
+
+interface CustomFormData {
+    [key: string]: string | number | File[];
 }
 
 const toFullWidth = '1/-1';
@@ -45,55 +54,55 @@ const AuthForm = <T, U extends ApiResponse>({
                                                 buttonText,
                                                 fields,
                                                 auxButton,
-                                                hasTextArea,
                                                 isSignUp,
                                                 redirectTo,
                                             }: AuthFormProps<T, U>) => {
     const router = useRouter();
 
-    const [formData, setFormData] = useState<Record<string, string>>(
-        fields.reduce((acc, field) => {
-            acc[field.name] = '';
+    // Assuming 'fields' is an array that contains the fields for your form
+    const [formData, setFormData] = useState<CustomFormData>(
+        fields.reduce<CustomFormData>((acc, field) => {
+            acc[field.name] = field.name === 'images' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
             return acc;
-        }, {} as Record<string, string>)
+        }, {} as CustomFormData) // Initial accumulator type as CustomFormData
     );
 
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [message, setMessage] = useState<{ success?: string; error?: string }>({success: '', error: ''});
+    const {errors, setErrors, message, setMessage, handleChange} = useFormDataChange(setFormData);
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        setFormData((prev) => ({...prev, [name]: value}));
-    };
-
-    const handleSwitchChange = (checked: boolean) => {
-        setFormData((prev) => ({...prev, 'account_type': checked ? 'seller' : 'buyer'}));
+    const handleSwitchChange = (event: ChangeEvent<HTMLInputElement>, checked: boolean) => {
+        setFormData((prev) => ({...prev, 'account_type': ACC_ROLE[Number(checked)]}));
     };
 
     const handleCheckButtonChange = (checked: boolean) => {
         setFormData((prev) => ({...prev, 'remember-me': checked.toString()}));
     };
 
-    const handleTextAreaChange = (value: string) => {
-        setFormData((prev) => ({...prev, description: value}));
-    };
-
-    const validateFields = () => {
+    const validateFormFields = () => {
         const errors: Record<string, string> = {};
+
         fields.forEach((field) => {
+            const fieldValue = formData[field.name];
+
             if (field.name !== 'account_type' && field.name !== 'remember-me') {
-                if (!formData[field.name] || formData[field.name].trim() === '') {
+                // Check for required fields and empty values in the form data
+                if ((typeof fieldValue === 'string' && fieldValue.trim() === '') || // Ensure it's a string before calling trim
+                    (fieldValue === undefined || fieldValue === null)) {
                     errors[field.name] = `${field.label} is required`;
+                }
+
+                // Check fo password match for the confirmPassword field
+                if (field.name === 'confirmPassword' && formData['password'] !== formData['confirmPassword']) {
+                    errors['confirmPassword'] = 'Passwords do not match';
                 }
             }
         });
         return errors;
     };
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const formErrors = validateFields();
+        const formErrors = validateFormFields();
         if (Object.keys(formErrors).length > 0) {
             setErrors(formErrors);
             setMessage({success: '', error: 'Please fill in all required fields.'});
@@ -149,10 +158,10 @@ const AuthForm = <T, U extends ApiResponse>({
                                     variant="outlined"
                                     onSubmit={googleSignIn}/>
 
-                <OrSeparator text={'||'} sxd={{borderColor: '#ddd'}} sx={{my: 0, mx:20}}/>
+                <OrSeparator text={'||'} sxd={{borderColor: '#ddd'}} sx={{my: 0, mx: 20}}/>
                 <GitHubSignInButton text={buttonText + ' With GitHub'}
                                     size="medium"
-                                    color="secondary"
+                                    color="info"
                                     variant="contained"
                                     onSubmit={githubSignIn}/>
                 <OrSeparator/>
@@ -160,7 +169,7 @@ const AuthForm = <T, U extends ApiResponse>({
             <Box
                 key="form-div"
                 component="form"
-                onSubmit={handleSubmit}
+                onSubmit={handleFormSubmit}
                 sx={{
                     display: 'grid',
                     gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'},
@@ -170,12 +179,9 @@ const AuthForm = <T, U extends ApiResponse>({
                 noValidate
                 autoComplete="off"
             >
-                {AuthTextField({fields, formData, handleChange, errors})}
-
-                {hasTextArea && <TextAreaField onChangeText={handleTextAreaChange} name="description"/>}
+                <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
 
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
-
                     <Box key="acc-me"
                          sx={{
                              display: 'flex',
@@ -186,7 +192,7 @@ const AuthForm = <T, U extends ApiResponse>({
                          }}>
                         {isSignUp ? (
                             <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-                                <SwitchButton onSwitchChange={handleSwitchChange}/>
+                                <CustomSwitch label='I am Seller?' onSwitchChange={handleSwitchChange}/>
                                 {renderOptButton({link: DEFAULT_POLICY_REDIRECT, title: 'Terms & Privacy'}, 0)}
                             </Box>
                         ) : (

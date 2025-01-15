@@ -1,4 +1,4 @@
-import SignUpForm from "@/app/components/SignUpForm";
+import SignUpForm from "@/app/components/auth/SignUpForm";
 import Container from "@mui/material/Container";
 import React from "react";
 

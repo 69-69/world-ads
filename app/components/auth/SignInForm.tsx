@@ -3,7 +3,7 @@
 //
 import React from 'react';
 import {useSignIn} from '@/app/hooks/useSignIn';
-import AuthForm from '@/app/components/AuthForm';
+import AuthForm from '@/app/components/auth/AuthForm';
 import {
     DEFAULT_POST_ADS_REDIRECT,
     DEFAULT_SIGNUP_REDIRECT,

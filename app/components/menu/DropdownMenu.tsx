@@ -1,7 +1,7 @@
 // app/components/menu/DropdownMenu.tsx
 //
 import {Menu, MenuItem} from '@mui/material';
-import {SignOutButton} from "@/app/components/SocialAuthButton";
+import {SignOutButton} from "@/app/components/auth/SocialAuthButton";
 import {userSignOut} from "@/app/hooks/useSocialAuthButton";
 import {toSentenceCase} from "@/app/hooks/useValidation";
 
