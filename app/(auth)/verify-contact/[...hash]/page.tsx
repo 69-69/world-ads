@@ -2,7 +2,7 @@
 
 import VerifyContactForm from '@/app/components/auth/VerifyContactForm';
 import Container from "@mui/material/Container";
-import useVerifyContact from "@/app/hooks/useVerifyContact";
+import {useVerifyContact} from "@/app/hooks/useVerifyContact";
 import {POST_ADS_ROUTE} from "@/app/hooks/useConstants";
 
 

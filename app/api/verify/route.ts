@@ -33,8 +33,6 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
 
         const res = NextResponse.json(data);
 
-        console.log('Route-Steve-Response:', data, '\nRoute-Steve-Status:', response, '\nRoute-res: ', res, '\n');
-
         if (verify_method) {
             setCookie(res, `verified_${verify_method}`, verify_method);
         }

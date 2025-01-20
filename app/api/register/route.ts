@@ -28,8 +28,9 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
         // console.log('Route-Steve-Response:', data, '\nRoute-Steve-Status:', response.status, '\nRoute-res: ', res, '\n');
 
         // Set a signup token from the API response if available
-        if (data.signupToken) {
-            setCookie(res, 'signup_token', data.signupToken);
+        if (data.signup_token && data.access_token) {
+            setCookie(res, 'access_token', data.access_token);
+            setCookie(res, 'signup_token', data.signup_token);
         }
 
         return res;

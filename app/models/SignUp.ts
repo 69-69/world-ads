@@ -1,6 +1,6 @@
 // models/SignUp.ts
 //
-export type SignUpForm = {
+type SignUpForm = {
     email: string;
     phone: string;
     password: string;
@@ -9,7 +9,7 @@ export type SignUpForm = {
     account_type: string;
 };
 
-export class SignUp {
+class SignUp {
     role: string;
     email: string;
     phone: string;
@@ -27,12 +27,31 @@ export class SignUp {
     }
 }
 
-export interface SignUpResponse {
-    signupToken?: string;
-    status?: number;
+type SignUpResponse = {
     message?: string;
-    emailStatus?: string;
-    emailMessage?: string;
-    smsStatus?: string;
-    smsMessage?: string;
+    signupToken?: string;
+    accessToken?: unknown;
+    email?: Record<string, string>;
+    sms?: Record<string, string>;
 }
+
+/*class SignUpResponse {
+    signupToken?: string;
+    message?: string;
+    accessToken?: unknown;
+    email?: Record<string, unknown>;
+    sms?: Record<string, unknown>;
+
+    constructor(successData: string) {
+
+        const data = JSON.parse(successData);
+
+        this.signupToken = data.signup_token;
+        this.accessToken = data.access_token;
+        this.message = data.message;
+        this.email = data.email;
+        this.sms = data.sms;
+    }
+}*/
+
+export {SignUp, type SignUpResponse, type SignUpForm};

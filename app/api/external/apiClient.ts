@@ -4,6 +4,7 @@ import axios, {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestCon
 
 const API_URL = process.env.BACKEND_API_ENDPOINT || 'http://localhost:8080/api';
 
+// Create an Axios instance
 const apiClient: AxiosInstance = axios.create({
     baseURL: API_URL,
     withCredentials: true,  // Send cookies with cross-origin requests
@@ -11,23 +12,29 @@ const apiClient: AxiosInstance = axios.create({
 
 const cookieStores = async () => await cookies();
 
-// Request Interceptor for Authorization Token
+// Interceptor to inject the access token into each request
 apiClient.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
         const fullUrl = `${config.baseURL}${config.url}`;
-        console.log('Steve-Full-URL:', fullUrl, 'refresh_token-> ' + config.headers.has('refresh_token'));
+        console.log('Steve-Full-URL:', fullUrl);
 
         const cookieStore = await cookieStores();
-        const accessToken = cookieStore.get('access_token');
+        const accessToken = cookieStore.get('access_token')?.value;
+
         if (accessToken && config.headers) {
+            // console.log('Steve-Access-Token:', accessToken);
             config.headers['Authorization'] = `Bearer ${accessToken}`;
+        } else {
+            console.log('Steve-Access-Token is missing');
         }
+
+        console.log('Request Headers:', config.headers); // Log headers to verify Authorization is set
         return config;
     },
     (error: AxiosError) => Promise.reject(error)
 );
 
-// Response Interceptor to refresh token if needed
+// Response Interceptor for refreshing access token
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error/*: AxiosError*/) => {
@@ -45,14 +52,14 @@ apiClient.interceptors.response.use(
                 cookieStore.set('access_token', access_token);
                 originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
 
-                return apiClient(originalRequest);
+                return apiClient(originalRequest); // Retry the original request with the new token
             } catch (refreshError) {
-                window.location.href = '/signin';
+                window.location.href = '/signin'; // Redirect to signin if refresh fails
                 return Promise.reject(refreshError);
             }
         }
 
-        return Promise.reject(error);
+        return Promise.reject(error); // Reject if not a 401 or refresh failed
     }
 );
 

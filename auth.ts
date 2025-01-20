@@ -87,18 +87,18 @@ export const authOptions = NextAuth({
         },
 
         async session({session, token}) {
-            // Ensure `expires` is always a string (ISO format)
-            /*if (token?.remember_me) {
-                session.expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(); // 1 year (string)
-            } else {
-                session.expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days (string)
-            }*/
+            // If not remember me, set session to expire in 24 hours
+            if (!token?.remember_me) {
+                // console.log('Session expires in 24 hours');
+                session.expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            }
 
             // Attach token data to session
             if (token) {
                 session.user.id = token.id as string;
                 session.user.email = token.email as string;
                 session.sessionToken = token.access_token as string;
+                session.user.access_token = token.access_token as string;
                 session.user.signin_method = token.signin_method as string;
                 session.user.remember_me = token.remember_me as boolean;
             }

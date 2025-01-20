@@ -20,7 +20,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 import SessionStatusSnackbar from "@/app/components/SessionStatusSnackbar";
-import {toSentenceCase, toTitleCase} from "@/app/hooks/useValidation";
+import {toTitleCase} from "@/app/hooks/useValidation";
 
 // Styled components
 const StyledLink = styled(Link)(({theme}) => ({
@@ -49,9 +49,9 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({user}) => {
-    if (user) {
-        console.log('Steve-User session:', user.remember_me, user.email, user.name);
-    }
+    /*if (user) {
+        console.log('Steve-User session:', user.access_token, user.email, user.name);
+    }*/
 
     const [isScrollUp, setIsScrollUp] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

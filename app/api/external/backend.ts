@@ -23,19 +23,28 @@ import {
 const parseSignupToken = (token: string, index: number) =>
     token.indexOf('_') > -1 ? token.split('_')[index] : token;
 
+
 // Sign Up API Call
 const signUpWithCredentials = async (formData: SignUp): Promise<ApiResponse<SignUpResponse>> => {
     try {
         const body = JSON.stringify(formData);
-        const response = await fetchWithRetry(signupHandler, {
+        const {response, data} = await fetchWithRetry(signupHandler, {
             method: 'POST',
             body,
         });
 
-        const data = await response.json();
-
         if (inRange(response.status, 200, 299)) {
-            return {data: (data as SignUpResponse), status: response.status, message: 'Sign-up successful'};
+            console.log('Steve-200-Response:', data);
+            // const successData = new SignupSuccess(JSON.stringify(data));
+            const successData: SignUpResponse = {
+                signupToken: data.signup_token,
+                accessToken: data.access_token,
+                message: data.message,
+                email: data.email,
+                sms: data.sms,
+            };
+
+            return {data: successData, status: response.status, message: 'Sign-up successful'};
             // if (data.signupToken) data.headers.set('signup_id', `${data.signupToken}`);
         } else {
             return {message: 'backend-Sign-up failed', status: response.status};
@@ -52,9 +61,10 @@ const signUpWithCredentials = async (formData: SignUp): Promise<ApiResponse<Sign
 };
 
 // Verify Email code API Call
-const verifyUserEmail = async (emailCode: string): Promise<ApiResponse<VerifyContactResponse>> => {
+const verifyUserEmail = async (email_code: string): Promise<ApiResponse<VerifyContactResponse>> => {
     try {
         const signupToken = await getSignupToken() ?? '';
+
         if (!signupToken) {
             return {status: 401, message: 'Sign Up session has expired, please try Forgot Password.'};
         }
@@ -62,16 +72,13 @@ const verifyUserEmail = async (emailCode: string): Promise<ApiResponse<VerifyCon
         // Extract the User ID from the Signup-signupToken
         const user_id = parseSignupToken(signupToken, 0);
 
-
-        console.log('Steve-V-Response:', user_id);
-        const response = await fetchWithRetry(verifyHandler, {
+        const {response, data} = await fetchWithRetry(verifyHandler, {
             method: 'POST',
             endpoint: `${verifyEmailEndpoint}&verify=email`,
-            body: JSON.stringify({user_id, code: emailCode}),
+            body: JSON.stringify({user_id, email_code}),
         });
 
         if (inRange(response.status, 200, 299)) {
-            console.log('success...')
             // Get the User Role from the Signup-signupToken
             const userRole = parseSignupToken(signupToken, 1);
 
@@ -99,7 +106,7 @@ const verifyUserEmail = async (emailCode: string): Promise<ApiResponse<VerifyCon
 };
 
 // Verify Phone/SMS code API Call
-const verifyUserPhone = async (smsCode: string): Promise<ApiResponse<VerifyContactResponse>> => {
+const verifyUserPhone = async (sms_code: string): Promise<ApiResponse<VerifyContactResponse>> => {
     try {
 
         const signupToken = await getSignupToken() ?? '';
@@ -110,10 +117,10 @@ const verifyUserPhone = async (smsCode: string): Promise<ApiResponse<VerifyConta
         // Extract the User ID from the Signup-signupToken
         const user_id = parseSignupToken(signupToken, 0);
 
-        const response: AxiosResponse = await fetchWithRetry(apiHandler, {
+        const {response, data} = await fetchWithRetry(apiHandler, {
             method: 'POST',
             endpoint: `${verifyPhoneEndpoint}verify=phone`,
-            body: JSON.stringify({user_id, code: smsCode}),
+            body: JSON.stringify({user_id, sms_code}),
         });
 
         if (inRange(response.status, 200, 299)) {
@@ -146,16 +153,18 @@ const verifyUserPhone = async (smsCode: string): Promise<ApiResponse<VerifyConta
 // Send/Resend Email Verification Code API Call
 const sendEmailVerificationCode = async (email: string): Promise<ApiResponse<string>> => {
     try {
-        const response: AxiosResponse = await fetchWithRetry(apiHandler, {
+        const {response, data} = await fetchWithRetry(apiHandler, {
             method: 'POST',
             endpoint: sendVerifyEmail,
             body: JSON.stringify({email}),
         });
 
+        console.log('Steve-Response:', response, data);
+
         // Check if the response status is within the 2xx range (successful)
         if (inRange(response.status, 200, 299)) {
             return {
-                data: JSON.stringify(response.data) ?? '',
+                data: JSON.stringify(data) ?? '',
                 status: response.status,
                 message: 'Email verification code sent successfully',
             };
@@ -176,7 +185,7 @@ const sendEmailVerificationCode = async (email: string): Promise<ApiResponse<str
 // Send/Resend Phone/SMS Verification Code API Call
 const sendPhoneVerificationCode = async (phone: string): Promise<ApiResponse<string>> => {
     try {
-        const response: AxiosResponse = await fetchWithRetry(apiHandler, {
+        const {response, data} = await fetchWithRetry(apiHandler, {
             method: 'POST',
             endpoint: sendVerifyPhone,
             body: JSON.stringify({phone}),
@@ -185,7 +194,7 @@ const sendPhoneVerificationCode = async (phone: string): Promise<ApiResponse<str
         // Check if the response status is within the 2xx range (successful)
         if (inRange(response.status, 200, 299)) {
             return {
-                data: JSON.stringify(response.data) ?? '',
+                data: JSON.stringify(data) ?? '',
                 status: response.status,
                 message: 'Phone verification code sent successfully',
             };
@@ -206,13 +215,15 @@ const sendPhoneVerificationCode = async (phone: string): Promise<ApiResponse<str
 // Get Profile API Call
 const getUserProfile = async ({user_id}: { user_id: string }): Promise<unknown> => {
     try {
-        const response: AxiosResponse<Profile> = await fetchWithRetry(apiHandler, {
+        const {response, data} = await fetchWithRetry(apiHandler, {
             method: 'GET',
             endpoint: `/user/${user_id}`,
         });
 
         // cacheProfile({profile: response.data});
-        return response.data; // Ensure this always returns a Profile
+        if (inRange(response.status, 200, 299)) {
+            return data as Profile;
+        }
     } catch (error: unknown) {
         handleApiError(error);
     }
@@ -221,7 +232,7 @@ const getUserProfile = async ({user_id}: { user_id: string }): Promise<unknown> 
 // Post Ad API Call
 const postAd = async (formData: FormData): Promise<ApiResponse> => {
     try {
-        const response = await fetchWithRetry(apiHandler, {
+        const {response, data} = await fetchWithRetry(apiHandler, {
             method: 'POST',
             endpoint: postAdEndpoint,
             body: JSON.stringify(formData),
@@ -230,7 +241,7 @@ const postAd = async (formData: FormData): Promise<ApiResponse> => {
         // Check if the response status is within the 2xx range (successful)
         if (inRange(response.status, 200, 299)) {
             return {
-                data: JSON.stringify(response.data),
+                data: JSON.stringify(data),
                 status: response.status,
                 message: 'Post successful',
             };
@@ -249,12 +260,14 @@ const postAd = async (formData: FormData): Promise<ApiResponse> => {
 // Function to get all ads
 const getAds = async (): Promise<unknown> => {
     try {
-        const response: AxiosResponse<Post[]> = await fetchWithRetry(apiHandler, {
+        const {response, data} = await fetchWithRetry(apiHandler, {
             method: 'GET',
             endpoint: adsEndpoint,
         });
 
-        return response.data;
+        if (inRange(response.status, 200, 299)) {
+            return data as AxiosResponse<Post[]>;
+        }
     } catch (error: unknown) {
         handleApiError(error);
     }
@@ -266,7 +279,7 @@ const getCountries = async (): Promise<AllCountries[]> => {
 
     try {
         // Fetch with retry logic
-        countries = await fetchWithRetry(apiHandler, {
+        const {response, data} = await fetchWithRetry(apiHandler, {
             method: 'GET',
             endpoint: restCountriesAPI,
             headers: {
@@ -275,6 +288,10 @@ const getCountries = async (): Promise<AllCountries[]> => {
                 'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=60',
             },
         });
+
+        if (inRange(response.status, 200, 299)) {
+            countries = data as AllCountries[];
+        }
 
         // cacheAllCountries({countries: countries}); // Cache the fetched data
     } catch (error) {
