@@ -6,9 +6,10 @@ import {useEffect} from "react";
 
 interface StatusSnackbarProps {
     isSignIn: boolean;
+    message: string;
 }
 
-const SessionStatusSnackbar: React.FC<StatusSnackbarProps> = ({isSignIn}) => {
+const SessionStatusSnackbar: React.FC<StatusSnackbarProps> = ({isSignIn, message}) => {
     const [open, setOpen] = React.useState(true);
 
     // Whenever the `isSignIn` prop changes, set the local `open` state accordingly
@@ -37,7 +38,7 @@ const SessionStatusSnackbar: React.FC<StatusSnackbarProps> = ({isSignIn}) => {
                    severity={isSignIn ? "success" : "error"}
                    variant="filled"
                    sx={{width: '100%', py: 0, mx: 10,}}>
-                You&#39;re currently {isSignIn ? 'Signed In' : 'not Sign In'}!
+                {message}
             </Alert>
         </Snackbar>
     );

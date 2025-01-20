@@ -225,19 +225,26 @@ export default CountriesComponent;
 
 */
 
-import { Suspense } from 'react';
-import {allCountries} from "@/app/api/external/backend";
-import {AllCountry} from "@/app/models/AllCountries";
-import UseCountriesClient from "@/app/hooks/useCountriesClient";
+import {Suspense} from 'react';
+import {getCountries} from "@/app/api/external/backend";
+import {AllCountries, CountrySelectorProps} from "@/app/models/AllCountries";
+import UseCountrySelector from "@/app/components/CountrySelector/useCountrySelector";
 
-const UseCountriesServer = () => {
-    const countries:Promise<AllCountry[]> = allCountries();
+const CountrySelector = (
+    {handleChange, sx, isError}: CountrySelectorProps
+) => {
+    const countries: Promise<AllCountries[]> = getCountries();
 
     return (
-        <Suspense fallback={<div style={{'textAlign':'center'}}>Loading...</div>}>
-            <UseCountriesClient countries={countries} />
+        <Suspense fallback={<div style={{'textAlign': 'center'}}>Loading...</div>}>
+            <UseCountrySelector
+                sx={sx}
+                isError={isError}
+                countries={countries}
+                handleChange={handleChange}
+            />
         </Suspense>
     );
 }
 
-export default UseCountriesServer;
+export default CountrySelector;

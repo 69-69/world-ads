@@ -1,5 +1,3 @@
-// app/components/NotificationButton.tsx
-//
 import {IconButton, Badge} from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 

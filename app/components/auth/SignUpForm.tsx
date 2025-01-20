@@ -1,23 +1,21 @@
 'use client';
-// app/components/SignInForm.tsx
-//
-import React from 'react';
+
 import {useSignUp} from '@/app/hooks/useSignUp';
 import AuthForm from '@/app/components/auth/AuthForm';
-import {DEFAULT_SIGNIN_REDIRECT, DEFAULT_VERIFICATION_REDIRECT} from '@/app/hooks/useConstants';
-import {ApiResponse, SignUp} from "@/app/models";
-import {SignUpResponse} from "@/app/models/SignUp";
+import {ApiResponse} from "@/app/models";
+import {SignUpForm, SignUpResponse} from "@/app/models/SignUp";
+import {SIGNIN_ROUTE, VERIFICATION_ROUTE} from '@/app/hooks/useConstants';
 
 
 const SignInForm = () => {
 
     return (
-        <AuthForm<SignUp, ApiResponse<SignUpResponse>>
+        <AuthForm<SignUpForm, ApiResponse<SignUpResponse>>
             title="Sign Up"
             buttonText="Sign Up"
             isSignUp={true}
-            redirectTo={DEFAULT_VERIFICATION_REDIRECT}
-            auxButton={[{link: DEFAULT_SIGNIN_REDIRECT, title: 'Sign In'}]}
+            redirectTo={VERIFICATION_ROUTE}
+            auxButton={[{link: SIGNIN_ROUTE, title: 'Sign In'}]}
             fields={[
                 {name: 'firstname', label: 'First name'},
                 {name: 'lastname', label: 'Last name'},
@@ -25,7 +23,6 @@ const SignInForm = () => {
                 {name: 'email', label: 'Email', type: 'email'},
                 {name: 'password', label: 'Password', type: 'password'},
                 {name: 'confirmPassword', label: 'Confirm Password', type: 'password'},
-                {name: 'account_type', type: 'hidden', label: 'att'},
             ]}
             onSubmit={useSignUp}
         />

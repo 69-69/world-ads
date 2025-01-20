@@ -1,6 +1,4 @@
 'use client';
-// app/components/Footer.tsx
-//
 import React from 'react';
 import Link from 'next/link';
 import {Box, Typography, Container, IconButton, Grid2 as Grid} from '@mui/material';

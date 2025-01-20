@@ -1,5 +1,3 @@
-// app/components/CartButton.tsx
-//
 import {IconButton, Badge} from '@mui/material';
 import ShoppingBag from '@mui/icons-material/ShoppingBag';
 

@@ -1,5 +1,3 @@
-// app/components/OrSeparator.tsx
-//
 import {Box, Divider, Typography} from '@mui/material';
 
 const OrSeparator = ({text = 'OR', className = '', sx = {}, sxd = {}}) => {

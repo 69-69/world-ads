@@ -1,3 +1,94 @@
+'use server';
+import apiClient from "@/app/api/external/apiClient";
+import {NextRequest, NextResponse} from "next/server";
+import axios, {AxiosResponse} from "axios";
+
+// Set Cookies utility function
+const setCookie = (res: NextResponse, name: string, value: string, days: number = 7) => {
+    res.cookies.set(name, value, {
+        httpOnly: true,
+        maxAge: days * 24 * 60 * 60, // Default is 7 days
+        secure: process.env.COOKIE_SECURE === "production",
+        path: '/',
+        sameSite: 'lax',
+    });
+};
+
+// Utility function to select data based on a comma-separated key string
+const selectDataFromResponse = (data: Record<string, unknown>, dataKey: string | null): Record<string, unknown> => {
+    if (!dataKey) return {};
+
+    return dataKey.split(',').reduce((acc, key) => {
+        if (data[key] !== undefined) {
+            acc[key] = data[key];
+        }
+        return acc;
+    }, {} as Record<string, unknown>);
+};
+
+// Set Cookies from Response Data
+const setCookiesFromResponse = (res: NextResponse, response: AxiosResponse, cookieName: string | null, dataKey: string | null, days: number = 7) => {
+    if (!cookieName || !dataKey) return;
+
+    const {data} = response;
+    const selectedData = selectDataFromResponse(data, JSON.parse(dataKey));
+
+    setCookie(res, cookieName, JSON.stringify(selectedData || data), days);
+};
+
+// General API handler for GET, POST, PUT, DELETE
+async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
+    const {searchParams} = new URL(request.url);
+    const endpoint = searchParams.get('endpoint');
+
+    if (!endpoint) {
+        return NextResponse.json({error: 'Endpoint is required'}, {status: 400});
+    }
+
+    try {
+        const body = method === 'POST' || method === 'PUT' ? await request.json() : undefined;
+        const isThirdParty = request.headers.get('Is-Third-Api');
+
+        console.log('Tony-Request URL:', request.url);
+
+        // Make the actual request depending on whether it's a third-party API or your own backend API
+        const response = isThirdParty
+            ? await axios({method, url: endpoint, data: body})
+            : await apiClient({method, url: `/${endpoint}`, data: body});
+
+        const res = NextResponse.json(response.data);
+
+        // Set cookies based on headers
+        const cookieName = request.headers.get('Cookie_Name');
+        const dataKey = request.headers.get('Data-Key');
+
+        if (cookieName) {
+            setCookiesFromResponse(res, response, cookieName, dataKey);
+        }
+
+        // Optionally set additional cookies like Custom_Cookie
+        const defaultCookie = request.headers.get('Custom_Cookie');
+        if (defaultCookie) {
+            const [key, value] = defaultCookie.split('=');
+            setCookie(res, key, value);
+        }
+
+        return res;
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
+        return NextResponse.json({error: errorMessage}, {status: 500});
+    }
+}
+
+// Route Handlers
+export const GET = async (request: NextRequest) => await handleRequest(request, 'GET');
+export const POST = async (request: NextRequest) => await handleRequest(request, 'POST');
+export const PUT = async (request: NextRequest) => await handleRequest(request, 'PUT');
+export const DELETE = async (request: NextRequest) => await handleRequest(request, 'DELETE');
+
+
+/*
+'use server';
 import apiClient from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 import {parseJSON, stringifyJSON} from "@/app/hooks/useCookies";
@@ -68,15 +159,6 @@ async function GET(request: NextRequest) {
 
         const res = NextResponse.json(response.data);
 
-        // Set cache control headers
-        // res.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate');
-
-        // Set CORS headers
-        // res.headers.set('Access-Control-Allow-Origin', '*');
-
-        // Set Cookie headers
-        // res.cookies.set('cookieName', 'cookieValue', {httpOnly: true, maxAge: 30 * 24 * 60 * 60, path: '/'});
-
         // Optionally set cookies if cookieName is provided
         const cookieName = request.headers.get('Cookie_Name');
         if (cookieName) {
@@ -104,16 +186,12 @@ async function POST(request: NextRequest) {
             return NextResponse.json({error: 'Endpoint is required'}, {status: 400});
         }
 
+        console.log('Steve Request Headers:', searchParams);
+
         const body = await request.json();
         const response = await apiClient.post(`/${endpoint}`, body);
 
         const res = NextResponse.json(response.data);
-
-        // Set cache control headers
-        // res.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate');
-
-        // Set CORS headers
-        // res.headers.set('Access-Control-Allow-Origin', '*');
 
         // Optionally set cookies if cookieName is provided
         const cookieName = request.headers.get('Cookie_Name');
@@ -191,4 +269,4 @@ async function DELETE(request: NextRequest) {
 }
 
 // Export the handlers
-export {GET, POST, PUT, DELETE};
+export {GET, POST, PUT, DELETE};*/

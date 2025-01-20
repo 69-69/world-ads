@@ -6,6 +6,7 @@ import NextAuth, { DefaultSession, DefaultUser, JWT } from "next-auth";
 declare module "next-auth" {
 
     interface User extends DefaultUser {
+        remember_me?: boolean;
         access_token?: string;
         signin_method?: string;
     }
@@ -16,6 +17,8 @@ declare module "next-auth" {
             email: string;
             name: string;
             access_token?: string;  // Add `access_token` to session user object
+            remember_me?: boolean;
+            signin_method?: string;
         };
     }
 

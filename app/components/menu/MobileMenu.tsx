@@ -1,5 +1,3 @@
-// app/components/menu/MobileMenu.tsx
-//
 import {Menu, MenuItem, IconButton, Badge} from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';

@@ -1,4 +1,4 @@
-export interface AllCountry {
+interface AllCountries {
     name: {
         common: string;
         official: string;
@@ -34,3 +34,13 @@ export interface AllCountry {
         svg: string; // SVG flag URL
     };
 }
+
+type CountrySelectorProps = {
+    sx?: object;
+    isError?: string | null;
+    countries?: Promise<AllCountries[]>;
+    handleChange: (country: string, city: string) => void;
+};
+
+export type {AllCountries, CountrySelectorProps};
+

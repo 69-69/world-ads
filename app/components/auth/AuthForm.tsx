@@ -1,4 +1,4 @@
-import React, {useState, FormEvent, ChangeEvent} from 'react';
+import React, {useState, FormEvent} from 'react';
 import {Button, Paper, Box, Typography, Divider} from '@mui/material';
 import Link from 'next/link';
 import ToastMessage from '../ToastMessage';
@@ -11,8 +11,8 @@ import {githubSignIn, googleSignIn} from "@/app/hooks/useSocialAuthButton";
 import {useRouter} from "next/navigation";
 import {
     ACC_ROLE,
-    DEFAULT_HOME_REDIRECT,
-    DEFAULT_POLICY_REDIRECT
+    HOME_ROUTE,
+    POLICY_ROUTE
 } from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
 import {inRange} from "@/app/hooks/useValidation";
@@ -69,12 +69,12 @@ const AuthForm = <T, U extends ApiResponse>({
 
     const {errors, setErrors, message, setMessage, handleChange} = useFormDataChange(setFormData);
 
-    const handleSwitchChange = (event: ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    const handleSwitchChange = (checked: boolean) => {
         setFormData((prev) => ({...prev, 'account_type': ACC_ROLE[Number(checked)]}));
     };
 
     const handleCheckButtonChange = (checked: boolean) => {
-        setFormData((prev) => ({...prev, 'remember-me': checked.toString()}));
+        setFormData((prev) => ({...prev, 'remember_me': checked.toString()}));
     };
 
     const validateFormFields = () => {
@@ -83,9 +83,9 @@ const AuthForm = <T, U extends ApiResponse>({
         fields.forEach((field) => {
             const fieldValue = formData[field.name];
 
-            if (field.name !== 'account_type' && field.name !== 'remember-me') {
+            if (field.name !== 'account_type' && field.name !== 'remember_me') {
                 // Check for required fields and empty values in the form data
-                if ((typeof fieldValue === 'string' && fieldValue.trim() === '') || // Ensure it's a string before calling trim
+                if ((typeof fieldValue === 'string' && fieldValue.trim() === '') ||
                     (fieldValue === undefined || fieldValue === null)) {
                     errors[field.name] = `${field.label} is required`;
                 }
@@ -112,18 +112,15 @@ const AuthForm = <T, U extends ApiResponse>({
         try {
             const response = await onSubmit(formData as T);
 
-            /*
-                Redirect to the specified `redirectTo` URL if it exists and is truthy.
-                If `redirectTo` is falsy (e.g., null, undefined, or empty),
-                fall back to `response.data` if it's not null or undefined,
-                otherwise, use the default redirection URL `DEFAULT_HOME_REDIRECT`.
-            */
-
             if (response.status && inRange(response.status, 200, 299)) {
                 setMessage({success: 'Please wait...'});
 
                 const data = typeof response.data === 'string' ? response.data as string : null;
-                router.push(redirectTo || (data ?? DEFAULT_HOME_REDIRECT));
+
+                // Redirect the user to the specified 'redirectTo' path if provided,
+                // or to 'redirectPath' from the response data if available.
+                // If neither is provided, fallback to the 'HOME_ROUTE'.
+                router.push(redirectTo || (data ?? HOME_ROUTE));
                 return;
             }
             setMessage({error: 'Something went wrong, please try again'});
@@ -192,19 +189,21 @@ const AuthForm = <T, U extends ApiResponse>({
                          }}>
                         {isSignUp ? (
                             <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-                                <CustomSwitch label='I am Seller?' onSwitchChange={handleSwitchChange}/>
-                                {renderOptButton({link: DEFAULT_POLICY_REDIRECT, title: 'Terms & Privacy'}, 0)}
+                                <CustomSwitch label='I am Seller?' onSwitchChange={handleSwitchChange}
+                                              name='account_type'/>
+                                {renderOptButton({link: POLICY_ROUTE, title: 'Terms & Privacy'}, 0)}
                             </Box>
                         ) : (
-                            <CheckButton onCheckChange={handleCheckButtonChange}/>
+                            <CheckButton onCheckChange={handleCheckButtonChange} name='remember_me'/>
                         )}
                     </Box>
 
                     {message.error && <ToastMessage message={message.error}/>}
                     {message.success && <ToastMessage message={message.success} type="success"/>}
 
-                    <Button type="submit" variant="outlined" color="primary" fullWidth>
-                        {buttonText}
+                    <Button type="submit" variant="outlined" color="primary" fullWidth
+                            disabled={Boolean(message.success)}>
+                        {message.success || buttonText}
                     </Button>
 
                     <Divider sx={{my: 1}}/>

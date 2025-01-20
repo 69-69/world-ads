@@ -1,55 +1,66 @@
-import nookies from 'nookies';
+'use server';
 
-// Convert JSON string to object for use in the UI (or return an error)
-const parseJSON = (json: string): any | null => {
-    try {
-        return JSON.parse(json);
-    } catch (error: unknown) {
-        console.log(error instanceof Error ? error.message : 'Invalid JSON format');
-        return null;
-    }
-};
+import {cookies} from "next/headers";
 
-// Convert data to JSON string for storage (or return an error)
-const stringifyJSON = (data: unknown): string => {
-    try {
-        return JSON.stringify(data);
-    } catch (error: unknown) {
-        console.log(error instanceof Error ? error.message : 'Error stringify JSON');
-        return '';
-    }
-};
+// NEXT-JS Cookies
+const getNextCookies = async (name: string) => {
 
-// Set a cookie with secure settings (expires in 7 days by default, secure, and sameSite: 'Strict')
-const setCookie = (ctx: ctxType = null, name: string, value: string, days: number = 7): void => {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000); // 7 days by default
+    const cookieStore = await cookies();
+    return cookieStore.has(name) ? cookieStore.get(name)?.value : null;
+    /*const cookie = headers?.cookie ?? '';
+    return cookie.split(';').reduce((cookies: any, current: any) => {
+        const [name, value] = current.trim().split('=');
+        cookies[name] = value;
+        return cookies;
+    }, {});*/
+}
 
-    nookies.set(ctx, name, value, {
-        path: process.env.COOKIE_PATH || '/',
-        expires,
-        secure: process.env.COOKIE_SECURE === "production", // Use 'secure' in production only
-        sameSite: 'lax',
-    });
-};
 
-// Retrieve the cookie by name
-const getCookie = (ctx: ctxType = null, name: string): string | null => {
-    const cookies = nookies.get(ctx); // Works with ctx if provided, otherwise defaults to client-side cookies
-    return cookies[name] || null;
-};
+type VerifyType = { contact: 'email' | 'phone' };
 
-// Delete a cookie by name
-const deleteCookie = (ctx: never | null | undefined, name: string): void => {
-    nookies.destroy(ctx, name);
-};
+// Cache which contact is being verified
+// const cacheIsVerified = ({contact}: VerifyType, ctx: null | undefined = null): void => setCookie(ctx, `verify_${contact}`, contact);
 
-type ctxType = null | undefined;
+// Check if the user signed in via credentials (not social media)
+const getSigninMethod = async () => await getNextCookies('signin_method');
+
+// Retrieve the access token from cookies
+const getAccessToken = async () => await getNextCookies('access_token');
+
+// Get the signup token
+const getSignupToken = async () => await getNextCookies('signup_token');
+
+// Get which contact is being verified
+const getIsVerified = async ({contact}: VerifyType) => await getNextCookies(`verified_${contact}`);
 
 export {
-    setCookie,
-    getCookie,
-    parseJSON,
-    stringifyJSON,
-    deleteCookie,
+    getNextCookies,
+    getSigninMethod,
+    getSignupToken,
+    getAccessToken,
+    getIsVerified,
 };
+
+/*// Function to get the value of a specific cookie by name
+function getCookie(name) {
+    // Decode the cookie string to handle any URL-encoded characters
+    const cookieString = decodeURIComponent(document.cookie);
+
+    // Split the cookie string into individual cookies
+    const cookies = cookieString.split(';');
+
+    // Loop through the cookies to find the one with the specified name
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim(); // Remove any leading/trailing spaces
+        if (cookie.startsWith(name + '=')) {
+            // Return the value of the cookie
+            return cookie.substring(name.length + 1); // Skip the cookie name and '='
+        }
+    }
+    return null; // Return null if the cookie is not found
+}
+
+// Usage
+const signupToken = getCookie('signup_token');
+console.log(signupToken);
+*/

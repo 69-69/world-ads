@@ -1,18 +1,21 @@
-// app/hooks/useValidation.ts
-//
-// Check if a number is within a specified range
-const inRange = (value: number, min: number, max: number) => {
+// Check if a number is within a specified range: >= min && <= max
+const inRange = (value: number, min: number = 200, max: number = 299) => {
     return value >= min && value <= max;
 }
+
 // Convert a string to sentence case
 const toSentenceCase = (str: string) => {
     return str
-        .replace(/([a-z0-9])([A-Z])/g, '$1 $2') // Adds space before capital letters in camelCase
+        .replaceAll(/([a-z0-9])([A-Z])/g, '$1 $2') // Adds space before capital letters in camelCase
         .toLowerCase() // Convert to lowercase
         .replace(/^./, (match) => match.toUpperCase()); // Capitalize the first letter
 };
 
-// Simple validation for name, email and password
+// Convert each first letter of a string to uppercase
+const toTitleCase = (str: string) => {
+    return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+};
+
 const validateName = (value: string) => {
     const regex = /^[a-zA-Z\s]+$/;
     return regex.test(value) && value.length > 2
@@ -36,6 +39,7 @@ const validatePassword = (value: string) => {
 
 export {
     inRange,
+    toTitleCase,
     toSentenceCase,
     validateName,
     validateText,

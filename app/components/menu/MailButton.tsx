@@ -1,5 +1,3 @@
-// app/components/MailButton.tsx
-//
 import React from "react";
 import {IconButton, Badge} from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";

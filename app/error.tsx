@@ -1,5 +1,3 @@
-// app/error.tsx
-//
 'use client';
 
 import {Box, Typography, Button} from '@mui/material';

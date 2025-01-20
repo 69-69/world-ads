@@ -1,6 +1,5 @@
 'use server';
-// app/hooks/usePostAd.ts
-//
+
 import {postAd} from "@/app/api/external/backend";
 
 const usePostAd = async (formDataWithFiles: FormData) => {

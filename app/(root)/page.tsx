@@ -2,7 +2,7 @@ import React from 'react';
 import {Typography, Container, Box} from '@mui/material';
 import Hero from '@/app/components/home/Hero';
 import HomeContent from "@/app/components/home/HomeContent";
-import {APP_NAME, DEFAULT_SIGNUP_REDIRECT} from "@/app/hooks/useConstants";
+import {APP_NAME, SIGNUP_ROUTE} from "@/app/hooks/useConstants";
 
 // Importing the local image
 const heroImage = '../assets/images/ads-bg.png';
@@ -13,7 +13,7 @@ const heroBanner = () => {
             title={APP_NAME}
             subtitle="Global platform to connect advertisers with audiences across various digital channels."
             buttonText="Get Started"
-            buttonLink={DEFAULT_SIGNUP_REDIRECT}
+            buttonLink={SIGNUP_ROUTE}
             backgroundImage={heroImage}
         />
     );

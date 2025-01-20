@@ -1,6 +1,5 @@
 'use client';
-// app/components/SignInForm.tsx
-//
+
 import React from 'react';
 import StoreForm from '@/app/components/store-setup/StoreForm';
 import {ApiResponse, SignUp} from "@/app/models";

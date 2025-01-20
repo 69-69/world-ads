@@ -5,16 +5,16 @@ import ToastMessage from '../ToastMessage';
 import CustomTextField from "@/app/components/CustomTextField";
 import {useRouter} from "next/navigation";
 import {
-    DEFAULT_HOME_REDIRECT,
-    DEFAULT_POLICY_REDIRECT, sellerTypes,
-    storeCategories
+    HOME_ROUTE,
+    POLICY_ROUTE, SELLER_TYPE,
+    STORE_CATEGORIES
 } from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
 import {inRange} from "@/app/hooks/useValidation";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 import CustomDropdown from "@/app/components/CustomDropdown";
-import CountryList from "@/app/components/CountryList";
 import CustomRadio from "@/app/components/CustomRadio";
+import CountrySelector from "@/app/components/CountrySelector/CountrySelector";
 
 interface Field {
     name: string;
@@ -61,10 +61,10 @@ const StoreForm = <T, U extends ApiResponse>({
 
 
     const handleDropdownChange = (value: string) => {
-        // Update category with the selected value
+        // Update [category] with the selected value
         setFormData((prev) => ({...prev, category: value}));
 
-        // Clear error when category is selected
+        // Clear error when [category] is selected
         setErrors((prev) => ({...prev, category: ''}));
     };
 
@@ -96,7 +96,7 @@ const StoreForm = <T, U extends ApiResponse>({
             }
         });
 
-        // Check if category is empty
+        // Check if [category] is empty
         if (!formData.category) {
             errors.category = 'Category is required';
         }
@@ -133,7 +133,7 @@ const StoreForm = <T, U extends ApiResponse>({
                 setMessage({success: 'Please wait...'});
 
                 const data = typeof response.data === 'string' ? response.data as string : null;
-                router.push(redirectTo || (data ?? DEFAULT_HOME_REDIRECT));
+                router.push(redirectTo || (data ?? HOME_ROUTE));
                 return;
             }
             setMessage({error: 'Something went wrong, please try again'});
@@ -168,14 +168,14 @@ const StoreForm = <T, U extends ApiResponse>({
                 autoComplete="off"
             >
                 <CustomDropdown
-                    options={storeCategories}
+                    options={STORE_CATEGORIES}
                     label="Category"
                     onSelectChange={handleDropdownChange}
                     isError={errors['category']}
                     sx={{mt: 2, gridColumn: toFullWidth}}
                 />
-                <CountryList
-                    onCountryChange={handleCountry}
+                <CountrySelector
+                    handleChange={handleCountry}
                     isError={errors['country']}
                     sx={{mt: 2, gridColumn: toFullWidth}}
                 />
@@ -193,11 +193,11 @@ const StoreForm = <T, U extends ApiResponse>({
                          }}>
                         <CustomRadio
                             label="Seller Type?"
-                            defaultValue={sellerTypes[0].value}
-                            data={sellerTypes}
+                            defaultValue={SELLER_TYPE[0].value}
+                            data={SELLER_TYPE}
                             onRadioChange={handleRadioChange}
                         />
-                        <Link key='go-back' href={DEFAULT_POLICY_REDIRECT}>
+                        <Link key='go-back' href={POLICY_ROUTE}>
                             <Button variant="text" color="primary" fullWidth>Terms & Privacy</Button>
                         </Link>
                     </Box>
@@ -210,7 +210,7 @@ const StoreForm = <T, U extends ApiResponse>({
                     </Button>
 
                     <Divider sx={{my: 1}}/>
-                    <Link key='go-back' href={DEFAULT_HOME_REDIRECT}>
+                    <Link key='go-back' href={HOME_ROUTE}>
                         <Button variant="text" color="primary" fullWidth>Go Back</Button>
                     </Link>
                 </Box>

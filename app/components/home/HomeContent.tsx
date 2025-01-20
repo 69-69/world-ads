@@ -23,7 +23,7 @@ const posts = [
         description: "Introducing our new collection of gadgets. Shop now!",
         imageUrl: productImg,
         price: "$19.99",
-        link: "/new-products"
+        link: "/new-product"
     },
     {
         id: 3,

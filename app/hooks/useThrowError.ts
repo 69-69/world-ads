@@ -1,6 +1,6 @@
 import {AxiosError} from "axios";
 
-function handleBackendError(error: unknown): void {
+function handleApiError(error: unknown): void {
     const msg = 'Something went wrong, please try again';
 
     if (error instanceof AxiosError) {
@@ -12,7 +12,7 @@ function handleBackendError(error: unknown): void {
     }
 }
 
-function handleFrontendError(error: unknown, tag: string): never {
+function handleUIError(error: unknown, tag: string): never {
     const pleaseTryAgain = 'Something went wrong, please try again';
     const msg = error instanceof Error ? error.message : pleaseTryAgain;
 
@@ -23,4 +23,4 @@ function handleFrontendError(error: unknown, tag: string): never {
 }
 
 
-export {handleBackendError, handleFrontendError};
+export {handleApiError, handleUIError};

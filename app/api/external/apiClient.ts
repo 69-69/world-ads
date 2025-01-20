@@ -1,3 +1,65 @@
+import {cookies} from 'next/headers'
+import axios, {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
+
+
+const API_URL = process.env.BACKEND_API_ENDPOINT || 'http://localhost:8080/api';
+
+const apiClient: AxiosInstance = axios.create({
+    baseURL: API_URL,
+    withCredentials: true,  // Send cookies with cross-origin requests
+});
+
+const cookieStores = async () => await cookies();
+
+// Request Interceptor for Authorization Token
+apiClient.interceptors.request.use(
+    async (config: InternalAxiosRequestConfig) => {
+        const fullUrl = `${config.baseURL}${config.url}`;
+        console.log('Steve-Full-URL:', fullUrl, 'refresh_token-> ' + config.headers.has('refresh_token'));
+
+        const cookieStore = await cookieStores();
+        const accessToken = cookieStore.get('access_token');
+        if (accessToken && config.headers) {
+            config.headers['Authorization'] = `Bearer ${accessToken}`;
+        }
+        return config;
+    },
+    (error: AxiosError) => Promise.reject(error)
+);
+
+// Response Interceptor to refresh token if needed
+apiClient.interceptors.response.use(
+    (response: AxiosResponse) => response,
+    async (error/*: AxiosError*/) => {
+        const originalRequest = error.config;
+
+        if (originalRequest && error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const [refreshResponse, cookieStore] = await Promise.all([
+                    axios.post(`${apiClient.defaults.baseURL}/refresh-token`, {}, {withCredentials: true}),
+                    cookieStores(),
+                ]);
+                const {access_token} = refreshResponse.data;
+
+                cookieStore.set('access_token', access_token);
+                originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
+
+                return apiClient(originalRequest);
+            } catch (refreshError) {
+                window.location.href = '/signin';
+                return Promise.reject(refreshError);
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+
+export default apiClient;
+
+
+/*
 import axios, {AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError} from "axios";
 import {getAccessToken, cacheAccessToken} from "@/app/hooks/useCache";
 
@@ -13,6 +75,9 @@ const apiClient: AxiosInstance = axios.create({
 // Interceptor to inject the access token into each request
 apiClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+        const fullUrl = `${config.baseURL}${config.url}`;
+        console.log('Steve Request URL:', fullUrl);  // Log the full URL here
+
         const accessToken = getAccessToken(null);
         if (accessToken) {
             if (config.headers) {
@@ -20,8 +85,7 @@ apiClient.interceptors.request.use(
                 config.headers['Authorization'] = `Bearer ${accessToken}`;
             }
         }
-        // const fullUrl = `${config.baseURL}${config.url}`;
-        // console.log('Request URL:', fullUrl);  // Log the full URL here
+
         return config;
     },
     (error: AxiosError) => {
@@ -71,8 +135,7 @@ apiClient.interceptors.response.use(
 export default apiClient;
 
 
-
-/*import axios from 'axios';
+/!*import axios from 'axios';
 
 const EXTERNAL_API_URL = 'https://external-api.example.com';  // Replace with your external API URL
 
@@ -316,4 +379,4 @@ export default function Page({ externalData }) {
   );
 }
 
-*/
+*!/*/

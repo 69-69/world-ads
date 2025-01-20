@@ -1,5 +1,3 @@
-// app/components/CustomTextField.tsx
-//
 import {IconButton, InputAdornment, TextField} from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";

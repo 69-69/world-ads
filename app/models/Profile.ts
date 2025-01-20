@@ -1,9 +1,7 @@
-// app/models/Profile.ts
-//
-import { User } from './User';
+import {User} from './User';
 
 export class Profile extends User {
-    [key: string]: unknown; // This allows Profile to accept any extra properties
+    [key: string]: string | unknown | undefined; // This allows Profile to accept any extra properties
 
     constructor(user: User, extraProperties?: Record<string, unknown>) {
         super(user);

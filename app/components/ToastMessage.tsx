@@ -1,5 +1,3 @@
-// app/components/ToastMessage.tsx
-//
 import Typography from '@mui/material/Typography';
 
 const ToastMessage = ({message, type, sx}: { message: string; type?: string; sx?: object; }) => {

@@ -1,5 +1,3 @@
-// app/components/HideOnScroll.tsx
-//
 'use client';
 import React, {ReactElement, useState, useEffect} from 'react';
 import useScrollTrigger from '@mui/material/useScrollTrigger';

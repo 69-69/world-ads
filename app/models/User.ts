@@ -1,6 +1,6 @@
 // models/User.ts
 
-type _UserInterface = {
+type UserInterface = {
     id: string;
     role?: string;
     username: string;
@@ -11,6 +11,7 @@ type _UserInterface = {
     image?: string;
     is_verified?: boolean;
     access_token?: string;
+    // [key: string]: string | boolean | undefined;
 };
 
 export class User {
@@ -24,6 +25,7 @@ export class User {
     image?: string;
     is_verified?: boolean;
     access_token?: string;
+    [key: string]: string | unknown | undefined;
 
     constructor({
                     id,
@@ -36,7 +38,7 @@ export class User {
                     image,
                     is_verified,
                     access_token,
-                }: _UserInterface) {
+                }: UserInterface) {
         this.id = id;
         this.username = username;
         this.firstname = firstname;
@@ -47,10 +49,6 @@ export class User {
         this.image = image;
         this.is_verified = is_verified;
         this.access_token = access_token;
-    }
-
-    fullName(): string {
-        return `${this.firstname} ${this.lastname}`;
     }
 }
 

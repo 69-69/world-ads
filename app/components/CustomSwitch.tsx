@@ -1,32 +1,43 @@
-// app/components/CustomSwitch.tsx
-//
-import React, {ChangeEvent} from 'react';
+import React, {useState, ChangeEvent} from 'react';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-type CustomSwitchProps = {
+interface ControlledSwitchProps {
+    onSwitchChange: (checked: boolean) => void;
     label: string;
-    onSwitchChange: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void
-};
+    name: string;
+}
 
-const CustomSwitch = ({onSwitchChange, label}: CustomSwitchProps) =>{
+const ControlledSwitch: React.FC<ControlledSwitchProps> = ({onSwitchChange, name, label}) => {
+    const [checked, setChecked] = useState<boolean>(false);
+
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const isChecked = event.target.checked;
+        setChecked(isChecked);
+        onSwitchChange(isChecked);
+    };
 
     return (
         <FormControlLabel
             control={
                 <Switch
-                    onChange={onSwitchChange}
+                    name={name}
+                    checked={checked}
+                    onChange={handleChange}
                     inputProps={{'aria-label': 'controlled'}}
-                />}
+                    color={checked ? 'success' : 'secondary'} // Switch color
+                />
+            }
+            name={name}
             label={label}
-            labelPlacement="end"  // Label position if needed
+            labelPlacement="end"
             sx={{
                 '& .MuiFormControlLabel-label': {
-                    color: 'inherit',  // Change label color based on checked state
+                    color: 'inherit',
                 },
             }}
         />
     );
-}
+};
 
-export default CustomSwitch;
+export default ControlledSwitch;

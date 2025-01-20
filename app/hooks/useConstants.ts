@@ -1,23 +1,37 @@
 const APP_NAME = 'World Ads Center';
 const APP_NAME_SHORT = 'WAC';
-const DEFAULT_HOME_REDIRECT = 'http://localhost:3000';
-const DEFAULT_POLICY_REDIRECT = DEFAULT_HOME_REDIRECT + '/terms-and-conditions';
-const DEFAULT_SIGNIN_REDIRECT = DEFAULT_HOME_REDIRECT + '/signin';
-const DEFAULT_SIGNUP_REDIRECT = DEFAULT_HOME_REDIRECT + '/signup';
-const DEFAULT_VERIFICATION_REDIRECT = DEFAULT_HOME_REDIRECT + '/verify-contact';
-const DEFAULT_SETUP_STORE_REDIRECT = DEFAULT_HOME_REDIRECT + '/setup-store';
-const DEFAULT_FORGOT_PASSWORD_REDIRECT = DEFAULT_HOME_REDIRECT + '/forgot-password';
-const DEFAULT_RESET_PASSWORD_REDIRECT = DEFAULT_HOME_REDIRECT + '/reset-password';
-const DEFAULT_POST_ADS_REDIRECT = DEFAULT_HOME_REDIRECT + '/posts';
-const DEFAULT_CART_REDIRECT = DEFAULT_HOME_REDIRECT + '/cart';
-const DEFAULT_SHOP_REDIRECT = DEFAULT_HOME_REDIRECT + '/shop';
-const DEFAULT_CHECKOUT_REDIRECT = DEFAULT_HOME_REDIRECT + '/checkout';
-const DEFAULT_ORDER_REDIRECT = DEFAULT_HOME_REDIRECT + '/orders';
-const DEFAULT_CONTACT_REDIRECT = DEFAULT_HOME_REDIRECT + '/contact';
-const DEFAULT_ABOUT_REDIRECT = DEFAULT_HOME_REDIRECT + '/about';
-const DEFAULT_FAQ_REDIRECT = DEFAULT_HOME_REDIRECT + '/faq';
+const HOME_ROUTE = 'http://localhost:3000';
+const POLICY_ROUTE = '/terms-and-conditions';
+const SIGNIN_ROUTE = '/signin';
+const SIGNUP_ROUTE = '/signup';
+const VERIFICATION_ROUTE = '/verify-contact';
+const SETUP_STORE_ROUTE = '/setup-store';
+const FORGOT_PASSWORD_ROUTE = '/forgot-password';
+const RESET_PASSWORD_ROUTE = '/reset-password';
+const POST_ADS_ROUTE = '/posts';
+const CART_ROUTE = '/cart';
+const SHOP_ROUTE = '/shop';
+const CHECKOUT_ROUTE = '/checkout';
+const ORDER_ROUTE = '/orders';
+const CONTACT_ROUTE = '/contact';
+const ABOUT_ROUTE = '/about';
+const FAQ_ROUTE = '/faq';
 
-const ACC_ROLE = ['buyer','seller'];
+const PROTECTED_RESOURCES_ROUTES = [
+    POST_ADS_ROUTE,
+    SETUP_STORE_ROUTE,
+    ORDER_ROUTE,
+    CHECKOUT_ROUTE,
+];
+
+const PROTECTED_AUTH_ROUTES = [
+    SIGNIN_ROUTE,
+    SIGNUP_ROUTE,
+    FORGOT_PASSWORD_ROUTE,
+    RESET_PASSWORD_ROUTE,
+];
+
+const ACC_ROLE = ['buyer', 'seller'];
 
 type LinkProps = {
     id?: number,
@@ -25,44 +39,44 @@ type LinkProps = {
     url: string
 };
 
-const PAGE_LINKS: LinkProps[] = [
-    {title: 'Home', url: DEFAULT_HOME_REDIRECT},
-    {title: 'Post Ads', url: DEFAULT_POST_ADS_REDIRECT},
-    {title: 'My Account', url: DEFAULT_SIGNIN_REDIRECT},
+const HEADER_LINKS: LinkProps[] = [
+    {title: 'Home', url: HOME_ROUTE},
+    {title: 'Post Ads', url: POST_ADS_ROUTE},
+    {title: 'My Account', url: SIGNIN_ROUTE},
 ];
 
 const FOOTER_LINKS: LinkProps[] = [
     /* Left Section - Links (First Link Group) */
-    {title: 'Home', url: DEFAULT_HOME_REDIRECT},
-    {title: 'About Us', url: DEFAULT_ABOUT_REDIRECT},
-    {title: 'Contact Us', url: DEFAULT_CONTACT_REDIRECT},
-    {title: 'Shop', url: DEFAULT_SHOP_REDIRECT},
+    {title: 'Home', url: HOME_ROUTE},
+    {title: 'About Us', url: ABOUT_ROUTE},
+    {title: 'Contact Us', url: CONTACT_ROUTE},
+    {title: 'Shop', url: SHOP_ROUTE},
 
     /* Center Section - Links (Second Link Group) */
-    {title: 'My Account', url: DEFAULT_SIGNIN_REDIRECT},
-    {title: 'Sign Up', url: DEFAULT_SIGNUP_REDIRECT},
-    {title: 'Post Ads', url: DEFAULT_POST_ADS_REDIRECT},
+    {title: 'My Account', url: SIGNIN_ROUTE},
+    {title: 'Sign Up', url: SIGNUP_ROUTE},
+    {title: 'Post Ads', url: POST_ADS_ROUTE},
 
     /* Right Section - Links (Third Link Group) */
-    {title: 'Terms & Conditions', url: DEFAULT_POLICY_REDIRECT},
-    {title: 'Privacy Policy', url: DEFAULT_POLICY_REDIRECT},
-    {title: 'FAQ', url: DEFAULT_FAQ_REDIRECT},
+    {title: 'Terms & Conditions', url: POLICY_ROUTE},
+    {title: 'Privacy Policy', url: POLICY_ROUTE},
+    {title: 'FAQ', url: FAQ_ROUTE},
 ];
 
-const adsCategories = [
-    { name: 'Real Estate', value: 'real-estate' },
-    { name: 'Jobs', value: 'jobs' },
-    { name: 'Services', value: 'services' },
-    { name: 'Vehicles', value: 'vehicles' },
-    { name: 'Pets', value: 'pets' },
-    { name: 'Electronics', value: 'electronics' },
-    { name: 'Furniture', value: 'furniture' },
-    { name: 'Events', value: 'events' },
-    { name: 'Community', value: 'community' },
-    { name: 'Business for Sale', value: 'business-sale' },
+const ADS_CATEGORIES = [
+    {name: 'Real Estate', value: 'real-estate'},
+    {name: 'Jobs', value: 'jobs'},
+    {name: 'Services', value: 'services'},
+    {name: 'Vehicles', value: 'vehicles'},
+    {name: 'Pets', value: 'pets'},
+    {name: 'Electronics', value: 'electronics'},
+    {name: 'Furniture', value: 'furniture'},
+    {name: 'Events', value: 'events'},
+    {name: 'Community', value: 'community'},
+    {name: 'Business for Sale', value: 'business-sale'},
 ];
 
-const storeCategories = [
+const STORE_CATEGORIES = [
     {name: 'Grocery', value: 'grocery'},
     {name: 'Fashion', value: 'fashion'},
     {name: 'Electronics', value: 'electronics'},
@@ -75,7 +89,7 @@ const storeCategories = [
     {name: 'Furniture', value: 'furniture'},
 ];
 
-const sellerTypes = [
+const SELLER_TYPE = [
     {label: 'Individual', value: 'individual', tooltip: ' Individual Seller (Person-to-Person or P2P)'},
     {label: 'Company', value: 'company', tooltip: 'Business Seller (Business-to-Consumer or B2C)'},
 ];
@@ -84,27 +98,29 @@ export {
     APP_NAME,
     APP_NAME_SHORT,
     ACC_ROLE,
-    sellerTypes,
-    adsCategories,
-    storeCategories,
-    PAGE_LINKS,
+    SELLER_TYPE,
+    ADS_CATEGORIES,
+    STORE_CATEGORIES,
+    PROTECTED_AUTH_ROUTES,
+    PROTECTED_RESOURCES_ROUTES,
+    HEADER_LINKS,
     FOOTER_LINKS,
-    DEFAULT_HOME_REDIRECT,
-    DEFAULT_POLICY_REDIRECT,
-    DEFAULT_SHOP_REDIRECT,
-    DEFAULT_SIGNIN_REDIRECT,
-    DEFAULT_SIGNUP_REDIRECT,
-    DEFAULT_VERIFICATION_REDIRECT,
-    DEFAULT_FORGOT_PASSWORD_REDIRECT,
-    DEFAULT_RESET_PASSWORD_REDIRECT,
-    DEFAULT_POST_ADS_REDIRECT,
-    DEFAULT_CART_REDIRECT,
-    DEFAULT_CHECKOUT_REDIRECT,
-    DEFAULT_ORDER_REDIRECT,
-    DEFAULT_ABOUT_REDIRECT,
-    DEFAULT_CONTACT_REDIRECT,
-    DEFAULT_FAQ_REDIRECT,
-    DEFAULT_SETUP_STORE_REDIRECT,
+    HOME_ROUTE,
+    POLICY_ROUTE,
+    SHOP_ROUTE,
+    SIGNIN_ROUTE,
+    SIGNUP_ROUTE,
+    VERIFICATION_ROUTE,
+    FORGOT_PASSWORD_ROUTE,
+    RESET_PASSWORD_ROUTE,
+    POST_ADS_ROUTE,
+    CART_ROUTE,
+    CHECKOUT_ROUTE,
+    ORDER_ROUTE,
+    ABOUT_ROUTE,
+    CONTACT_ROUTE,
+    FAQ_ROUTE,
+    SETUP_STORE_ROUTE,
 };
 
 export type {LinkProps};

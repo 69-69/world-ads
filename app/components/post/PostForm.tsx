@@ -7,7 +7,7 @@ import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 import MulticolorSelector from "@/app/components/post/MulticolorSelector";
-import {adsCategories} from "@/app/hooks/useConstants";
+import {ADS_CATEGORIES} from "@/app/hooks/useConstants";
 
 // Types for the form data and error state
 interface Field {
@@ -163,7 +163,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
 
                 {/* Render SelectDropdown */}
                 <CustomDropdown
-                    options={adsCategories}
+                    options={ADS_CATEGORIES}
                     label="Post Ads Category"
                     onSelectChange={handleDropdownChange}
                     isError={errors['category']}

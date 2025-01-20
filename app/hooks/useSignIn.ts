@@ -1,34 +1,25 @@
 'use server';
-// app/hooks/useSignIn.ts
-//
-import {signIn} from '@/auth';
+
+import {authOptions} from '@/auth';
 import {SignIn} from "@/app/models/SignIn";
-import {handleFrontendError} from "@/app/hooks/useThrowError";
-import {ApiResponse} from "@/app/models";
-import {DEFAULT_POST_ADS_REDIRECT} from "@/app/hooks/useConstants";
+import {handleUIError} from "@/app/hooks/useThrowError";
+import {ApiResponse} from "@/app/models/ApiResponse";
 
 export const useSignIn = async (formData: SignIn): Promise<ApiResponse> => {
-
-
     try {
-        //const [navigate, response]: [ReturnType<typeof useRouter>, SignInResponse] = await Promise.all([useRouter(), signIn("credentials", formData)]);
+        const response = await authOptions.signIn("credentials", {
+            ...formData,
+            redirect: false,
+        });
 
-        // Call the authentication service from AUTH.ts
-        const response: ApiResponse = await signIn("credentials",
-            {
-                ...formData,
-                redirect: false, // Prevent automatic redirect
-                redirectTo: DEFAULT_POST_ADS_REDIRECT, // Set custom redirect URL after sign-in
-            });
-
-
+        const str = typeof response === 'string';
         return {
             data: response,
-            status: 200,
-            message: 'Sign-in successful',
+            status: str ? 200 : 400,
+            message: str ? 'Sign-in successful' : 'Sign-in failed',
         };
     } catch (error) {
-        handleFrontendError(error, 'Sign-in');
+        handleUIError(error, 'Sign-in');
     }
 };
 
@@ -69,4 +60,6 @@ export const useSignIn = () => {
     // Return an object containing handleSignIn
     return { handleSignIn };
 }; */
+
+
 

@@ -1,14 +1,13 @@
-// app/hooks/useSignUp.ts
-//
 import {signUpWithCredentials} from "@/app/api/external/backend";
-import {SignUp} from "@/app/models/SignUp";
-import {handleFrontendError} from "@/app/hooks/useThrowError";
+import {SignUp, SignUpForm} from "@/app/models/SignUp";
+import {handleUIError} from "@/app/hooks/useThrowError";
 
-export const useSignUp = async (formData: SignUp) => {
+export const useSignUp = async (formData: SignUpForm) => {
     try {
-        return await signUpWithCredentials(formData);
+        const data = new SignUp(formData);
+        return await signUpWithCredentials(data);
     } catch (error) {
-        handleFrontendError(error, 'Sign-up');
+        handleUIError(error, 'Sign-up');
     }
 };
 

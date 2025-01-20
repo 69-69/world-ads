@@ -1,6 +1,6 @@
 import {Drawer, Box, Button} from '@mui/material';
 import Link from 'next/link';
-import {PAGE_LINKS} from "@/app/hooks/useConstants";
+import {HEADER_LINKS} from "@/app/hooks/useConstants";
 
 // Sidebar Component
 const SidebarMenu: React.FC<{ isOpen: boolean, isScrollingUp: boolean, onClose: () => void }> = ({
@@ -28,7 +28,7 @@ const SidebarMenu: React.FC<{ isOpen: boolean, isScrollingUp: boolean, onClose: 
             }}
         >
             <Box sx={{width: 280, mt: 1}}>
-                {PAGE_LINKS.map((link: { title: string; url: string; }) => (
+                {HEADER_LINKS.map((link: { title: string; url: string; }) => (
                     <Link key={link.title} href={link.url}>
                         <Button fullWidth sx={{p: 1}} onClick={onClose}>
                             {link.title}

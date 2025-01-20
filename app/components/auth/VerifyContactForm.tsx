@@ -1,15 +1,14 @@
-// app/components/VerifyContactForm.tsx
-//
 'use client';
+
 import React, {ChangeEvent, useState} from 'react';
 import {TextField, InputAdornment, Button, Paper, Box, Typography} from '@mui/material';
 import {useRouter} from 'next/navigation';
-import {ACC_ROLE, DEFAULT_SETUP_STORE_REDIRECT} from "@/app/hooks/useConstants";
+import {ACC_ROLE, SETUP_STORE_ROUTE} from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
 import ToastMessage from "@/app/components/ToastMessage";
-import {getIsVerified} from "@/app/hooks/useCache";
 import {inRange} from "@/app/hooks/useValidation";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
+
 
 // Types for the form data and error state
 interface Field {
@@ -31,7 +30,7 @@ interface Errors {
     [key: string]: string | undefined;
 }
 
-const getNavigateTo = (role: string, redirectTo: string) => role === ACC_ROLE[1] ? DEFAULT_SETUP_STORE_REDIRECT : redirectTo;
+const getNavigateTo = (role: string, redirectTo: string) => role === ACC_ROLE[1] ? SETUP_STORE_ROUTE : redirectTo;
 
 
 const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, onSubmit, redirectTo}) => {
@@ -83,8 +82,8 @@ const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, 
             }
 
             const {email, sms} = {
-                email: getIsVerified({contact: 'email'}),
-                sms: getIsVerified({contact: 'phone'})
+                email: '',// getIsVerified({contact: 'email'}),
+                sms: '', // getIsVerified({contact: 'phone'})
             };
 
             // Call onSubmit function with form data when validation passes

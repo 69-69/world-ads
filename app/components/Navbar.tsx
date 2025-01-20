@@ -15,11 +15,12 @@ import {
     MailButton,
     NotificationButton,
 } from './menu';
-import {APP_NAME_SHORT, DEFAULT_HOME_REDIRECT} from '@/app/hooks/useConstants';
+import {APP_NAME_SHORT, HOME_ROUTE} from '@/app/hooks/useConstants';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 import SessionStatusSnackbar from "@/app/components/SessionStatusSnackbar";
+import {toSentenceCase, toTitleCase} from "@/app/hooks/useValidation";
 
 // Styled components
 const StyledLink = styled(Link)(({theme}) => ({
@@ -42,12 +43,14 @@ interface NavbarProps {
         email: string;
         name: string;
         access_token?: string | undefined;
+        remember_me?: boolean | undefined;
+        signin_method?: string | undefined;
     } | null;
 }
 
 const Navbar: React.FC<NavbarProps> = ({user}) => {
     if (user) {
-        console.log('User session:', user);
+        console.log('Steve-User session:', user.remember_me, user.email, user.name);
     }
 
     const [isScrollUp, setIsScrollUp] = useState<boolean>(false);
@@ -78,19 +81,19 @@ const Navbar: React.FC<NavbarProps> = ({user}) => {
                         >
                             <MenuIcon/>
                         </IconButton>
-                        <StyledLink href={DEFAULT_HOME_REDIRECT}>
+                        <StyledLink href={HOME_ROUTE}>
                             <Box sx={{flexGrow: 1, fontFamily: 'monospace', fontSize: '2rem', fontWeight: 1000}}>
                                 {APP_NAME_SHORT}
                             </Box>
                         </StyledLink>
-                        {/* Web menu */}
-                        <WebMenu/>
 
                         <Box sx={{
                             flexGrow: 1,
                             display: {xs: 'none', sm: 'flex', md: 'flex'},
                             justifyContent: 'flex-end'
                         }}>
+                            {/* Web menu */}
+                            <WebMenu/>
 
                             {/* Cart, Mail, Notification, Account */}
                             <CartButton count={5}/>
@@ -135,13 +138,17 @@ const Navbar: React.FC<NavbarProps> = ({user}) => {
 
             {/* Sidebar */}
             <SidebarMenu isOpen={openSidebar} onClose={handleSidebarToggle} isScrollingUp={isScrollUp}/>
+
             {/* Render Menu Components */}
-            <DropdownMenu anchorEl={anchorEl} handleMenuToggle={handleMenuToggle} setAnchorEl={setAnchorEl}/>
+            <DropdownMenu user={user} anchorEl={anchorEl} handleMenuToggle={handleMenuToggle}
+                          setAnchorEl={setAnchorEl}/>
             <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle}
                         setMobileMoreAnchorEl={setMobileMoreAnchorEl}/>
 
             {/* Snackbar */}
-            <SessionStatusSnackbar isSignIn={Boolean(user)}/>
+            <SessionStatusSnackbar
+                isSignIn={Boolean(user)}
+                message={"You're currently " + (user ? 'Signed in as ' + toTitleCase(user.name) : 'not Sign In')}/>
         </Box>
     );
 };
