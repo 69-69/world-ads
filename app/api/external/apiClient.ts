@@ -15,8 +15,8 @@ const cookieStores = async () => await cookies();
 // Interceptor to inject the access token into each request
 apiClient.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
-        const fullUrl = `${config.baseURL}${config.url}`;
-        console.log('Steve-Full-URL:', fullUrl);
+        // const fullUrl = `${config.baseURL}${config.url}`;
+        // console.log('Steve-Full-URL:', fullUrl);
 
         const cookieStore = await cookieStores();
         const accessToken = cookieStore.get('access_token')?.value;
@@ -25,10 +25,10 @@ apiClient.interceptors.request.use(
             // console.log('Steve-Access-Token:', accessToken);
             config.headers['Authorization'] = `Bearer ${accessToken}`;
         } else {
-            console.log('Steve-Access-Token is missing');
+            console.log('Steve-Authorization is missing');
         }
 
-        console.log('Request Headers:', config.headers); // Log headers to verify Authorization is set
+        // console.log('Request Headers:', config.headers); // Log headers to verify Authorization is set
         return config;
     },
     (error: AxiosError) => Promise.reject(error)

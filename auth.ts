@@ -53,8 +53,8 @@ const authConfig = [
                 role: profile.role,
                 email: profile.email,
                 name: `${profile.firstname} ${profile.lastname}`,
+                image: profile.image,
                 access_token: profile.access_token,
-                image: profile.image ?? 'https://via.placeholder.com/150/0000FF/808080?text=Profile+Image',
                 remember_me: credentials.remember_me as boolean,
                 signin_method: "credentials",
             };

@@ -72,6 +72,7 @@ const verifyUserEmail = async (email_code: string): Promise<ApiResponse<VerifyCo
         // Extract the User ID from the Signup-signupToken
         const user_id = parseSignupToken(signupToken, 0);
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {response, data} = await fetchWithRetry(verifyHandler, {
             method: 'POST',
             endpoint: `${verifyEmailEndpoint}&verify=email`,
@@ -117,6 +118,7 @@ const verifyUserPhone = async (sms_code: string): Promise<ApiResponse<VerifyCont
         // Extract the User ID from the Signup-signupToken
         const user_id = parseSignupToken(signupToken, 0);
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {response, data} = await fetchWithRetry(apiHandler, {
             method: 'POST',
             endpoint: `${verifyPhoneEndpoint}verify=phone`,
