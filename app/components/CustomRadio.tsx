@@ -8,25 +8,27 @@ import Tooltip from '@mui/material/Tooltip';
 
 type CustomRadioProps = {
     label: string;
+    name: string;
     defaultValue?: string;
     data: { label: string; value: string; tooltip?: string }[];
     onRadioChange: (event: React.SyntheticEvent, checked: boolean) => void;
 };
 
-export default function CustomRadio({ data, label, defaultValue, onRadioChange }: CustomRadioProps) {
+export default function CustomRadio({ data, name, label, defaultValue, onRadioChange }: CustomRadioProps) {
     return (
         <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">{label}</FormLabel>
             <RadioGroup
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
+                name={name || "row-radio-buttons-group"}
                 defaultValue={defaultValue}
             >
                 {data.map((item, index) => (
                     <Tooltip key={index} title={item.tooltip} arrow>
                         <span> {/* Tooltip should wrap the FormControlLabel */}
                             <FormControlLabel
+                                name={name || "row-radio-buttons-group"}
                                 value={item.value}
                                 control={<Radio />}
                                 label={item.label}

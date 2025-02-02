@@ -6,7 +6,7 @@ import CustomTextField from "@/app/components/CustomTextField";
 import {useRouter} from "next/navigation";
 import {
     HOME_ROUTE,
-    POLICY_ROUTE, SELLER_TYPE,
+    POLICY_ROUTE, SELLER_TYPE, SIGNIN_ROUTE,
     STORE_CATEGORIES
 } from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
@@ -76,11 +76,11 @@ const StoreForm = <T, U extends ApiResponse>({
         setErrors((prev) => ({...prev, seller_type: ''}));
     };
 
-    const handleCountry = (country: string, city: string) => {
-        setFormData((prev) => ({...prev, country, city}));
+    const handleCountry = (country: string, state_region: string) => {
+        setFormData((prev) => ({...prev, country, state_region}));
 
         // Clear error when country is selected
-        setErrors((prev) => ({...prev, country: '', city: ''}));
+        setErrors((prev) => ({...prev, country: '', state_region: ''}));
     }
 
     const validateFormFields = () => {
@@ -122,22 +122,13 @@ const StoreForm = <T, U extends ApiResponse>({
         try {
             const response = await onSubmit(formData as T);
 
-            /*
-                Redirect to the specified `redirectTo` URL if it exists and is truthy.
-                If `redirectTo` is falsy (e.g., null, undefined, or empty),
-                fall back to `response.data` if it's not null or undefined,
-                otherwise, use the default redirection URL `DEFAULT_HOME_REDIRECT`.
-            */
-
             if (response.status && inRange(response.status, 200, 299)) {
                 setMessage({success: 'Please wait...'});
 
-                const data = typeof response.data === 'string' ? response.data as string : null;
-                router.push(redirectTo || (data ?? HOME_ROUTE));
-                return;
+                // const data = typeof response.data === 'string' ? response.data as string : null;
+                router.push(redirectTo || SIGNIN_ROUTE);
             }
             setMessage({error: 'Something went wrong, please try again'});
-
 
         } catch (err: unknown) {
             setMessage({
@@ -193,6 +184,7 @@ const StoreForm = <T, U extends ApiResponse>({
                          }}>
                         <CustomRadio
                             label="Seller Type?"
+                            name="seller_type"
                             defaultValue={SELLER_TYPE[0].value}
                             data={SELLER_TYPE}
                             onRadioChange={handleRadioChange}

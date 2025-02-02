@@ -35,9 +35,8 @@ export default authOptions.auth((req) => {
     // await getToken({req, secret: process.env.AUTH_SECRET});
     const {pathname} = req.nextUrl;
 
-    // If user is authenticated, protect auth routes (e.g. sign-in, sign-up)
     if (session) {
-        // If user is signed in, redirect them away from auth routes (e.g. sign-in, sign-up)
+        // If user is authenticated, protect auth routes (e.g. sign-in, sign-up, setup-store,...)
         if (isProtectedAuthRoute(pathname)) {
             return NextResponse.redirect(new URL(HOME_ROUTE, req.url));
         }
@@ -51,16 +50,14 @@ export default authOptions.auth((req) => {
         }
     }
 
-    // If user is not authenticated, protect resource routes (e.g. settings, posts)
     if (!session) {
+        // If user is not authenticated, protect resource routes (e.g. settings, posts,...)
         if (isProtectedResourceRoute(pathname)) {
             return NextResponse.redirect(new URL(SIGNIN_ROUTE, req.url));
         }
 
         if (pathname === VERIFICATION_ROUTE) {
-            // http://localhost:3000/verify-token?signup_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJzdHJpbmciOiJodHRwczovL3N0ZXZlLmNvbS9zdWJzdHJpbmciLCJpYXQiOjE2MzQwNzQwNzMsImV4cCI6MTYzNDA3NzY3M30.1
-
-            // If signup token is not available and user tries to access the verification route, redirect to sign-up
+            // If signup token is missing and user tries to access the verification route, redirect to sign-up
             if (!req.cookies.has('signup_token')) {
                 return NextResponse.redirect(new URL(SIGNUP_ROUTE, req.url));
             }

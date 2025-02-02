@@ -5,6 +5,7 @@
 const apiHandler = '/api/external';
 const signupHandler = '/api/register';
 const verifyHandler = '/api/verify';
+const setupStoreHandler = '/api/setup-store';
 
 // Endpoints for the backend API
 const signinEndpoint = 'signin';
@@ -25,6 +26,7 @@ export {
     apiHandler,
     signupHandler,
     verifyHandler,
+    setupStoreHandler,
     signinEndpoint,
     signupEndpoint,
     signOutEndpoint,

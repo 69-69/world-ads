@@ -9,15 +9,19 @@ import {inRange} from "@/app/hooks/useValidation";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
 import {AllCountries} from "@/app/models/AllCountries";
 import {
-    apiHandler,
     adsEndpoint,
+    apiHandler,
     postAdEndpoint,
     restCountriesAPI,
     sendVerifyEmail,
     sendVerifyPhone,
+    setupStoreHandler,
+    signupHandler,
     verifyEmailEndpoint,
-    verifyPhoneEndpoint, signupHandler, verifyHandler
+    verifyHandler,
+    verifyPhoneEndpoint
 } from "@/app/api/external/endPoints";
+import {StoreSetup} from "@/app/models/store_setup";
 
 // Parse the Signup Token to get the User ID or Role
 const parseSignupToken = (token: string, index: number) =>
@@ -34,7 +38,7 @@ const signUpWithCredentials = async (formData: SignUp): Promise<ApiResponse<Sign
         });
 
         if (inRange(response.status, 200, 299)) {
-            console.log('Steve-200-Response:', data);
+            // console.log('Steve-200-Response:', data);
             // const successData = new SignupSuccess(JSON.stringify(data));
             const successData: SignUpResponse = {
                 signupToken: data.signup_token,
@@ -214,6 +218,44 @@ const sendPhoneVerificationCode = async (phone: string): Promise<ApiResponse<str
     }
 };
 
+// Setup Store API Call
+const setupStore = async (formData: StoreSetup): Promise<ApiResponse<string>> => {
+    try {
+        const signupToken = await getSignupToken() ?? '';
+        if (!signupToken) {
+            return {status: 401, message: 'Your Sign Up session has expired, please try again.'};
+        }
+
+        // Extract the User ID from the Signup Token
+        formData.user_id = parseSignupToken(signupToken, 0);
+
+        const body = JSON.stringify(formData);
+
+        console.log('Steve-Setup-Store-Data:', body);
+
+        const {response, data} = await fetchWithRetry(setupStoreHandler, {
+            method: 'POST',
+            body,
+        });
+
+        if (inRange(response.status, 200, 299)) {
+            console.log('Steve-200-Response:', data);
+
+            return {status: response.status, message: data.message};
+        } else {
+            return {message: 'backend-Sign-up failed', status: response.status};
+        }
+    } catch (error: unknown) {
+        handleApiError(error);
+        // Handle errors (e.g., network issues)
+        const errorMessage = error instanceof Error ? error.message : 'An error occurred during sign-in';
+        return {
+            message: errorMessage,
+            status: 500, // Internal Server Error status in case of a catchable exception
+        };
+    }
+};
+
 // Get Profile API Call
 const getUserProfile = async ({user_id}: { user_id: string }): Promise<unknown> => {
     try {
@@ -306,6 +348,7 @@ const getCountries = async (): Promise<AllCountries[]> => {
 
 export {
     postAd,
+    setupStore,
     signUpWithCredentials,
     verifyUserEmail,
     verifyUserPhone,

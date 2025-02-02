@@ -1,5 +1,3 @@
-// models/SignUp.ts
-//
 type SignUpForm = {
     email: string;
     phone: string;
@@ -34,24 +32,5 @@ type SignUpResponse = {
     email?: Record<string, string>;
     sms?: Record<string, string>;
 }
-
-/*class SignUpResponse {
-    signupToken?: string;
-    message?: string;
-    accessToken?: unknown;
-    email?: Record<string, unknown>;
-    sms?: Record<string, unknown>;
-
-    constructor(successData: string) {
-
-        const data = JSON.parse(successData);
-
-        this.signupToken = data.signup_token;
-        this.accessToken = data.access_token;
-        this.message = data.message;
-        this.email = data.email;
-        this.sms = data.sms;
-    }
-}*/
 
 export {SignUp, type SignUpResponse, type SignUpForm};

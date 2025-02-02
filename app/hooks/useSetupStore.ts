@@ -1,12 +1,12 @@
-import {signUpWithCredentials} from "@/app/api/external/backend";
-import {SignUp} from "@/app/models/SignUp";
+import {setupStore} from "@/app/api/external/backend";
 import {handleUIError} from "@/app/hooks/useThrowError";
+import {StoreSetup} from "@/app/models/store_setup";
 
-export const useSetupStore = async (formData: SignUp) => {
+export const useSetupStore = async (formData: StoreSetup) => {
     try {
-        return await signUpWithCredentials(formData);
+        return await setupStore(formData);
     } catch (error) {
-        handleUIError(error, 'Sign-up');
+        handleUIError(error, 'Setup-store');
     }
 };
 

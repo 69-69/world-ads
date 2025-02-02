@@ -28,10 +28,10 @@ const getSigninMethod = async () => await getNextCookies('signin_method');
 const getAccessToken = async () => await getNextCookies('access_token');
 
 // Get the signup token
-const getSignupToken = async () => await getNextCookies('signup_token');
+const getSignupToken = async () => await getNextCookies('signup_token') ?? null;
 
 // Get which contact is being verified
-const getIsVerified = async ({contact}: VerifyType) => await getNextCookies(`verified_${contact}`);
+const getIsVerified = async ({contact}: VerifyType) => await getNextCookies(`verified_${contact}`) ?? null;
 
 export {
     getNextCookies,

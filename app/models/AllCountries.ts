@@ -39,7 +39,7 @@ type CountrySelectorProps = {
     sx?: object;
     isError?: string | null;
     countries?: Promise<AllCountries[]>;
-    handleChange: (country: string, city: string) => void;
+    handleChange: (country: string, state_region: string) => void;
 };
 
 export type {AllCountries, CountrySelectorProps};
