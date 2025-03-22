@@ -1,8 +1,21 @@
 'use server';
 
 import {cookies} from "next/headers";
+import {NextResponse} from "next/server";
 
 // NEXT-JS Cookies
+// Next-JS Ref Cookies: https://nextjs.org/docs/app/api-reference/functions/cookies#getting-all-cookies
+// const cookieStore = await cookies();
+const setNextCookies = async (res: NextResponse, name: string, value: string, days: number = 7) => {
+    res.cookies.set(name, value, {
+        httpOnly: true,
+        maxAge: days * 24 * 60 * 60, // Default is 7 days
+        secure: process.env.COOKIE_SECURE === "production",
+        path: '/',
+        sameSite: 'lax',
+    });
+};
+
 const getNextCookies = async (name: string) => {
 
     const cookieStore = await cookies();
@@ -13,6 +26,10 @@ const getNextCookies = async (name: string) => {
         cookies[name] = value;
         return cookies;
     }, {});*/
+}
+
+const deleteNextCookies = async (res: NextResponse, name: string) => {
+    res.cookies.delete(name);
 }
 
 
@@ -34,7 +51,9 @@ const getSignupToken = async () => await getNextCookies('signup_token') ?? null;
 const getIsVerified = async ({contact}: VerifyType) => await getNextCookies(`verified_${contact}`) ?? null;
 
 export {
+    setNextCookies,
     getNextCookies,
+    deleteNextCookies,
     getSigninMethod,
     getSignupToken,
     getAccessToken,

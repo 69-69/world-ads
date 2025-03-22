@@ -17,10 +17,13 @@ import {
 import {ApiResponse} from "@/app/models";
 import {inRange} from "@/app/hooks/useValidation";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
+import CountrySelector from "@/app/components/CountrySelector/CountrySelector";
+import {FormDataModel} from "@/app/models/FormDataModel";
 
 interface Field {
     name: string;
     label?: string;
+    suffix?: string;
     type?: string;
     value?: string;
     isTextArea?: boolean;
@@ -42,9 +45,6 @@ interface AuthFormProps<T = unknown, U = unknown> {
     isSignUp?: boolean;
 }
 
-interface CustomFormData {
-    [key: string]: string | number | File[];
-}
 
 const toFullWidth = '1/-1';
 
@@ -60,11 +60,11 @@ const AuthForm = <T, U extends ApiResponse>({
     const router = useRouter();
 
     // Assuming 'fields' is an array that contains the fields for your form
-    const [formData, setFormData] = useState<CustomFormData>(
-        fields.reduce<CustomFormData>((acc, field) => {
+    const [formData, setFormData] = useState<FormDataModel>(
+        fields.reduce<FormDataModel>((acc, field) => {
             acc[field.name] = field.name === 'images' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
             return acc;
-        }, {} as CustomFormData) // Initial accumulator type as CustomFormData
+        }, {} as FormDataModel) // Initial accumulator type as FormDataModel
     );
 
     const {errors, setErrors, message, setMessage, handleChange} = useFormDataChange(setFormData);
@@ -77,6 +77,21 @@ const AuthForm = <T, U extends ApiResponse>({
         setFormData((prev) => ({...prev, 'remember_me': checked.toString()}));
     };
 
+    const handleCountry = (country: string, state_region: string, dial: string) => {
+        // Prepend the dial code to the phone number
+        const telField = fields.find((field: Field) => field?.type === 'tel');
+        if (telField) {
+            telField.suffix = dial;
+            // Update the hidden dial_code field with the selected country's dial code
+            setFormData((prev) => ({...prev, dial_code: dial}));
+        }
+
+        setFormData((prev) => ({...prev, country}));
+
+        // Clear error when country is selected
+        setErrors((prev) => ({...prev, country: ''}));
+    }
+
     const validateFormFields = () => {
         const errors: Record<string, string> = {};
 
@@ -88,6 +103,22 @@ const AuthForm = <T, U extends ApiResponse>({
                 if ((typeof fieldValue === 'string' && fieldValue.trim() === '') ||
                     (fieldValue === undefined || fieldValue === null)) {
                     errors[field.name] = `${field.label} is required`;
+                }
+
+                // Check for valid email address
+                if (field.name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fieldValue as string)) {
+                    errors['email'] = 'Please enter a valid email address';
+                }
+
+                // Check for valid phone number
+                // NOTE: This regex pattern is for a 10-digit phone number plus an optional dial code
+                if (field.name === 'phone' && (typeof fieldValue === 'string')) {
+                    // Remove leading zeros if any
+                    const phone = fieldValue.replace(/^0+/, '');
+
+                    if (!/^\+?[0-9]{1,4}[0-9]{10}$/.test((formData['dial_code'] as string) + phone)) {
+                        errors['phone'] = 'Please enter a valid phone number';
+                    }
                 }
 
                 // Check fo password match for the confirmPassword field
@@ -176,6 +207,13 @@ const AuthForm = <T, U extends ApiResponse>({
                 noValidate
                 autoComplete="off"
             >
+                {isSignUp && (
+                    <CountrySelector
+                        handleChange={handleCountry}
+                        isError={errors['country']}
+                        sx={{mt: 2, gridColumn: toFullWidth}}
+                    />)
+                }
                 <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
 
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>

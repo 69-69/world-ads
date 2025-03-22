@@ -30,10 +30,13 @@ const SocialAuthButton = ({
                               text
                           }: ButtonProps) => {
     return (
-        <form onSubmit={onSubmit instanceof Function ? (e) => {
-            e.preventDefault();
-            onSubmit(new FormData(e.target as HTMLFormElement));
-        } : undefined}>
+        <form onSubmit={
+            onSubmit instanceof Function ?
+                (e) => {
+                    e.preventDefault();
+                    onSubmit(new FormData(e.target as HTMLFormElement));
+                } : undefined
+        }>
             <Button variant={variant} fullWidth size={size} color={color} type="submit"
                     sx={{...sx}}>
                 {!text.toLowerCase().endsWith('out') && getIcon(text)}

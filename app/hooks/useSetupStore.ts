@@ -1,13 +1,62 @@
-import {setupStore} from "@/app/api/external/backend";
-import {handleUIError} from "@/app/hooks/useThrowError";
-import {StoreSetup} from "@/app/models/store_setup";
+import {handleApiError} from "@/app/hooks/useThrowError";
+import {getSignupToken} from "@/app/hooks/useCookies";
+import {setupStoreHandler} from "@/app/api/external/endPoints";
+import {getParts, inRange} from "@/app/hooks/useValidation";
+import fetchWithRetry from "@/app/api/external/fetchWithRetry";
+import {FormDataModel, to_FormData} from "@/app/models/FormDataModel";
 
-export const useSetupStore = async (formData: StoreSetup) => {
+// Setup Store API handler
+export const useSetupStore = async (form: FormDataModel) => {
     try {
-        return await setupStore(formData);
-    } catch (error) {
-        handleUIError(error, 'Setup-store');
+        const signupToken = await getSignupToken() ?? '';
+        if (!signupToken) {
+            return { status: 401, message: 'Your Sign Up session has expired, please try again.' };
+        }
+
+        // Convert the form data to FormData format
+        const body = to_FormData(form);
+        body.append('user_id', getParts(signupToken, 0));
+
+        const { response, data } = await fetchWithRetry(setupStoreHandler, {
+            method: 'POST',
+            body,
+        });
+
+        if (inRange(response.status, 200, 299)) {
+            return { status: response.status, message: data.message };
+        } else {
+            return { message: data.message || 'Check your entering', status: response.status };
+        }
+    } catch (error: unknown) {
+        handleApiError(error);
+        const errorMessage = error instanceof Error ? error.message : 'An error occurred during sign-in';
+        return { message: errorMessage, status: 500 }; // Internal Server Error status
     }
 };
+
+/*// Example in a Next.js component
+const fetchData = async () => {
+  try {
+    const response = await fetch('/api/setup-store', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ data: 'store setup' }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log('API Data:', data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+// You can call fetchData() on some user action, like a button click, or in a useEffect.
+*/
 
 

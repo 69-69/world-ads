@@ -5,6 +5,8 @@ type SignUpForm = {
     firstname: string;
     lastname: string;
     account_type: string;
+    country: string;
+    dial_code: string;
 };
 
 class SignUp {
@@ -14,6 +16,7 @@ class SignUp {
     password: string;
     firstname: string;
     lastname: string;
+    country: string;
 
     constructor(form: SignUpForm) {
         this.role = form.account_type || 'user';
@@ -21,7 +24,8 @@ class SignUp {
         this.password = form.password
         this.firstname = form.firstname;
         this.lastname = form.lastname;
-        this.phone = form.phone;
+        this.phone = form.dial_code + form.phone;
+        this.country = form.country;
     }
 }
 

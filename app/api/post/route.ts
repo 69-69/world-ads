@@ -1,18 +1,27 @@
 'use server';
 import apiClient from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
+import {authOptions} from "@/auth";
 import axios from "axios";
+
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-    const setupEndpoint = '/setup-seller';
-    // console.log('Steve-Setup-Store-routeHandler:', request);
+    const postAdEndpoint = '/post-ad';
+
+    // Get session from NextAuth
+    const session = await authOptions.auth();
+    if (!session) {
+        return NextResponse.json({error: 'You must be logged in to perform this action'}, {status: 401});
+    }
+
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.formData() : undefined;
+        body?.append('user_id', session.user.id);
 
         const response = await apiClient({
             method,
-            url: setupEndpoint,
+            url: postAdEndpoint,
             data: body,
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -21,7 +30,7 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
 
         const {data} = response;
 
-        return NextResponse.json(data, { status: response.status });
+        return NextResponse.json(data, {status: response.status});
     } catch (error: unknown) {
         // Type-guarding the error to ensure it's an AxiosError
         if (axios.isAxiosError(error)) {
@@ -29,10 +38,10 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
             const errorMessage = error.response?.data?.message || 'Something went wrong';
             const statusCode = error.response?.status || 500; // Use status from the error response or default to 500
 
-            return NextResponse.json({ error: errorMessage }, { status: statusCode });
+            return NextResponse.json({error: errorMessage}, {status: statusCode});
         } else {
             // Handle non-Axios errors (if any)
-            return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+            return NextResponse.json({error: 'Something went wrong'}, {status: 500});
         }
     }
 }
@@ -40,6 +49,4 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
 // Route Handlers
 export const POST = async (request: NextRequest) => await handleRequest(request, 'POST');
 export const PUT = async (request: NextRequest) => await handleRequest(request, 'PUT');
-export const GET = async (request: NextRequest) => await handleRequest(request, 'GET');
-export const DELETE = async (request: NextRequest) => await handleRequest(request, 'DELETE');
 

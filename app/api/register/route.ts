@@ -16,11 +16,11 @@ const setCookie = (res: NextResponse, name: string, value: string, days: number 
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-
+    const signupEndpoint = '/signup';
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.json() : undefined;
 
-        const response = await apiClient({method, url: '/signup', data: body});
+        const response = await apiClient({method, url: signupEndpoint, data: body});
 
         const {data} = response;
 

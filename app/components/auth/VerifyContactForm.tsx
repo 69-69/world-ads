@@ -60,12 +60,13 @@ const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, 
                 getIsVerified({contact: 'email'}),
                 getIsVerified({contact: 'phone'})
             ]);
+            // console.log('email_status: ', email_status, 'phone_status: ', phone_status);
             setVerifyStatus({email: email_status, phone: phone_status});
         }
 
         getVerifyStatus();
 
-        if(shouldFetch) {
+        if (shouldFetch) {
             setShouldFetch(false); // Reset trigger after fetch
         }
     }, [shouldFetch]);
@@ -88,37 +89,40 @@ const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, 
                 ...prevErrors,
                 [field.name]: `Please enter the 6-digit code sent to your ${field.name.replace('_code', '')}.`
             }));
-        } else {
-            setErrors((prevErrors) => {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const {[field.name]: removed, ...rest} = prevErrors; // Remove any existing error for this field
-                return rest;
-            });
-
-            // Convert formData to FormData instance
-            const formDataToSubmit = new FormData();
-
-            // Populate FormData with the current form data
-            for (const [key, value] of Object.entries(formData)) {
-                formDataToSubmit.append(key, value as string);
-            }
-
-            // Call onSubmit function with form data when validation passes
-            const response = await onSubmit(formDataToSubmit);
-            setShouldFetch(true); // Trigger the fetch
-
-            if (inRange(response.status!, 200, 299)) {
-                // console.log('verifyStatus: ', verifyStatus.email, verifyStatus.phone);
-                if (verifyStatus.email /*&& verifyStatus.phone*/) {
-                    const navigateTo = getNavigateTo(response.data!.role!, redirectTo);
-                    router.push(navigateTo);
-                }
-                setMessage({success: response.message});
-            }
-            if (response.data !== null) {
-                formDataToSubmit.append(response.data!.fieldName, response.message ?? `${verifyStatus.email || verifyStatus.phone} verification failed`);
-            }
+            return;
         }
+        setErrors((prevErrors) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const {[field.name]: removed, ...rest} = prevErrors; // Remove any existing error for this field
+            return rest;
+        });
+
+        // Convert formData to FormData instance
+        const formDataToSubmit = new FormData();
+
+        // Populate FormData with the current form data
+        for (const [key, value] of Object.entries(formData)) {
+            formDataToSubmit.append(key, value as string);
+        }
+
+        // Call onSubmit function with form data when validation passes
+        const response = await onSubmit(formDataToSubmit);
+        setShouldFetch(true); // Trigger the fetch
+
+        // Redirect to the appropriate page if verification is successful
+        if (inRange(response.status!, 200, 299)) {
+            console.log('verifyStatus: ', verifyStatus.email, response.data!.role!);
+            if (verifyStatus.email /*&& verifyStatus.phone*/) {
+                const navigateTo = getNavigateTo(response.data!.role!, redirectTo);
+                router.push(navigateTo);
+                return;
+            }
+            setMessage({success: response.message});
+        }
+        if (response.data !== null) {
+            formDataToSubmit.append(response.data!.fieldName, response.message ?? `${verifyStatus.email || verifyStatus.phone} verification failed`);
+        }
+
     };
 
     // Render individual text fields dynamically

@@ -8,6 +8,7 @@ type UserInterface = {
     lastname: string;
     email: string;
     phone?: string;
+    store_id?: string;
     image?: string;
     is_active?: boolean;
     access_token?: string;
@@ -22,6 +23,7 @@ export class User {
     lastname: string;
     email: string;
     phone?: string;
+    store_id?: string;
     image?: string;
     is_active?: boolean;
     access_token?: string;
@@ -36,6 +38,7 @@ export class User {
                     email,
                     phone,
                     image,
+                    store_id,
                     is_active,
                     access_token,
                 }: UserInterface) {
@@ -46,6 +49,7 @@ export class User {
         this.email = email;
         this.role = role;
         this.phone = phone;
+        this.store_id = store_id;
         this.image = image;
         this.is_active = is_active;
         this.access_token = access_token;

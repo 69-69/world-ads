@@ -4,15 +4,16 @@
 //
 const apiHandler = '/api/external';
 const signupHandler = '/api/register';
+const createPostHandler = '/api/post';
 const verifyHandler = '/api/verify';
 const setupStoreHandler = '/api/setup-store';
 
 // Endpoints for the backend API
 const signinEndpoint = 'signin';
-const signupEndpoint = 'signup';
+// const signupEndpoint = 'signup';
 const signOutEndpoint = 'sign-out';
-const autoSigninEndpoint = 'auto-signin';
-const postAdEndpoint = 'post-ad';
+// const autoSigninEndpoint = 'auto-signin';
+// const postAdEndpoint = 'post';
 const adsEndpoint = 'ads';
 const sendVerifyEmail = 'send-verify-email';
 const sendVerifyPhone = 'send-verify-phone';
@@ -26,12 +27,13 @@ export {
     apiHandler,
     signupHandler,
     verifyHandler,
+    createPostHandler,
     setupStoreHandler,
     signinEndpoint,
-    signupEndpoint,
+    // signupEndpoint,
     signOutEndpoint,
-    autoSigninEndpoint,
-    postAdEndpoint,
+    // autoSigninEndpoint,
+    // postAdEndpoint,
     adsEndpoint,
     sendVerifyEmail,
     sendVerifyPhone,

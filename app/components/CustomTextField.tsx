@@ -7,6 +7,7 @@ import {toSentenceCase} from "@/app/hooks/useValidation";
 interface Field {
     name: string;
     label?: string;
+    suffix?: string;
     type?: string;
     value?: string;
     fullWidth?: boolean;
@@ -14,7 +15,7 @@ interface Field {
 }
 
 interface CustomFormData {
-    [key: string]: string | number | File[];
+    [key: string]: string | number | File | File[];
 }
 
 interface CustomTextProp {
@@ -74,7 +75,15 @@ const CustomTextField = ({fields, formData, handleChange, errors}: CustomTextPro
                             </InputAdornment>
                         ),
                     },
-                } : {}}
+                } : field.suffix === undefined ? {} : {
+                    input: {
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                {field.suffix}
+                            </InputAdornment>
+                        ),
+                    }
+                }}
             />
         );
     };

@@ -77,9 +77,10 @@ const CountryGrid = (country: AllCountries) => {
 
 
 const CountrySelectorUI = (
-    {sx, isError, handleChange, countries}:
+    {sx, isError, label = 'Country', handleChange, countries}:
     {
         sx: object | undefined;
+        label?: string;
         isError: string | null | undefined;
         handleChange: (e: SelectChangeEvent) => void;
         countries: AllCountries[];
@@ -89,12 +90,12 @@ const CountrySelectorUI = (
     return (
         <Box sx={{minWidth: 120, ...sx}}>
             <FormControl fullWidth size='small' error={Boolean(isError)}>
-                <InputLabel id="country-select-label">Country</InputLabel>
+                <InputLabel id="country-select-label">{label}</InputLabel>
                 <Select
                     labelId="country-select-label"
                     id="country-select"
-                    label={isError || 'country'}
-                    name="Country"
+                    label={isError || label}
+                    name='country'
                     defaultValue=""
                     onChange={handleChange}
                     error={Boolean(isError)}
@@ -115,7 +116,7 @@ const CountrySelectorUI = (
                         )
                     }
                 </Select>
-                {isError && <FormHelperText>{isError || 'Country is required.'}</FormHelperText>}
+                {isError && <FormHelperText>{isError || label+' is required.'}</FormHelperText>}
             </FormControl>
         </Box>
     );

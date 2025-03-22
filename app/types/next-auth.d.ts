@@ -9,6 +9,7 @@ declare module "next-auth" {
         remember_me?: boolean;
         access_token?: string;
         signin_method?: string;
+        store_id?: string;
     }
 
     // Extending the Session type to include custom user properties
@@ -18,6 +19,7 @@ declare module "next-auth" {
             id: string;
             email: string;
             name: string;
+            store_id?: string;
             access_token?: string;
             remember_me?: boolean;
             signin_method?: string;

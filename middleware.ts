@@ -5,7 +5,7 @@ import {
     SIGNIN_ROUTE,
     POST_ADS_ROUTE,
     PROTECTED_AUTH_ROUTES,
-    PROTECTED_RESOURCES_ROUTES, SIGNUP_ROUTE, VERIFICATION_ROUTE,
+    PROTECTED_RESOURCES_ROUTES, SIGNUP_ROUTE, VERIFICATION_ROUTE, SETUP_STORE_ROUTE,
 } from '@/app/hooks/useConstants';
 // import {getToken} from '@auth/core/jwt';
 
@@ -21,13 +21,30 @@ const generateRandomHash = (length: number = 32): string => {
     return result;
 };
 
+const removeParams = (pathname: string): string => {
+    // If pathname has params, split the pathname and get the first part
+    if (pathname.split('/')[1]) {
+        pathname = `/${pathname.split('/')[1]}`;
+    }
+    return pathname;
+}
+
+const compareRoute = (route: string, pathname: string): boolean => route === removeParams(pathname);
+
+const routeWithHashKey = (req: string, pathname: string): NextResponse => {
+    const randomHash = generateRandomHash();
+    const newUrl = `${pathname}/${randomHash}`;
+
+    return NextResponse.redirect(new URL(newUrl, req));
+}
+
 // Function to determine if a route needs to be protected for authenticated users
 const isProtectedAuthRoute = (pathname: string): boolean =>
-    PROTECTED_AUTH_ROUTES.some(route => route === pathname);
+    PROTECTED_AUTH_ROUTES.some(route => compareRoute(route, pathname));
 
 // Function to determine if a route needs to be protected for unauthenticated users
 const isProtectedResourceRoute = (pathname: string): boolean =>
-    PROTECTED_RESOURCES_ROUTES.some(route => route === pathname);
+    PROTECTED_RESOURCES_ROUTES.some(route => compareRoute(route, pathname));
 
 export default authOptions.auth((req) => {
     // Get user session token
@@ -43,10 +60,7 @@ export default authOptions.auth((req) => {
 
         // Special case: Handle post ads route with dynamic hash generation
         if (pathname === POST_ADS_ROUTE) {
-            const randomHash = generateRandomHash();
-            const newUrl = `${POST_ADS_ROUTE}/${randomHash}`;
-
-            return NextResponse.redirect(new URL(newUrl, req.url));
+            return routeWithHashKey(req.url, POST_ADS_ROUTE);
         }
     }
 
@@ -56,17 +70,18 @@ export default authOptions.auth((req) => {
             return NextResponse.redirect(new URL(SIGNIN_ROUTE, req.url));
         }
 
-        if (pathname === VERIFICATION_ROUTE) {
-            // If signup token is missing and user tries to access the verification route, redirect to sign-up
+        if ([VERIFICATION_ROUTE, SETUP_STORE_ROUTE].includes(pathname)) {
+            // console.log('signup_token missing: ' + removeParams(pathname) + '--' + req.cookies.has('signup_token'));
+
+            // If signup token is missing and user tries to access the (verification, setup-store) route, redirect to sign-up
             if (!req.cookies.has('signup_token')) {
                 return NextResponse.redirect(new URL(SIGNUP_ROUTE, req.url));
             }
 
             // Special case: Handle verify contacts route with dynamic hash generation
-            const randomHash = generateRandomHash();
-            const newUrl = `${VERIFICATION_ROUTE}/${randomHash}`;
-
-            return NextResponse.redirect(new URL(newUrl, req.url));
+            if (pathname === VERIFICATION_ROUTE) {
+                return routeWithHashKey(req.url, VERIFICATION_ROUTE);
+            }
         }
     }
 

@@ -2,6 +2,8 @@ import React from "react";
 import {Menu, MenuItem} from '@mui/material';
 import {userSignOut} from "@/app/hooks/useSocialAuthButton";
 import {toTitleCase} from "@/app/hooks/useValidation";
+import {SIGNIN_ROUTE} from "@/app/hooks/useConstants";
+import {useRouter} from "next/navigation";
 
 interface RenderDropdownProps {
     user?: Record<string, unknown> | null;
@@ -10,15 +12,23 @@ interface RenderDropdownProps {
     setAnchorEl: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
 }
 
-const menu = [
-    {label: 'Profile', action: () => console.log('Profile')},
-    {label: 'My account', action: () => console.log('My account')},
-    {label: 'Settings', action: () => console.log('Settings')},
-    {label: 'Sign out', action: userSignOut},
-];
-
 const DropdownMenu: React.FC<RenderDropdownProps> = ({anchorEl, setAnchorEl, user}) => {
     const isMenuOpen = Boolean(anchorEl);
+    const router = useRouter();
+
+    const menuItems = [
+        {label: 'Profile', action: () => console.log('Profile')},
+        {label: 'My account', action: () => console.log('My account')},
+        {label: 'Settings', action: () => console.log('Settings')},
+        {
+            label: 'Sign out', action: async () => {
+                if (await userSignOut()) {
+                    router.push(SIGNIN_ROUTE);
+                    return;
+                }
+            }
+        },
+    ];
 
     return (
         <Menu
@@ -29,9 +39,9 @@ const DropdownMenu: React.FC<RenderDropdownProps> = ({anchorEl, setAnchorEl, use
             open={isMenuOpen}
             onClose={() => setAnchorEl(null)}
         >
-            {menu.map((item, index) => {
-                if(item.label.toLowerCase() === 'profile' && user){
-                    item.label = (user as {name: string}).name;
+            {menuItems.map((item, index) => {
+                if (item.label.toLowerCase() === 'profile' && user) {
+                    item.label = (user as { name: string }).name;
                 }
                 return (
                     <MenuItem key={index} onClick={item.action}>

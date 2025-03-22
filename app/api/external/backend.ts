@@ -5,41 +5,33 @@ import {Post} from "@/app/models/Post";
 import {getSignupToken} from "@/app/hooks/useCookies";
 import {SignUpResponse} from "@/app/models/SignUp";
 import {handleApiError} from "@/app/hooks/useThrowError";
-import {inRange} from "@/app/hooks/useValidation";
+import {getParts, inRange} from "@/app/hooks/useValidation";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
 import {AllCountries} from "@/app/models/AllCountries";
 import {
     adsEndpoint,
     apiHandler,
-    postAdEndpoint,
     restCountriesAPI,
     sendVerifyEmail,
     sendVerifyPhone,
-    setupStoreHandler,
     signupHandler,
     verifyEmailEndpoint,
     verifyHandler,
     verifyPhoneEndpoint
 } from "@/app/api/external/endPoints";
-import {StoreSetup} from "@/app/models/store_setup";
-
-// Parse the Signup Token to get the User ID or Role
-const parseSignupToken = (token: string, index: number) =>
-    token.indexOf('_') > -1 ? token.split('_')[index] : token;
 
 
 // Sign Up API Call
 const signUpWithCredentials = async (formData: SignUp): Promise<ApiResponse<SignUpResponse>> => {
     try {
         const body = JSON.stringify(formData);
+        console.log('Steve-SignUp-Data:', body);
         const {response, data} = await fetchWithRetry(signupHandler, {
             method: 'POST',
             body,
         });
 
         if (inRange(response.status, 200, 299)) {
-            // console.log('Steve-200-Response:', data);
-            // const successData = new SignupSuccess(JSON.stringify(data));
             const successData: SignUpResponse = {
                 signupToken: data.signup_token,
                 accessToken: data.access_token,
@@ -74,7 +66,7 @@ const verifyUserEmail = async (email_code: string): Promise<ApiResponse<VerifyCo
         }
 
         // Extract the User ID from the Signup-signupToken
-        const user_id = parseSignupToken(signupToken, 0);
+        const user_id = getParts(signupToken, 0);
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {response, data} = await fetchWithRetry(verifyHandler, {
@@ -85,7 +77,7 @@ const verifyUserEmail = async (email_code: string): Promise<ApiResponse<VerifyCo
 
         if (inRange(response.status, 200, 299)) {
             // Get the User Role from the Signup-signupToken
-            const userRole = parseSignupToken(signupToken, 1);
+            const userRole = getParts(signupToken, 1);
 
             return {
                 data: {fieldName: 'email_code', role: userRole},
@@ -113,14 +105,13 @@ const verifyUserEmail = async (email_code: string): Promise<ApiResponse<VerifyCo
 // Verify Phone/SMS code API Call
 const verifyUserPhone = async (sms_code: string): Promise<ApiResponse<VerifyContactResponse>> => {
     try {
-
         const signupToken = await getSignupToken() ?? '';
         if (!signupToken) {
             return {status: 401, message: 'Your Sign Up session has expired, please try again.'};
         }
 
         // Extract the User ID from the Signup-signupToken
-        const user_id = parseSignupToken(signupToken, 0);
+        const user_id = getParts(signupToken, 0);
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {response, data} = await fetchWithRetry(apiHandler, {
@@ -131,7 +122,7 @@ const verifyUserPhone = async (sms_code: string): Promise<ApiResponse<VerifyCont
 
         if (inRange(response.status, 200, 299)) {
             // Get the User Role from the Signup-signupToken
-            const userRole = parseSignupToken(signupToken, 1);
+            const userRole = getParts(signupToken, 1);
 
             return {
                 data: {fieldName: 'phone_code', role: userRole},
@@ -218,44 +209,6 @@ const sendPhoneVerificationCode = async (phone: string): Promise<ApiResponse<str
     }
 };
 
-// Setup Store API Call
-const setupStore = async (formData: StoreSetup): Promise<ApiResponse<string>> => {
-    try {
-        const signupToken = await getSignupToken() ?? '';
-        if (!signupToken) {
-            return {status: 401, message: 'Your Sign Up session has expired, please try again.'};
-        }
-
-        // Extract the User ID from the Signup Token
-        formData.user_id = parseSignupToken(signupToken, 0);
-
-        const body = JSON.stringify(formData);
-
-        console.log('Steve-Setup-Store-Data:', body);
-
-        const {response, data} = await fetchWithRetry(setupStoreHandler, {
-            method: 'POST',
-            body,
-        });
-
-        if (inRange(response.status, 200, 299)) {
-            console.log('Steve-200-Response:', data);
-
-            return {status: response.status, message: data.message};
-        } else {
-            return {message: 'backend-Sign-up failed', status: response.status};
-        }
-    } catch (error: unknown) {
-        handleApiError(error);
-        // Handle errors (e.g., network issues)
-        const errorMessage = error instanceof Error ? error.message : 'An error occurred during sign-in';
-        return {
-            message: errorMessage,
-            status: 500, // Internal Server Error status in case of a catchable exception
-        };
-    }
-};
-
 // Get Profile API Call
 const getUserProfile = async ({user_id}: { user_id: string }): Promise<unknown> => {
     try {
@@ -270,34 +223,6 @@ const getUserProfile = async ({user_id}: { user_id: string }): Promise<unknown> 
         }
     } catch (error: unknown) {
         handleApiError(error);
-    }
-};
-
-// Post Ad API Call
-const postAd = async (formData: FormData): Promise<ApiResponse> => {
-    try {
-        const {response, data} = await fetchWithRetry(apiHandler, {
-            method: 'POST',
-            endpoint: postAdEndpoint,
-            body: JSON.stringify(formData),
-        });
-
-        // Check if the response status is within the 2xx range (successful)
-        if (inRange(response.status, 200, 299)) {
-            return {
-                data: JSON.stringify(data),
-                status: response.status,
-                message: 'Post successful',
-            };
-        }
-
-        return {message: 'Sign-in failed', status: response.status};
-    } catch (error: unknown) {
-        handleApiError(error);
-        return {
-            message: 'An error occurred during sign-in',
-            status: 500, // Internal Server Error status in case of a catchable exception
-        }
     }
 };
 
@@ -347,8 +272,6 @@ const getCountries = async (): Promise<AllCountries[]> => {
 
 
 export {
-    postAd,
-    setupStore,
     signUpWithCredentials,
     verifyUserEmail,
     verifyUserPhone,
@@ -359,40 +282,4 @@ export {
     getCountries,
 };
 
-
-/*  Sign In API Call
-const signInWithCredentials = async ({email, password}: SignIn): Promise<ApiResponse<User | string>> => {
-    try {
-        // Make the API call with the retry logic
-        const response = await fetchWithRetry(apiHandler, {
-            method: 'POST',
-            endpoint: signinEndpoint,
-            body: JSON.stringify({email, password}), // You can use JSON.stringify directly
-            headers: {'Content-Type': 'application/json'}, // Make sure headers are correct
-        });
-
-        console.log('Steve-Response:', response.toString());
-
-        if (inRange(response.status, 200, 299)) {
-            return {data: response.data as User, status: response.status, message: 'Sign-in successful'};
-        }
-
-        return {data: 'Sign-in failed', status: response.status};
-    } catch (error: unknown) {
-        /!*{
-            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczNzA1ODMzOSwianRpIjoiNGMwODJhOWUtN2IzOC00ZDJmLTk1ZmItYzdkZjM4Mzg2MDYzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIxNGJhMzZjMWQ3ODhiZDg3YTQ2MWE3MDY4MzUwMDhhYjdmZTM1OTdmOTlmOTgyMTk5N2FjNzJiOTMyY2Y4OTEiLCJuYmYiOjE3MzcwNTgzMzksImNzcmYiOiI3OWNkYWU4NS03ODIyLTQ3YTEtYWI4Yi1lYmE4ZGU5NDc0YmYiLCJleHAiOjE3MzcwNjE5MzksInJvbGUiOiJ1c2VyIn0.tHkKYjtSQGp_aJVvZJQPRtb8J4i-oN9xTbjb8voYMUM",
-            "email": "admin@gmail.com",
-            "firstname": "admin",
-            "id": "214ba36c1d788bd87a461a706835008ab7fe3597f99f9821997ac72b932cf891",
-            "image": null,
-            "is_verified": true,
-            "lastname": "danny",
-            "phone": "9873672378",
-            "role": "user",
-            "username": "admin_danny-8f03a7"
-        }*!/
-        const errorMessage = error instanceof Error ? error.message : 'An error occurred during sign-in';
-        return {data: errorMessage, status: 500};
-    }
-};*/
 

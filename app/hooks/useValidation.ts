@@ -3,6 +3,9 @@ const inRange = (value: number, min: number = 200, max: number = 299) => {
     return value >= min && value <= max;
 }
 
+const getParts = (token: string, index: number, char: string = '_') =>
+    token.indexOf(char) > -1 ? token.split(char)[index] : token;
+
 // Convert a string to sentence case
 const toSentenceCase = (str: string) => {
     return str
@@ -39,6 +42,7 @@ const validatePassword = (value: string) => {
 
 export {
     inRange,
+    getParts,
     toTitleCase,
     toSentenceCase,
     validateName,

@@ -49,7 +49,7 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
         const body = method === 'POST' || method === 'PUT' ? await request.json() : undefined;
         const isThirdParty = request.headers.get('Is-Third-Api');
 
-        console.log('Tony-Request URL:', request.url);
+        // console.log('Tony-Request URL:', request.url);
 
         // Make the actual request depending on whether it's a third-party API or your own backend API
         const response = isThirdParty

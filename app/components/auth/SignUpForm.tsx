@@ -23,6 +23,7 @@ const SignInForm = () => {
                 {name: 'email', label: 'Email', type: 'email'},
                 {name: 'password', label: 'Password', type: 'password'},
                 {name: 'confirmPassword', label: 'Confirm Password', type: 'password'},
+                {name: 'dial_code', label: 'Dial code', type: 'hidden'},
             ]}
             onSubmit={useSignUp}
         />

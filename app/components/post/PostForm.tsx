@@ -1,4 +1,3 @@
-'use client';
 import React, {useState, FormEvent} from 'react';
 import {Button, Paper, Box, Typography} from '@mui/material';
 import ImageUpload from './ImageUpload';
@@ -8,6 +7,7 @@ import ToastMessage from "@/app/components/ToastMessage";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 import MulticolorSelector from "@/app/components/post/MulticolorSelector";
 import {ADS_CATEGORIES} from "@/app/hooks/useConstants";
+import {FormDataModel} from "@/app/models/FormDataModel";
 
 // Types for the form data and error state
 interface Field {
@@ -20,25 +20,27 @@ interface Field {
 }
 
 interface PostFormProps {
-    onSubmit: (formData: FormData) => Promise<unknown>;
+    onSubmit: (formData: FormDataModel) => Promise<unknown>;
     title: string;
     buttonText: string;
     fields: Field[];
-}
-
-interface CustomFormData {
-    [key: string]: string | number | File[];
 }
 
 const toFullWidth = '1/-1';
 
 const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}) => {
     // State to store form values
-    const [formData, setFormData] = useState<CustomFormData>(
-        fields.reduce<CustomFormData>((acc, field) => {
-            acc[field.name] = '';
+    // const [formData, setFormData] = useState<FormDataModel>(
+    //     fields.reduce<FormDataModel>((acc, field) => {
+    //         acc[field.name] = '';
+    //         return acc;
+    //     }, {images: [] as File[]})
+    // );
+    const [formData, setFormData] = useState<FormDataModel>(
+        fields.reduce<FormDataModel>((acc, field) => {
+            acc[field.name] = field.name === 'images' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
             return acc;
-        }, {images: [] as File[]})
+        }, {} as FormDataModel)
     );
 
     const {errors, setErrors, message, setMessage, handleChange} = useFormDataChange(setFormData);
@@ -106,6 +108,14 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         return errors;
     };
 
+    const resetForm = () => {
+        setFormData((prev) => {
+            const resetFormData = {...prev};
+            fields.forEach((field) => resetFormData[field.name] = field.name === 'images' ? [] : '');
+            return resetFormData;
+        });
+    }
+
     // Form submission handler
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -118,22 +128,13 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
             return;
         }
 
-        const formDataWithFiles = new FormData();
-        // Append form data (text fields) to FormData
-        Object.keys(formData).forEach((key) => {
-            if (key !== 'images') formDataWithFiles.append(key, formData[key] as string);
-        });
-
-        // Append selected image files to FormData
-        (formData.images as File[]).forEach((file) => {
-            formDataWithFiles.append('images', file);
-        });
-
         try {
-            const response = await onSubmit(formDataWithFiles);
+            const response = await onSubmit(formData);
 
             if (typeof response === 'object' && response !== null && 'message' in response) {
                 setMessage({success: (response as { message: string }).message});
+                // Reset form data after successful submission
+                resetForm();
             }
         } catch (err) {
             setMessage({error: err instanceof Error ? err.message : 'Something went wrong, please try again'});
@@ -167,7 +168,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                     label="Post Ads Category"
                     onSelectChange={handleDropdownChange}
                     isError={errors['category']}
-                    sx={{ mt: 2, gridColumn: toFullWidth }}
+                    sx={{mt: 2, gridColumn: toFullWidth}}
                 />
 
                 {/* Render text fields dynamically */}

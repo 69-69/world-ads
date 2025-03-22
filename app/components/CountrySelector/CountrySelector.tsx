@@ -1,3 +1,30 @@
+import {Suspense} from 'react';
+import {getCountries} from "@/app/api/external/backend";
+import UseCountrySelector from "@/app/components/CountrySelector/useCountrySelector";
+
+const CountrySelector = (
+    {handleChange, sx, isError, label}: {
+        sx?: object;
+        label?: string;
+        isError?: string | null;
+        handleChange: (country: string, state_region: string, dial: string) => void;
+    }
+) => {
+    return (
+        <Suspense fallback={<span style={{'textAlign': 'center'}}>Loading countries...</span>}>
+            <UseCountrySelector
+                sx={sx}
+                isError={isError}
+                label={label}
+                handleChange={handleChange}
+                fetchCountries={getCountries}
+            />
+        </Suspense>
+    );
+}
+
+export default CountrySelector;
+
 /*
 import {useEffect, useState} from 'react';
 
@@ -225,26 +252,5 @@ export default CountriesComponent;
 
 */
 
-import {Suspense} from 'react';
-import {getCountries} from "@/app/api/external/backend";
-import {AllCountries, CountrySelectorProps} from "@/app/models/AllCountries";
-import UseCountrySelector from "@/app/components/CountrySelector/useCountrySelector";
 
-const CountrySelector = (
-    {handleChange, sx, isError}: CountrySelectorProps
-) => {
-    const countries: Promise<AllCountries[]> = getCountries();
 
-    return (
-        <Suspense fallback={<div style={{'textAlign': 'center'}}>Loading...</div>}>
-            <UseCountrySelector
-                sx={sx}
-                isError={isError}
-                countries={countries}
-                handleChange={handleChange}
-            />
-        </Suspense>
-    );
-}
-
-export default CountrySelector;

@@ -3,15 +3,15 @@
 import React from 'react';
 import StoreForm from '@/app/components/store-setup/StoreForm';
 import {ApiResponse} from "@/app/models";
-import {StoreSetup} from "@/app/models/store_setup";
 import {useSetupStore} from "@/app/hooks/useSetupStore";
 import {SIGNIN_ROUTE} from "@/app/hooks/useConstants";
+import {FormDataModel} from "@/app/models/FormDataModel";
 
 
 const SetupStoreForm = () => {
 
     return (
-        <StoreForm<StoreSetup, ApiResponse<string>>
+        <StoreForm<FormDataModel, ApiResponse<string>>
             title="Setup Your Store"
             buttonText="Setup Store"
             redirectTo={SIGNIN_ROUTE}
