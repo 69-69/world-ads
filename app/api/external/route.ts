@@ -189,7 +189,7 @@ async function POST(request: NextRequest) {
         console.log('Steve Request Headers:', searchParams);
 
         const body = await request.json();
-        const response = await apiClient.post(`/${endpoint}`, body);
+        const response = await apiClient.market-place(`/${endpoint}`, body);
 
         const res = NextResponse.json(response.data);
 

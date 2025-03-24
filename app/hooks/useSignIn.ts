@@ -45,7 +45,7 @@ export const useSignIn = () => {
         // Call the authentication service
         const response: SignInResponse = await signIn("credentials", {
             redirect: false,
-            redirectTo: "/posts",
+            redirectTo: "/marketplace",
             email: email_address,
             password: pass_word,
         });

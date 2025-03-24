@@ -7,7 +7,7 @@ import axios from "axios";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-    const postAdEndpoint = '/post-ad';
+    const postAdEndpoint = '/listings';
 
     // Get session from NextAuth
     const session = await authOptions.auth();
@@ -17,7 +17,10 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
 
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.formData() : undefined;
-        body?.append('user_id', session.user.id);
+        if (body) {
+            body.append('user_id', session.user.id);
+        }
+        // console.log('Steve-Body:', body);
 
         const response = await apiClient({
             method,
@@ -47,6 +50,8 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
 }
 
 // Route Handlers
+export const GET = async (request: NextRequest) => await handleRequest(request, 'GET');
 export const POST = async (request: NextRequest) => await handleRequest(request, 'POST');
 export const PUT = async (request: NextRequest) => await handleRequest(request, 'PUT');
+export const DELETE = async (request: NextRequest) => await handleRequest(request, 'DELETE');
 

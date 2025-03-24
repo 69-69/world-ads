@@ -1,12 +1,11 @@
 import {cookies} from 'next/headers'
 import axios, {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from "axios";
+import {BACKEND_API_ENDPOINT} from "@/env_config";
 
-
-const API_URL = process.env.BACKEND_API_ENDPOINT || 'http://127.0.0.1:5000/api';
 
 // Create an Axios instance
 const apiClient: AxiosInstance = axios.create({
-    baseURL: API_URL,
+    baseURL: BACKEND_API_ENDPOINT,
     withCredentials: true,  // Send cookies with cross-origin requests
 });
 

@@ -1,6 +1,8 @@
+import {PUBLIC_BASE_URL} from "@/env_config";
+
 const APP_NAME = 'World Ads Center';
 const APP_NAME_SHORT = 'WAC';
-const HOME_ROUTE = 'http://localhost:3000';
+const HOME_ROUTE = PUBLIC_BASE_URL;
 const POLICY_ROUTE = '/terms-and-conditions';
 const SIGNIN_ROUTE = '/signin';
 const SIGNUP_ROUTE = '/signup';
@@ -8,7 +10,7 @@ const VERIFICATION_ROUTE = '/verify-contact';
 const SETUP_STORE_ROUTE = '/setup-store';
 const FORGOT_PASSWORD_ROUTE = '/forgot-password';
 const RESET_PASSWORD_ROUTE = '/reset-password';
-const POST_ADS_ROUTE = '/posts';
+const POST_ADS_ROUTE = '/marketplace';
 const CART_ROUTE = '/cart';
 const SHOP_ROUTE = '/shop';
 const CHECKOUT_ROUTE = '/checkout';
@@ -18,7 +20,7 @@ const ABOUT_ROUTE = '/about';
 const FAQ_ROUTE = '/faq';
 
 const PROTECTED_RESOURCES_ROUTES = [
-    POST_ADS_ROUTE,
+    POST_ADS_ROUTE+'/:path*',
     ORDER_ROUTE,
     CHECKOUT_ROUTE,
 ];

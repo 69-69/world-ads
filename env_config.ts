@@ -1,0 +1,16 @@
+export const {
+    BACKEND_BASE_URL,
+    BACKEND_API_ENDPOINT,
+    BACKEND_IMAGE_BASE_URL,
+    PUBLIC_BASE_URL,
+    BACKEND_MARKETPLACE_IMAGE_URL,
+    BACKEND_STORE_SETUP_LOGO_URL,
+} = {
+    PUBLIC_BASE_URL: process.env.PUBLIC_BASE_URL || 'http://localhost:3000',
+    BACKEND_IMAGE_BASE_URL: process.env.BACKEND_IMAGE_BASE_URL || '/static/uploads',
+    BACKEND_MARKETPLACE_IMAGE_URL: process.env.BACKEND_MARKETPLACE_IMAGE_URL || '/post_images',
+    BACKEND_STORE_SETUP_LOGO_URL: process.env.BACKEND_STORE_SETUP_LOGO_URL || '/store_setup_images',
+    BACKEND_BASE_URL: process.env.BACKEND_BASE_URL || 'http://127.0.0.1:5000',
+    BACKEND_API_ENDPOINT: process.env.BACKEND_API_ENDPOINT || 'http://127.0.0.1:5000/api',
+
+};

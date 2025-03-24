@@ -21,15 +21,11 @@ const usePostAd = async (form: FormDataModel) => {
                 message: 'Post submitted successful',
             };
         }
-        // console.log('Steve-Post-Ad-Data:', JSON.stringify(data));
 
         return {message: 'Post was not successful', status: response.status};
     } catch (error: unknown) {
         handleApiError(error);
-        return {
-            message: 'An error occurred during sign-in',
-            status: 500, // Internal Server Error status in case of a catchable exception
-        }
+        return {message: 'An error occurred during sign-in', status: 500}
     }
 }
 export default usePostAd;

@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: APP_NAME,
-    description: "Shop and sell with ease! Our platform combines the best of eCommerce and classifieds, offering a marketplace for both new product and second-hand goods, services, job listings, and local deals. Join a community of buyers and sellers today.",
-    keywords: "e-commerce, classifieds, marketplace, buy, sell, shop, trade, local deals, job listings, services, second-hand goods",
+    description: "Shop and sell with ease! Our platform combines the best of eCommerce and classifieds, offering a market-place for both new product and second-hand goods, services, job market-place, and local deals. Join a community of buyers and sellers today.",
+    keywords: "e-commerce, classifieds, market-place, buy, sell, shop, trade, local deals, job market-place, services, second-hand goods",
     // description: "Discover a seamless experience where you can buy, sell, and trade. From brand-new products to used items, services, and job ads, our platform bridges eCommerce and classifieds for every need."
 };
 

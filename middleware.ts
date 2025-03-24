@@ -9,6 +9,16 @@ import {
 } from '@/app/hooks/useConstants';
 // import {getToken} from '@auth/core/jwt';
 
+/* const removeParams = (pathname: string): string => {
+    // If pathname has params, split the pathname and get the first part
+    if (pathname.split('/')[1]) {
+        pathname = `/${pathname.split('/')[1]}`;
+    }
+    return pathname;
+}
+const compareRoute = (route: string, pathname: string): boolean => route === removeParams(pathname);
+*/
+
 // Helper function to generate a random hash (8-character random string)
 const generateRandomHash = (length: number = 32): string => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -21,15 +31,21 @@ const generateRandomHash = (length: number = 32): string => {
     return result;
 };
 
-const removeParams = (pathname: string): string => {
-    // If pathname has params, split the pathname and get the first part
-    if (pathname.split('/')[1]) {
-        pathname = `/${pathname.split('/')[1]}`;
-    }
-    return pathname;
-}
+// Utility function to check dynamic & static route matching
+const matchRouteWithParams = (route: string, pathname: string): boolean => {
+    const routeParts = route.split('/');
+    const pathParts = pathname.split('/');
 
-const compareRoute = (route: string, pathname: string): boolean => route === removeParams(pathname);
+    // Check if the number of segments match
+    if (routeParts.length !== pathParts.length) return false;
+
+    // Compare each segment, allowing for dynamic segments
+    for (let i = 0; i < routeParts.length; i++) {
+        if (routeParts[i].startsWith(':') || routeParts[i] === pathParts[i]) continue;
+        return false;
+    }
+    return true;
+};
 
 const routeWithHashKey = (req: string, pathname: string): NextResponse => {
     const randomHash = generateRandomHash();
@@ -40,16 +56,16 @@ const routeWithHashKey = (req: string, pathname: string): NextResponse => {
 
 // Function to determine if a route needs to be protected for authenticated users
 const isProtectedAuthRoute = (pathname: string): boolean =>
-    PROTECTED_AUTH_ROUTES.some(route => compareRoute(route, pathname));
+    PROTECTED_AUTH_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
 // Function to determine if a route needs to be protected for unauthenticated users
 const isProtectedResourceRoute = (pathname: string): boolean =>
-    PROTECTED_RESOURCES_ROUTES.some(route => compareRoute(route, pathname));
+    PROTECTED_RESOURCES_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
 export default authOptions.auth((req) => {
     // Get user session token
     const session = req.auth;
-    // await getToken({req, secret: process.env.AUTH_SECRET});
+    // await getToken({req, secret: process.env.AUTH_SEC});
     const {pathname} = req.nextUrl;
 
     if (session) {
@@ -58,14 +74,14 @@ export default authOptions.auth((req) => {
             return NextResponse.redirect(new URL(HOME_ROUTE, req.url));
         }
 
-        // Special case: Handle post ads route with dynamic hash generation
+        // Special case: Handle market-place ads route with dynamic hash generation
         if (pathname === POST_ADS_ROUTE) {
             return routeWithHashKey(req.url, POST_ADS_ROUTE);
         }
     }
 
     if (!session) {
-        // If user is not authenticated, protect resource routes (e.g. settings, posts,...)
+        // If user is not authenticated, protect resource routes (e.g. settings, marketplace,...)
         if (isProtectedResourceRoute(pathname)) {
             return NextResponse.redirect(new URL(SIGNIN_ROUTE, req.url));
         }
@@ -104,7 +120,7 @@ export const config = {
         '/orders',
         '/checkout',
         '/setup-store',
-        '/posts/:path*', // Dynamic route
+        '/marketplace/:path*', // Dynamic route
 
         // Auth Routes
         '/signin',

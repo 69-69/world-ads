@@ -4,7 +4,7 @@
 //
 const apiHandler = '/api/external';
 const signupHandler = '/api/register';
-const createPostHandler = '/api/post';
+const createPostHandler = '/api/market-place';
 const verifyHandler = '/api/verify';
 const setupStoreHandler = '/api/setup-store';
 
@@ -13,7 +13,7 @@ const signinEndpoint = 'signin';
 // const signupEndpoint = 'signup';
 const signOutEndpoint = 'sign-out';
 // const autoSigninEndpoint = 'auto-signin';
-// const postAdEndpoint = 'post';
+// const postAdEndpoint = 'market-place';
 const adsEndpoint = 'ads';
 const sendVerifyEmail = 'send-verify-email';
 const sendVerifyPhone = 'send-verify-phone';

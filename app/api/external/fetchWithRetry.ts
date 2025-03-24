@@ -24,6 +24,7 @@ const fetchWithRetry = async (
     let lastError: Error | null = null;
 
     const fullUrl = endpoint ? `${baseUrl}?endpoint=${endpoint}` : baseUrl;
+    // const next = method === 'GET' ? {revalidate: 3600} : undefined;
 
     while (attempts < retries) {
         try {

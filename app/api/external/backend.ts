@@ -9,8 +9,7 @@ import {getParts, inRange} from "@/app/hooks/useValidation";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
 import {AllCountries} from "@/app/models/AllCountries";
 import {
-    adsEndpoint,
-    apiHandler,
+    apiHandler, createPostHandler,
     restCountriesAPI,
     sendVerifyEmail,
     sendVerifyPhone,
@@ -25,7 +24,6 @@ import {
 const signUpWithCredentials = async (formData: SignUp): Promise<ApiResponse<SignUpResponse>> => {
     try {
         const body = JSON.stringify(formData);
-        console.log('Steve-SignUp-Data:', body);
         const {response, data} = await fetchWithRetry(signupHandler, {
             method: 'POST',
             body,
@@ -156,7 +154,7 @@ const sendEmailVerificationCode = async (email: string): Promise<ApiResponse<str
             body: JSON.stringify({email}),
         });
 
-        console.log('Steve-Response:', response, data);
+        // console.log('Steve-Response:', response, data);
 
         // Check if the response status is within the 2xx range (successful)
         if (inRange(response.status, 200, 299)) {
@@ -229,9 +227,8 @@ const getUserProfile = async ({user_id}: { user_id: string }): Promise<unknown> 
 // Function to get all ads
 const getAds = async (): Promise<unknown> => {
     try {
-        const {response, data} = await fetchWithRetry(apiHandler, {
+        const {response, data} = await fetchWithRetry(createPostHandler, {
             method: 'GET',
-            endpoint: adsEndpoint,
         });
 
         if (inRange(response.status, 200, 299)) {

@@ -61,7 +61,7 @@ const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError}) => 
     // Update the parent component whenever selected colors change
     useEffect(() => {
         onColorChange(selectedColors.toString());
-    }, [selectedColors]);
+    }, [onColorChange, selectedColors]);
 
     return (
         <Box py={1}>
