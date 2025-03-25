@@ -1,5 +1,6 @@
 import Container from "@mui/material/Container";
 import {HOME_ROUTE} from "@/app/hooks/useConstants";
+import StarRatingClient from "@/app/hooks/useStarRating";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {Post} from "@/app/models/Post";
 import Image from 'next/image'
@@ -27,9 +28,11 @@ const PostAdsPage = async () => {
                             }
                             <h2>{post.title}</h2>
                             <p>{post.description}</p>
+                            <StarRatingClient postId={post.id} />
                         </div>
                     ))
-                }</div>
+                }
+            </div>
         </Container>
     )
 }
