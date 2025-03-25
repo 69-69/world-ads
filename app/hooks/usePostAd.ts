@@ -1,14 +1,14 @@
 import {FormDataModel, to_FormData} from "@/app/models/FormDataModel";
 import {inRange} from "@/app/hooks/useValidation";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {createPostHandler} from "@/app/api/external/endPoints";
+import {marketplaceHandler} from "@/app/api/external/endPoints";
 import {handleApiError} from "@/app/hooks/useThrowError";
 
 const usePostAd = async (form: FormDataModel) => {
     try {
         const body = to_FormData(form);
 
-        const {response, data} = await fetchWithRetry(createPostHandler, {
+        const {response, data} = await fetchWithRetry(marketplaceHandler, {
             method: 'POST',
             body,
         });

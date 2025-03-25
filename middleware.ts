@@ -81,7 +81,7 @@ export default authOptions.auth((req) => {
     }
 
     if (!session) {
-        // If user is not authenticated, protect resource routes (e.g. settings, marketplace,...)
+        // If user is not authenticated, protect resource routes (e.g. settings, posts,...)
         if (isProtectedResourceRoute(pathname)) {
             return NextResponse.redirect(new URL(SIGNIN_ROUTE, req.url));
         }
@@ -120,7 +120,7 @@ export const config = {
         '/orders',
         '/checkout',
         '/setup-store',
-        '/marketplace/:path*', // Dynamic route
+        '/post/:path*', // Dynamic route
 
         // Auth Routes
         '/signin',

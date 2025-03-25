@@ -5,17 +5,18 @@ import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {Post} from "@/app/models/Post";
 import Image from 'next/image'
 import {BACKEND_BASE_URL, BACKEND_IMAGE_BASE_URL, BACKEND_MARKETPLACE_IMAGE_URL} from "@/env_config";
+import {marketplaceHandler} from "@/app/api/external/endPoints";
 
 const PostAdsPage = async () => {
-    const absoluteUrl = `${HOME_ROUTE}/api/steve`;
-    // HOME_ROUTE+createPostHandler
-    const {response, data} = await fetchWithRetry(absoluteUrl, {method: 'GET'});
+
+    const {response, data} = await fetchWithRetry(HOME_ROUTE + marketplaceHandler, {method: 'GET'});
 
     return (
         <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>
             <div>
                 All Posts Page
                 {
+                    data.length &&
                     data.map((post: Post) => (
                         <div key={post.id}>
                             {
@@ -28,7 +29,7 @@ const PostAdsPage = async () => {
                             }
                             <h2>{post.title}</h2>
                             <p>{post.description}</p>
-                            <StarRatingClient postId={post.id} />
+                            <StarRatingClient postId={post.id}/>
                         </div>
                     ))
                 }

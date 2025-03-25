@@ -9,26 +9,28 @@ import axios from "axios";
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
     const postAdEndpoint = '/listings';
 
-    // Get session from NextAuth
-    const session = await authOptions.auth();
-    if (!session) {
-        return NextResponse.json({error: 'You must be logged in to perform this action'}, {status: 401});
-    }
 
     try {
+        let headers: Record<string, string> | undefined = undefined;
         const body = method === 'POST' || method === 'PUT' ? await request.formData() : undefined;
         if (body) {
+            // Get session from NextAuth
+            const session = await authOptions.auth();
+            if (!session) {
+                return NextResponse.json({error: 'You must be logged in to perform this action'}, {status: 401});
+            }
+
             body.append('user_id', session.user.id);
+            headers = {
+                'Content-Type': 'multipart/form-data',
+            };
         }
-        // console.log('Steve-Body:', body);
 
         const response = await apiClient({
             method,
             url: postAdEndpoint,
             data: body,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+            headers,
         });
 
         const {data} = response;
@@ -55,3 +57,20 @@ export const POST = async (request: NextRequest) => await handleRequest(request,
 export const PUT = async (request: NextRequest) => await handleRequest(request, 'PUT');
 export const DELETE = async (request: NextRequest) => await handleRequest(request, 'DELETE');
 
+/*export const GET = async (request: NextRequest) => {
+
+    try {
+
+
+        const response = await apiClient({
+            method: 'GET',
+            url: '/listings',
+        });
+
+        const {data} = response;
+
+        return NextResponse.json(data);
+    } catch (error: unknown) {
+        return NextResponse.json({error: 'Something went wrong'}, {status: 500});
+    }
+}*/

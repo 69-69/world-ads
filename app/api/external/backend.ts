@@ -9,7 +9,7 @@ import {getParts, inRange} from "@/app/hooks/useValidation";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
 import {AllCountries} from "@/app/models/AllCountries";
 import {
-    apiHandler, createPostHandler,
+    apiHandler, marketplaceHandler,
     restCountriesAPI,
     sendVerifyEmail,
     sendVerifyPhone,
@@ -227,7 +227,7 @@ const getUserProfile = async ({user_id}: { user_id: string }): Promise<unknown> 
 // Function to get all ads
 const getAds = async (): Promise<unknown> => {
     try {
-        const {response, data} = await fetchWithRetry(createPostHandler, {
+        const {response, data} = await fetchWithRetry(marketplaceHandler, {
             method: 'GET',
         });
 

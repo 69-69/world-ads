@@ -4,14 +4,17 @@ import {useState} from 'react';
 import StarRating from "@/app/components/StarRating";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {HOME_ROUTE} from "@/app/hooks/useConstants";
+import {reviewHandler} from "@/app/api/external/endPoints";
 
 // Post star rating
-const postStarRating = async (star: number, postId: string) => {
-    const {response, data} = await fetchWithRetry(`${HOME_ROUTE}/api/rating`, {
-        method: 'POST',
-        body: JSON.stringify({star, postId}),
-    });
-    console.log('Steve-PostStarRating:', response.ok);
+const postStarRating = async (star: number, post_id: number | string) => {
+    const payload = {
+        star: star.toString(),
+        post_id: post_id.toString(),
+    };
+    alert('Rating submitted '+payload.star);
+
+    await fetchWithRetry(HOME_ROUTE + reviewHandler, {method: 'POST', body: JSON.stringify(payload)});
 }
 
 export default function StarRatingClient({postId}: { postId: number | string }) {

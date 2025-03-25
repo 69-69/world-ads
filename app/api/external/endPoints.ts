@@ -4,7 +4,8 @@
 //
 const apiHandler = '/api/external';
 const signupHandler = '/api/register';
-const createPostHandler = '/api/market-place';
+const marketplaceHandler = '/api/market-place';
+const reviewHandler = '/api/user-review';
 const verifyHandler = '/api/verify';
 const setupStoreHandler = '/api/setup-store';
 
@@ -27,7 +28,8 @@ export {
     apiHandler,
     signupHandler,
     verifyHandler,
-    createPostHandler,
+    reviewHandler,
+    marketplaceHandler,
     setupStoreHandler,
     signinEndpoint,
     // signupEndpoint,
