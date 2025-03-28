@@ -8,8 +8,8 @@ const PostAdsPage = () => {
     return (
         <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>
             <PostForm
-                title="Post Ad"
-                buttonText="Submit Ad"
+                title="Post Your Listing"
+                buttonText="Submit"
                 fields={[
                     {name: 'title', label: 'Title', fullWidth: true},
                     {name: 'price', label: 'Price', fullWidth: true},

@@ -13,7 +13,7 @@ const Layout: React.FC<LayoutProps> = async ({children}) => {
 
     return (
         <main>
-            <Navbar user={session && session?.user}/>
+            <Navbar userSession={session && session}/>
             {children}
             <Footer/>
         </main>

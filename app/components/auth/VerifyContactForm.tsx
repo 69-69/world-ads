@@ -6,7 +6,7 @@ import {useRouter} from 'next/navigation';
 import {ACC_ROLE, SETUP_STORE_ROUTE} from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
 import ToastMessage from "@/app/components/ToastMessage";
-import {inRange} from "@/app/hooks/useValidation";
+import {inRange} from "@/app/hooks/useHelper";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
 import {getIsVerified} from "@/app/hooks/useCookies";
 

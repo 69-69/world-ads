@@ -15,7 +15,7 @@ import {
     POLICY_ROUTE
 } from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/hooks/useValidation";
+import {inRange} from "@/app/hooks/useHelper";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 import CountrySelector from "@/app/components/CountrySelector/CountrySelector";
 import {FormDataModel} from "@/app/models/FormDataModel";

@@ -1,7 +1,5 @@
 'use client';
-// components/Navbar.tsx
-//
-import React, {useState, MouseEvent} from 'react';
+import React, {useState, MouseEvent, useEffect} from 'react';
 import {AppBar, Toolbar, Box, IconButton} from '@mui/material';
 import {styled} from '@mui/material/styles';
 import Link from 'next/link';
@@ -20,7 +18,11 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 import SessionStatusSnackbar from "@/app/components/SessionStatusSnackbar";
-import {toTitleCase} from "@/app/hooks/useValidation";
+import {toTitleCase} from "@/app/hooks/useHelper";
+import SessionTimeoutModal from "@/app/(auth)/@modal/(...)auto-sign-out/page";
+// import useSessionTimeout from "@/app/hooks/useSessionTimeout";
+import {UserSession} from "@/app/models/UserSession";
+import useSessionTimeout from "@/app/hooks/useSessionTimeout";
 
 // Styled components
 const StyledLink = styled(Link)(({theme}) => ({
@@ -37,26 +39,26 @@ const StyledLink = styled(Link)(({theme}) => ({
     },
 }));
 
-interface NavbarProps {
-    user?: {
-        id: string;
-        email: string;
-        name: string;
-        access_token?: string | undefined;
-        remember_me?: boolean | undefined;
-        signin_method?: string | undefined;
-    } | null;
-}
+const Navbar: React.FC<{ userSession: UserSession | null }> = ({userSession}) => {
 
-const Navbar: React.FC<NavbarProps> = ({user}) => {
-    /*if (user) {
-        console.log('Steve-User session:', user.access_token, user.email, user.name);
-    }*/
-
+    // Safely handle the case where session could be null
+    const user = userSession?.user;
+    const [isSessionExpired, setIsSessionExpired] = useState(false);
+    const timeRemaining = useSessionTimeout({userSession}); // 1 hour timeout
     const [isScrollUp, setIsScrollUp] = useState<boolean>(false);
+    const [openSidebar, setOpenSidebar] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
-    const [openSidebar, setOpenSidebar] = useState<boolean>(false);
+
+    // console.log('time-Remaining ' + timeRemaining);
+
+    useEffect(() => {
+        if (timeRemaining <= 0) {
+            setIsSessionExpired(true); // Show modal when session expires
+        }
+    }, [timeRemaining]);
+
+    const handleModalClose = () => setIsSessionExpired(false); // Reset session expired flag;
 
     const handleMenuToggle = (setter: React.Dispatch<React.SetStateAction<null | HTMLElement>>) => (event: MouseEvent<HTMLElement>) => {
         setter(event.currentTarget);
@@ -65,6 +67,8 @@ const Navbar: React.FC<NavbarProps> = ({user}) => {
     const handleScrollUp = (isScrollUp: boolean) => setIsScrollUp(isScrollUp)
 
     const handleSidebarToggle = () => setOpenSidebar((prev) => !prev);
+
+    const snackBarMsg = isSessionExpired ? 'Session Expired' : "Welcome " + toTitleCase(user?.name ?? 'Guest');
 
     return (
         <Box sx={{flexGrow: 1}}>
@@ -140,15 +144,17 @@ const Navbar: React.FC<NavbarProps> = ({user}) => {
             <SidebarMenu isOpen={openSidebar} onClose={handleSidebarToggle} isScrollingUp={isScrollUp}/>
 
             {/* Render Menu Components */}
-            <DropdownMenu user={user} anchorEl={anchorEl} handleMenuToggle={handleMenuToggle}
-                          setAnchorEl={setAnchorEl}/>
+            <DropdownMenu user={user} anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
             <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle}
                         setMobileMoreAnchorEl={setMobileMoreAnchorEl}/>
 
-            {/* Snackbar */}
-            <SessionStatusSnackbar
-                isSignIn={Boolean(user)}
-                message={"You're currently " + (user ? 'Signed in as ' + toTitleCase(user.name) : 'not Sign In')}/>
+            {isSessionExpired &&
+                <SessionTimeoutModal
+                    open={isSessionExpired}
+                    remainingTime={timeRemaining}
+                    handleClose={handleModalClose}
+                />}
+            <SessionStatusSnackbar isSignIn={Boolean(user)} message={snackBarMsg}/>
         </Box>
     );
 };

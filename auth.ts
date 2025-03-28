@@ -3,7 +3,7 @@ import Google from "@auth/core/providers/google";
 import GitHub from "@auth/core/providers/github";
 import Credentials from "@auth/core/providers/credentials";
 import {Profile} from "@/app/models/Profile";
-import {inRange} from "@/app/hooks/useValidation";
+import {inRange} from "@/app/hooks/useHelper";
 import apiClient from "@/app/api/external/apiClient";
 import {signinEndpoint, signOutEndpoint} from "@/app/api/external/endPoints";
 import {cookies} from "next/headers";
@@ -29,7 +29,7 @@ async function findUser(credentials: Partial<Record<"email" | "password", unknow
         const cookieStore = await cookies();
         cookieStore.set('access_token', profile.access_token, {
             httpOnly: true,
-            maxAge: 7 * 24 * 60 * 60, // Default is 7 days
+            maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
             secure: process.env.COOKIE_SECURE === "production",
             path: '/',
             sameSite: 'lax',
@@ -104,8 +104,8 @@ export const authOptions = NextAuth({
         async session({session, token}) {
             // If not remember me, set session to expire in 24 hours
             if (!token?.remember_me) {
-                // console.log('Session expires in 24 hours');
-                session.expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+                // console.log('Session expires in 1 hour');
+                session.expires = new Date(Date.now() + (60 * 60 * 1000)); // 1 hour in milliseconds
             }
 
             // Attach token data to session

@@ -1,4 +1,5 @@
 // Check if a number is within a specified range: >= min && <= max
+
 const inRange = (value: number, min: number = 200, max: number = 299) => {
     return value >= min && value <= max;
 }
@@ -40,6 +41,18 @@ const validatePassword = (value: string) => {
     return value.length >= 8; // Example: password must be at least 8 characters long
 };
 
+// Helper function to generate a random hash (8-character random string)
+const generateRandomHash = (length: number = 32): string => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let result = '';
+
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+};
+
 export {
     inRange,
     getParts,
@@ -50,4 +63,5 @@ export {
     validatePrice,
     validateEmail,
     validatePassword,
+    generateRandomHash,
 };

@@ -11,7 +11,7 @@ type alertInterface = {
     title?: string;
     content: string;
     firstLabel: string;
-    secLabel: string;
+    secLabel?: string;
     maxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | false;
 };
 export default function AlertDialog({
@@ -31,15 +31,13 @@ export default function AlertDialog({
             aria-describedby="alert-dialog-description"
             maxWidth={maxWidth || "sm"}
         >
-            {title && <DialogTitle id="alert-dialog-title">{title}</DialogTitle>}
+            {title && <DialogTitle id="alert-dialog-title" align={'center'}>{title}</DialogTitle>}
             <DialogContent dividers>
                 <DialogContentText id="alert-dialog-description">{content}</DialogContentText>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose}>{firstLabel}</Button>
-                <Button onClick={handleClose} autoFocus>
-                    {secLabel}
-                </Button>
+            <DialogActions sx={{justifyContent: 'space-around'}}>
+                <Button variant={"contained"} size={'small'} onClick={handleClose}>{firstLabel}</Button>
+                {secLabel && <Button variant={"outlined"} size={'small'} onClick={handleClose} autoFocus>{secLabel}</Button>}
             </DialogActions>
         </Dialog>
     );

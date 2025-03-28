@@ -6,7 +6,7 @@ import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 import MulticolorSelector from "@/app/components/post/MulticolorSelector";
-import {ADS_CATEGORIES} from "@/app/hooks/useConstants";
+import {POST_CATEGORIES, SUB_CATEGORIES} from "@/app/hooks/useConstants";
 import {FormDataModel} from "@/app/models/FormDataModel";
 
 // Types for the form data and error state
@@ -45,30 +45,30 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
 
     const {errors, setErrors, message, setMessage, handleChange} = useFormDataChange(setFormData);
 
-
-    const handleDropdownChange = (value: string) => {
-        // Update category with the selected value
+    const postCategoryChange = (value: string) => {
+        if (formData.category === value) return;  // Only update if the value has changed
         setFormData((prev) => ({...prev, category: value}));
+        setErrors((prev) => ({...prev, category: ''}));// Clear error
+    };
 
-        // Clear error when category is selected
-        setErrors((prev) => ({...prev, category: ''}));
+    const postSubCategoryChange = (value: string) => {
+        if (formData.sub_category === value) return;  // Only update if the value has changed
+        setFormData((prev) => ({...prev, sub_category: value}));
+        setErrors((prev) => ({...prev, sub_category: ''}));// Clear error
     };
 
     // Handle changes to file input (images)
     const handleFileChange = (files: File[]) => {
-        // Update images with the selected files
+        if (JSON.stringify(formData.images) === JSON.stringify(files)) return; // Only update if the files array is different
         setFormData((prev) => ({...prev, images: files}));
-
-        // Clear error when images is selected
-        setErrors((prev) => ({...prev, images: ''}));
+        setErrors((prev) => ({...prev, images: ''})); // Clear error
     };
 
     // Handle product colors selection
     const handleProductColors = (colors: string) => {
+        if (formData.product_colors === colors) return; // Only update if the colors have changed
         setFormData((prev) => ({...prev, product_colors: colors}));
-
-        // Clear error when colors are selected
-        setErrors((prev) => ({...prev, product_colors: ''}));
+        setErrors((prev) => ({...prev, product_colors: ''})); // Clear error
     };
 
     // Form validation function
@@ -90,18 +90,17 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
             }
         });
 
-        // Check if category is empty
         if (!formData.category) {
             errors.category = 'Category is required';
         }
-
-        // Check if product colors is selected
-        if (!formData.product_colors) {
-            errors.category = 'Product color(s) is required';
+        if (!formData.sub_category) {
+            errors.sub_category = 'Item category is required';
         }
-
-        // Check if images is empty
-        if ((formData.images as File[]).length === 0) {
+        if (!formData.product_colors) {
+            errors.product_colors = 'Product color(s) is required';
+        }
+        const img = formData.images;
+        if (!(img && (img as File[]).length > 0)) {
             errors.images = 'Please select at least one image';
         }
 
@@ -112,6 +111,10 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         setFormData((prev) => {
             const resetFormData = {...prev};
             fields.forEach((field) => resetFormData[field.name] = field.name === 'images' ? [] : '');
+            resetFormData.product_colors = '';
+            resetFormData.category = '';
+            resetFormData.sub_category = '';
+            resetFormData.images = [];
             return resetFormData;
         });
     }
@@ -161,29 +164,31 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                 noValidate
                 autoComplete="off"
             >
-
-                {/* Render SelectDropdown */}
                 <CustomDropdown
-                    options={ADS_CATEGORIES}
-                    label="Post Ads Category"
-                    onSelectChange={handleDropdownChange}
+                    options={POST_CATEGORIES}
+                    label="Post Category"
+                    onSelectChange={postCategoryChange}
                     isError={errors['category']}
                     sx={{mt: 2, gridColumn: toFullWidth}}
                 />
 
-                {/* Render text fields dynamically */}
+                {formData.category && (
+                    <CustomDropdown
+                        options={
+                            SUB_CATEGORIES[formData.category as keyof typeof SUB_CATEGORIES] || []
+                        }
+                        label="Item Category"
+                        onSelectChange={postSubCategoryChange}
+                        isError={errors['sub_category']}
+                        sx={{mt: 2, gridColumn: toFullWidth}}
+                    />
+                )}
                 <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
-                {/*Render Product color selection*/}
                 <MulticolorSelector onColorChange={handleProductColors} isError={errors['category']}/>
-
-                {/* Render ImageUpload for handling multiple images */}
                 <ImageUpload onFileChange={handleFileChange} isError={errors['images']}/>
-                {/* Submit Button */}
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
-
                     {message.error && <ToastMessage message={message.error}/>}
                     {message.success && <ToastMessage message={message.success} type="success"/>}
-
                     <Button type="submit" variant="outlined" color="primary" fullWidth sx={{mt: 2}}>
                         {buttonText}
                     </Button>

@@ -1,15 +1,15 @@
 import React from "react";
 import {Menu, MenuItem} from '@mui/material';
 import {userSignOut} from "@/app/hooks/useSocialAuthButton";
-import {toTitleCase} from "@/app/hooks/useValidation";
+import {toTitleCase} from "@/app/hooks/useHelper";
 import {SIGNIN_ROUTE} from "@/app/hooks/useConstants";
 import {useRouter} from "next/navigation";
 
 interface RenderDropdownProps {
     user?: Record<string, unknown> | null;
     anchorEl: null | HTMLElement;
-    handleMenuToggle: (setter: React.Dispatch<React.SetStateAction<null | HTMLElement>>) => (event: React.MouseEvent<HTMLElement>) => void;
     setAnchorEl: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
+    // handleMenuToggle: (setter: React.Dispatch<React.SetStateAction<null | HTMLElement>>) => (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const DropdownMenu: React.FC<RenderDropdownProps> = ({anchorEl, setAnchorEl, user}) => {
@@ -22,10 +22,8 @@ const DropdownMenu: React.FC<RenderDropdownProps> = ({anchorEl, setAnchorEl, use
         {label: 'Settings', action: () => console.log('Settings')},
         {
             label: 'Sign out', action: async () => {
-                if (await userSignOut()) {
-                    router.push(SIGNIN_ROUTE);
-                    return;
-                }
+                userSignOut().then(() => router.push(SIGNIN_ROUTE));
+                return;
             }
         },
     ];

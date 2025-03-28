@@ -2,7 +2,7 @@ import {IconButton, InputAdornment, TextField} from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import React, {useState} from "react";
-import {toSentenceCase} from "@/app/hooks/useValidation";
+import {toSentenceCase} from "@/app/hooks/useHelper";
 
 interface Field {
     name: string;

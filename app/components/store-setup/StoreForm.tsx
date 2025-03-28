@@ -10,7 +10,7 @@ import {
     STORE_CATEGORIES
 } from "@/app/hooks/useConstants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/hooks/useValidation";
+import {inRange} from "@/app/hooks/useHelper";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 import CustomDropdown from "@/app/components/CustomDropdown";
 import CustomRadio from "@/app/components/CustomRadio";
@@ -77,38 +77,31 @@ const StoreForm = <T, U extends ApiResponse>({
     const {errors, setErrors, message, setMessage, handleChange} = useFormDataChange(setFormData);
 
     const handleDropdownChange = (value: string) => {
-        // Update [category] with the selected value
+        if (formData.category === value) return;  // Only update if the value has changed
         setFormData((prev) => ({...prev, category: value}));
-
-        // Clear error when [category] is selected
-        setErrors((prev) => ({...prev, category: ''}));
+        setErrors((prev) => ({...prev, category: ''})); // Clear error
     };
 
     const handleRadioChange = (event: React.SyntheticEvent) => {
+        if (!SELLER_TYPE) return; // Ensure SELLER_TYPE is not empty
         const target = event.target as HTMLInputElement;
-        // use default, if no value is selected
         const value = target.value || SELLER_TYPE[0].value;
-        setFormData((prev) => ({...prev, 's_role': value}));
-
-        // Clear error when seller type is selected
-        setErrors((prev) => ({...prev, s_role: ''}));
+        setFormData((prev) => ({...prev, s_role: value}));
+        setErrors((prev) => ({...prev, s_role: ''})); // Clear error
     };
 
     const handleCountry = (country: string, state_region: string, dial: string) => {
+        if (formData.country === country) return; // Only update if the country has changed
         console.log('steve-country:', dial);
         setFormData((prev) => ({...prev, country, state_region}));
-
-        // Clear error when country is selected
-        setErrors((prev) => ({...prev, country: '', state_region: ''}));
+        setErrors((prev) => ({...prev, country: '', state_region: ''})); // Clear error
     }
 
     // Handle changes to file input (logo)
     const handleFileChange = (files: File[]) => {
-        // Update logo with the selected files
+        if (JSON.stringify(formData.logo) === JSON.stringify(files)) return; // Only update if the files array is different
         setFormData((prev) => ({...prev, logo: files[0]}));
-
-        // Clear error when logo is selected
-        setErrors((prev) => ({...prev, logo: ''}));
+        setErrors((prev) => ({...prev, logo: ''})); // Clear error
     };
 
     const validateFormFields = () => {
@@ -124,8 +117,6 @@ const StoreForm = <T, U extends ApiResponse>({
             }
         });
 
-        // Check if logo is empty
-        // console.log('steve-logo:', formData.logo);
         if (!formData.logo) {
             errors.logo = 'Add your store logo';
         }
@@ -136,7 +127,7 @@ const StoreForm = <T, U extends ApiResponse>({
     const resetForm = () => {
         setFormData((prev) => {
             const resetFormData = {...prev};
-            fields.forEach((field) => resetFormData[field.name] = field.name === 'images' ? [] : '');
+            fields.forEach((field) => resetFormData[field.name] = field.name === 'logo' ? [] : '');
             return resetFormData;
         });
     }
@@ -191,8 +182,8 @@ const StoreForm = <T, U extends ApiResponse>({
                 autoComplete="off"
             >
                 <CustomDropdown
-                    options={STORE_CATEGORIES}
                     label="Category"
+                    options={STORE_CATEGORIES}
                     onSelectChange={handleDropdownChange}
                     isError={errors['category']}
                     sx={{mt: 2, gridColumn: toFullWidth}}

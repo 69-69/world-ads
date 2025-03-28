@@ -13,9 +13,7 @@ const SessionStatusSnackbar: React.FC<StatusSnackbarProps> = ({isSignIn, message
     const [open, setOpen] = React.useState(true);
 
     // Whenever the `isSignIn` prop changes, set the local `open` state accordingly
-    useEffect(() => {
-        setOpen(isSignIn);
-    }, [isSignIn]);
+    useEffect(() => setOpen(isSignIn), [isSignIn]);
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
 

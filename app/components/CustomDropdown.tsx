@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
-import {toSentenceCase} from '@/app/hooks/useValidation';
+import {toSentenceCase} from '@/app/hooks/useHelper';
 
 type data = { name: string; value: string };
 

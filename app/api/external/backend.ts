@@ -5,7 +5,7 @@ import {Post} from "@/app/models/Post";
 import {getSignupToken} from "@/app/hooks/useCookies";
 import {SignUpResponse} from "@/app/models/SignUp";
 import {handleApiError} from "@/app/hooks/useThrowError";
-import {getParts, inRange} from "@/app/hooks/useValidation";
+import {getParts, inRange} from "@/app/hooks/useHelper";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
 import {AllCountries} from "@/app/models/AllCountries";
 import {

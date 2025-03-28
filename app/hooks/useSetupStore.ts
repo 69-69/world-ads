@@ -1,7 +1,7 @@
 import {handleApiError} from "@/app/hooks/useThrowError";
 import {getSignupToken} from "@/app/hooks/useCookies";
 import {setupStoreHandler} from "@/app/api/external/endPoints";
-import {getParts, inRange} from "@/app/hooks/useValidation";
+import {getParts, inRange} from "@/app/hooks/useHelper";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {FormDataModel, to_FormData} from "@/app/models/FormDataModel";
 

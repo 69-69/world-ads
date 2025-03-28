@@ -2,7 +2,6 @@ interface FormDataModel {
     [key: string]: string | number | File | File[];
 }
 
-
 const to_FormData = (data: FormDataModel): FormData => {
     const formData = new FormData();
 

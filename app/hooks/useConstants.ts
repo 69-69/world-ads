@@ -20,7 +20,7 @@ const ABOUT_ROUTE = '/about';
 const FAQ_ROUTE = '/faq';
 
 const PROTECTED_RESOURCES_ROUTES = [
-    POST_ADS_ROUTE+'/:path*',
+    POST_ADS_ROUTE + '/:path*',
     ORDER_ROUTE,
     CHECKOUT_ROUTE,
 ];
@@ -43,7 +43,7 @@ type LinkProps = {
 
 const HEADER_LINKS: LinkProps[] = [
     {title: 'Home', url: HOME_ROUTE},
-    {title: 'Post Ads', url: POST_ADS_ROUTE},
+    {title: 'Start Selling', url: POST_ADS_ROUTE},
     {title: 'My Account', url: SIGNIN_ROUTE},
 ];
 
@@ -57,7 +57,7 @@ const FOOTER_LINKS: LinkProps[] = [
     /* Center Section - Links (Second Link Group) */
     {title: 'My Account', url: SIGNIN_ROUTE},
     {title: 'Sign Up', url: SIGNUP_ROUTE},
-    {title: 'Post Ads', url: POST_ADS_ROUTE},
+    {title: 'Start Selling', url: POST_ADS_ROUTE},
 
     /* Right Section - Links (Third Link Group) */
     {title: 'Terms & Conditions', url: POLICY_ROUTE},
@@ -65,17 +65,93 @@ const FOOTER_LINKS: LinkProps[] = [
     {title: 'FAQ', url: FAQ_ROUTE},
 ];
 
-const ADS_CATEGORIES = [
-    {name: 'Real Estate', value: 'real-estate'},
-    {name: 'Jobs', value: 'jobs'},
-    {name: 'Services', value: 'services'},
-    {name: 'Vehicles', value: 'vehicles'},
-    {name: 'Pets', value: 'pets'},
-    {name: 'Electronics', value: 'electronics'},
-    {name: 'Furniture', value: 'furniture'},
-    {name: 'Events', value: 'events'},
-    {name: 'Community', value: 'community'},
-    {name: 'Business for Sale', value: 'business-sale'},
+// Define the subcategories separately
+const SUB_CATEGORIES = {
+    'real-estate': [
+        {name: 'For Sale', value: 'for-sale'},
+        {name: 'For Rent', value: 'for-rent'},
+        {name: 'Commercial', value: 'commercial'},
+        {name: 'Land', value: 'land'},
+    ],
+    'jobs': [
+        {name: 'Full-Time', value: 'full-time'},
+        {name: 'Part-Time', value: 'part-time'},
+        {name: 'Freelance', value: 'freelance'},
+        {name: 'Internship', value: 'internship'},
+    ],
+    'services': [
+        {name: 'Cleaning', value: 'cleaning'},
+        {name: 'Tutoring', value: 'tutoring'},
+        {name: 'Plumbing', value: 'plumbing'},
+        {name: 'Consulting', value: 'consulting'},
+    ],
+    'vehicles': [
+        {name: 'Cars', value: 'cars'},
+        {name: 'Motorcycles', value: 'motorcycles'},
+        {name: 'Bikes', value: 'bikes'},
+        {name: 'Boats', value: 'boats'},
+    ],
+    'pets': [
+        {name: 'Dogs', value: 'dogs'},
+        {name: 'Cats', value: 'cats'},
+        {name: 'Birds', value: 'birds'},
+        {name: 'Reptiles', value: 'reptiles'},
+    ],
+    'electronics': [
+        {name: 'Phones', value: 'phones'},
+        {name: 'Laptops', value: 'laptops'},
+        {name: 'TVs', value: 'tvs'},
+        {name: 'Cameras', value: 'cameras'},
+        {name: 'Projectors', value: 'projectors'},
+        {name: 'Headphones', value: 'headphones'},
+        {name: 'Smart Watches', value: 'smart-watches'},
+        {name: 'Tablets', value: 'tablets'},
+        {name: 'iPads', value: 'iPads'},
+        {name: 'Game Consoles', value: 'game-consoles'},
+        {name: 'Desktops', value: 'desktops'},
+        {name: 'Monitors', value: 'monitors'},
+        {name: 'Charges', value: 'charges'},
+        {name: 'Printers', value: 'printers'},
+        {name: 'Accessories', value: 'accessories'},
+    ],
+    'furniture': [
+        {name: 'Living Room', value: 'living-room'},
+        {name: 'Bedroom', value: 'bedroom'},
+        {name: 'Office', value: 'office'},
+        {name: 'Outdoor', value: 'outdoor'},
+    ],
+    'events': [
+        {name: 'Concerts', value: 'concerts'},
+        {name: 'Sports', value: 'sports'},
+        {name: 'Theater', value: 'theater'},
+        {name: 'Festivals', value: 'festivals'},
+    ],
+    'community': [
+        {name: 'Meetups', value: 'meetups'},
+        {name: 'Groups', value: 'groups'},
+        {name: 'Volunteering', value: 'volunteering'},
+        {name: 'Events', value: 'events'},
+    ],
+    'business-sale': [
+        {name: 'Restaurants', value: 'restaurants'},
+        {name: 'Retail Stores', value: 'retail-stores'},
+        {name: 'Franchises', value: 'franchises'},
+        {name: 'Offices', value: 'offices'},
+    ],
+};
+
+// Define the POST_CATEGORIES, referring to SUB_CATEGORIES
+const POST_CATEGORIES = [
+    {name: 'Real Estate', value: 'real-estate', subcategories: SUB_CATEGORIES['real-estate']},
+    {name: 'Jobs', value: 'jobs', subcategories: SUB_CATEGORIES['jobs']},
+    {name: 'Services', value: 'services', subcategories: SUB_CATEGORIES['services']},
+    {name: 'Vehicles', value: 'vehicles', subcategories: SUB_CATEGORIES['vehicles']},
+    {name: 'Pets', value: 'pets', subcategories: SUB_CATEGORIES['pets']},
+    {name: 'Electronics', value: 'electronics', subcategories: SUB_CATEGORIES['electronics']},
+    {name: 'Furniture', value: 'furniture', subcategories: SUB_CATEGORIES['furniture']},
+    {name: 'Events', value: 'events', subcategories: SUB_CATEGORIES['events']},
+    {name: 'Community', value: 'community', subcategories: SUB_CATEGORIES['community']},
+    {name: 'Business for Sale', value: 'business-sale', subcategories: SUB_CATEGORIES['business-sale']},
 ];
 
 const STORE_CATEGORIES = [
@@ -101,7 +177,8 @@ export {
     APP_NAME_SHORT,
     ACC_ROLE,
     SELLER_TYPE,
-    ADS_CATEGORIES,
+    POST_CATEGORIES,
+    SUB_CATEGORIES,
     STORE_CATEGORIES,
     PROTECTED_AUTH_ROUTES,
     PROTECTED_RESOURCES_ROUTES,
