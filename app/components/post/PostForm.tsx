@@ -6,8 +6,9 @@ import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 import MulticolorSelector from "@/app/components/post/MulticolorSelector";
-import {POST_CATEGORIES, SUB_CATEGORIES} from "@/app/hooks/useConstants";
+import {POST_BRANDS, POST_CATEGORIES, SUB_CATEGORIES} from "@/app/hooks/useConstants";
 import {FormDataModel} from "@/app/models/FormDataModel";
+import PromoSchedule from "@/app/components/admin/PromoSchedule";
 
 // Types for the form data and error state
 interface Field {
@@ -57,6 +58,12 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         setErrors((prev) => ({...prev, sub_category: ''}));// Clear error
     };
 
+    const brandChange = (value: string) => {
+        if (formData.brand === value) return;  // Only update if the value has changed
+        setFormData((prev) => ({...prev, brand: value}));
+        setErrors((prev) => ({...prev, brand: ''}));// Clear error
+    };
+
     // Handle changes to file input (images)
     const handleFileChange = (files: File[]) => {
         if (JSON.stringify(formData.images) === JSON.stringify(files)) return; // Only update if the files array is different
@@ -95,6 +102,9 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         }
         if (!formData.sub_category) {
             errors.sub_category = 'Item category is required';
+        }
+        if (!formData.brand) {
+            errors.brand = 'Brand is required';
         }
         if (!formData.product_colors) {
             errors.product_colors = 'Product color(s) is required';
@@ -171,6 +181,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                     isError={errors['category']}
                     sx={{mt: 2, gridColumn: toFullWidth}}
                 />
+                <PromoSchedule/>
 
                 {formData.category && (
                     <CustomDropdown
@@ -180,9 +191,16 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                         label="Item Category"
                         onSelectChange={postSubCategoryChange}
                         isError={errors['sub_category']}
-                        sx={{mt: 2, gridColumn: toFullWidth}}
+                        sx={{gridColumn: toFullWidth}}
                     />
                 )}
+                <CustomDropdown
+                    options={POST_BRANDS}
+                    label="Brand"
+                    onSelectChange={brandChange}
+                    isError={errors['brand']}
+                    sx={{gridColumn: toFullWidth}}
+                />
                 <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
                 <MulticolorSelector onColorChange={handleProductColors} isError={errors['category']}/>
                 <ImageUpload onFileChange={handleFileChange} isError={errors['images']}/>

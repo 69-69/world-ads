@@ -35,7 +35,7 @@ const SessionStatusSnackbar: React.FC<StatusSnackbarProps> = ({isSignIn, message
             <Alert onClose={() => setOpen(false)}
                    severity={isSignIn ? "success" : "error"}
                    variant="filled"
-                   sx={{width: '100%', py: 0, mx: 10,}}>
+                   sx={{width: '100%', py: 0, mx: 10,bgcolor: 'background.paper'}}>
                 {message}
             </Alert>
         </Snackbar>

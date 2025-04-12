@@ -23,6 +23,7 @@ import SessionTimeoutModal from "@/app/(auth)/@modal/(...)auto-sign-out/page";
 // import useSessionTimeout from "@/app/hooks/useSessionTimeout";
 import {UserSession} from "@/app/models/UserSession";
 import useSessionTimeout from "@/app/hooks/useSessionTimeout";
+import {AppLinks} from "@/app/models/AppLinks";
 
 // Styled components
 const StyledLink = styled(Link)(({theme}) => ({
@@ -39,7 +40,7 @@ const StyledLink = styled(Link)(({theme}) => ({
     },
 }));
 
-const Navbar: React.FC<{ userSession: UserSession | null }> = ({userSession}) => {
+const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLinks[], }> = ({userSession, sideMenuLinks}) => {
 
     // Safely handle the case where session could be null
     const user = userSession?.user;
@@ -141,7 +142,7 @@ const Navbar: React.FC<{ userSession: UserSession | null }> = ({userSession}) =>
             </HideOnScroll>
 
             {/* Sidebar */}
-            <SidebarMenu isOpen={openSidebar} onClose={handleSidebarToggle} isScrollingUp={isScrollUp}/>
+            <SidebarMenu isOpen={openSidebar} onClose={handleSidebarToggle} isScrollingUp={isScrollUp} sideMenuLinks={sideMenuLinks}/>
 
             {/* Render Menu Components */}
             <DropdownMenu user={user} anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>

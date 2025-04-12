@@ -1,7 +1,7 @@
 import {AxiosResponse} from 'axios';
 import fetchWithRetry from "./fetchWithRetry";
 import {ApiResponse, Profile, SignUp} from '@/app/models';
-import {Post} from "@/app/models/Post";
+import { Product} from "@/app/models/Post";
 import {getSignupToken} from "@/app/hooks/useCookies";
 import {SignUpResponse} from "@/app/models/SignUp";
 import {handleApiError} from "@/app/hooks/useThrowError";
@@ -232,7 +232,7 @@ const getAds = async (): Promise<unknown> => {
         });
 
         if (inRange(response.status, 200, 299)) {
-            return data as AxiosResponse<Post[]>;
+            return data as AxiosResponse<Product[]>;
         }
     } catch (error: unknown) {
         handleApiError(error);

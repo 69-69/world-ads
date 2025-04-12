@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid2';
 import ProductCard from './ProductCard';
 
 // Importing the local image
-const productImg = '../assets/images/product.jpg';
+const productImg = '../assets/images/products.jpg';
 
 const posts = [
     {
@@ -23,7 +23,7 @@ const posts = [
         description: "Introducing our new collection of gadgets. Shop now!",
         imageUrl: productImg,
         price: "$19.99",
-        link: "/new-product"
+        link: "/new-products"
     },
     {
         id: 3,

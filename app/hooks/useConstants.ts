@@ -1,4 +1,5 @@
 import {PUBLIC_BASE_URL} from "@/env_config";
+import {AppLinks} from "@/app/models/AppLinks";
 
 const APP_NAME = 'World Ads Center';
 const APP_NAME_SHORT = 'WAC';
@@ -11,7 +12,10 @@ const SETUP_STORE_ROUTE = '/setup-store';
 const FORGOT_PASSWORD_ROUTE = '/forgot-password';
 const RESET_PASSWORD_ROUTE = '/reset-password';
 const POST_ADS_ROUTE = '/post';
-const CART_ROUTE = '/cart';
+const ADMIN_PRODUCT_ROUTE = '/products';
+const ADMIN_DASHBOARD_ROUTE = '/dashboard';
+const ADMIN_PROMO_ROUTE = '/deal-of-the-day';
+// const CART_ROUTE = '/cart';
 const SHOP_ROUTE = '/shop';
 const CHECKOUT_ROUTE = '/checkout';
 const ORDER_ROUTE = '/orders';
@@ -35,19 +39,14 @@ const PROTECTED_AUTH_ROUTES = [
 
 const ACC_ROLE = ['buyer', 'seller'];
 
-type LinkProps = {
-    id?: number,
-    title: string,
-    url: string
-};
-
-const HEADER_LINKS: LinkProps[] = [
+const HEADER_LINKS: AppLinks[] = [
     {title: 'Home', url: HOME_ROUTE},
     {title: 'Start Selling', url: POST_ADS_ROUTE},
     {title: 'My Account', url: SIGNIN_ROUTE},
 ];
 
-const FOOTER_LINKS: LinkProps[] = [
+
+const FOOTER_LINKS: AppLinks[] = [
     /* Left Section - Links (First Link Group) */
     {title: 'Home', url: HOME_ROUTE},
     {title: 'About Us', url: ABOUT_ROUTE},
@@ -142,18 +141,31 @@ const SUB_CATEGORIES = {
 
 // Define the POST_CATEGORIES, referring to SUB_CATEGORIES
 const POST_CATEGORIES = [
-    {name: 'Real Estate', value: 'real-estate', subcategories: SUB_CATEGORIES['real-estate']},
-    {name: 'Jobs', value: 'jobs', subcategories: SUB_CATEGORIES['jobs']},
-    {name: 'Services', value: 'services', subcategories: SUB_CATEGORIES['services']},
-    {name: 'Vehicles', value: 'vehicles', subcategories: SUB_CATEGORIES['vehicles']},
-    {name: 'Pets', value: 'pets', subcategories: SUB_CATEGORIES['pets']},
-    {name: 'Electronics', value: 'electronics', subcategories: SUB_CATEGORIES['electronics']},
-    {name: 'Furniture', value: 'furniture', subcategories: SUB_CATEGORIES['furniture']},
-    {name: 'Events', value: 'events', subcategories: SUB_CATEGORIES['events']},
-    {name: 'Community', value: 'community', subcategories: SUB_CATEGORIES['community']},
-    {name: 'Business for Sale', value: 'business-sale', subcategories: SUB_CATEGORIES['business-sale']},
+    {name: 'Real Estate', value: 'real-estate'},
+    {name: 'Jobs', value: 'jobs'},
+    {name: 'Services', value: 'services'},
+    {name: 'Vehicles', value: 'vehicles'},
+    {name: 'Pets', value: 'pets'},
+    {name: 'Electronics', value: 'electronics'},
+    {name: 'Furniture', value: 'furniture'},
+    {name: 'Events', value: 'events'},
+    {name: 'Community', value: 'community'},
+    {name: 'Business for Sale', value: 'business-sale'},
 ];
 
+// POSt Brands
+const POST_BRANDS = [
+    {name: 'Apple', value: 'apple'},
+    {name: 'Samsung', value: 'samsung'},
+    {name: 'Sony', value: 'sony'},
+    {name: 'LG', value: 'lg'},
+    {name: 'Dell', value: 'dell'},
+    {name: 'HP', value: 'hp'},
+    {name: 'Lenovo', value: 'lenovo'},
+    {name: 'Asus', value: 'asus'},
+];
+
+// Store setup categories
 const STORE_CATEGORIES = [
     {name: 'Grocery', value: 'grocery'},
     {name: 'Fashion', value: 'fashion'},
@@ -179,6 +191,7 @@ export {
     SELLER_TYPE,
     POST_CATEGORIES,
     SUB_CATEGORIES,
+    POST_BRANDS,
     STORE_CATEGORIES,
     PROTECTED_AUTH_ROUTES,
     PROTECTED_RESOURCES_ROUTES,
@@ -193,13 +206,13 @@ export {
     FORGOT_PASSWORD_ROUTE,
     RESET_PASSWORD_ROUTE,
     POST_ADS_ROUTE,
-    CART_ROUTE,
     CHECKOUT_ROUTE,
     ORDER_ROUTE,
     ABOUT_ROUTE,
     CONTACT_ROUTE,
     FAQ_ROUTE,
     SETUP_STORE_ROUTE,
+    ADMIN_PRODUCT_ROUTE,
+    ADMIN_DASHBOARD_ROUTE,
+    ADMIN_PROMO_ROUTE
 };
-
-export type {LinkProps};
