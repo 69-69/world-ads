@@ -24,7 +24,6 @@ const SidebarMenu: AppLinks[] = [
         id: 2, title: 'Promo', url: ADMIN_PROMO_ROUTE,
         dropdown: [
             {id: 1, title: 'Promo List', url: ADMIN_PROMO_ROUTE},
-            {id: 2, title: 'Create Promo', url: ADMIN_PROMO_ROUTE+'/create'},
             {id: 3, title: 'Promo Review', url: ADMIN_PROMO_ROUTE+'/review'},
         ],
     },

@@ -5,10 +5,12 @@ export const {
     PUBLIC_BASE_URL,
     BACKEND_MARKETPLACE_IMAGE_PATH,
     BACKEND_STORE_SETUP_LOGO_PATH,
+    BACKEND_PROMO_IMAGE_PATH,
 } = {
     PUBLIC_BASE_URL: process.env.PUBLIC_BASE_URL || 'http://localhost:3000',
     BACKEND_IMAGE_PATH: process.env.BACKEND_IMAGE_PATH || '/static/uploads',
     BACKEND_MARKETPLACE_IMAGE_PATH: process.env.BACKEND_MARKETPLACE_IMAGE_PATH || '/marketplace_images',
+    BACKEND_PROMO_IMAGE_PATH: process.env.BACKEND_PROMO_IMAGE_PATH || '/promo_bg_images',
     BACKEND_STORE_SETUP_LOGO_PATH: process.env.BACKEND_STORE_SETUP_LOGO_PATH || '/store_setup_logo',
     BACKEND_BASE_URL: process.env.BACKEND_BASE_URL || 'http://127.0.0.1:5000',
     BACKEND_API_ENDPOINT: process.env.BACKEND_API_ENDPOINT || 'http://127.0.0.1:5000/api',

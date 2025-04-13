@@ -23,10 +23,11 @@ interface Color {
 type MultiColors = {
     onColorChange: (value: string) => void,
     isError?: string | null,
+    label?: string,
 };
 
 // MulticolorSelector component
-const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError}) => {
+const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError, label}) => {
     const [selectedColors, setSelectedColors] = useState<string[]>([]);
     const [currentColor, setCurrentColor] = useState<string>('#000000');
     const [openPicker, setOpenPicker] = useState<boolean>(false);
@@ -67,7 +68,7 @@ const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError}) => 
         <Box py={1}>
             {/* Button to open the color picker dialog */}
             <Button variant="contained" size='small' color="primary" onClick={handleOpenPicker} fullWidth>
-                Pick Product Colors
+                {label || 'Pick Product Color'}
             </Button>
 
             {/* Dialog for ChromePicker */}
@@ -115,7 +116,7 @@ const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError}) => 
                                 </Grid>
                             ))
                         )
-                        : (<ToastMessage message={isError || 'No colors selected'} type="error"/>)
+                        : (<ToastMessage message={isError || 'No color selected'} type="error"/>)
                     }
                 </Grid>
             </Box>

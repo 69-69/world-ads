@@ -2,7 +2,7 @@ import {PUBLIC_BASE_URL} from "@/env_config";
 import {AppLinks} from "@/app/models/AppLinks";
 
 const APP_NAME = 'World Ads Center';
-const APP_NAME_SHORT = 'WAC';
+const APP_NAME_SHORT = 'iStoreZhona'; // WAC
 const HOME_ROUTE = PUBLIC_BASE_URL;
 const POLICY_ROUTE = '/terms-and-conditions';
 const SIGNIN_ROUTE = '/signin';
@@ -14,7 +14,8 @@ const RESET_PASSWORD_ROUTE = '/reset-password';
 const POST_ADS_ROUTE = '/post';
 const ADMIN_PRODUCT_ROUTE = '/products';
 const ADMIN_DASHBOARD_ROUTE = '/dashboard';
-const ADMIN_PROMO_ROUTE = '/deal-of-the-day';
+const ADMIN_PROMO_ROUTE = '/promo';
+const ADMIN_PROMO_CREATE_ROUTE = ADMIN_PROMO_ROUTE+'/create';
 // const CART_ROUTE = '/cart';
 const SHOP_ROUTE = '/shop';
 const CHECKOUT_ROUTE = '/checkout';
@@ -214,5 +215,6 @@ export {
     SETUP_STORE_ROUTE,
     ADMIN_PRODUCT_ROUTE,
     ADMIN_DASHBOARD_ROUTE,
-    ADMIN_PROMO_ROUTE
+    ADMIN_PROMO_ROUTE,
+    ADMIN_PROMO_CREATE_ROUTE
 };

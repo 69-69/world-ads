@@ -1,13 +1,12 @@
 import React, {useState, FormEvent} from 'react';
 import {Button, Paper, Box, Typography} from '@mui/material';
 import ImageUpload from './ImageUpload';
-import CustomDropdown from '../CustomDropdown';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
 import {useFormDataChange} from "@/app/hooks/useFormDataChange";
 import MulticolorSelector from "@/app/components/post/MulticolorSelector";
-import {POST_BRANDS, POST_CATEGORIES, SUB_CATEGORIES} from "@/app/hooks/useConstants";
 import {FormDataModel} from "@/app/models/FormDataModel";
+import PromoSchedule from "@/app/components/admin/PromoSchedule";
 
 // Types for the form data and error state
 interface Field {
@@ -19,62 +18,46 @@ interface Field {
     isTextArea?: boolean;
 }
 
-interface PostFormProps {
-    onSubmit: (formData: FormDataModel) => Promise<unknown>;
+interface PromoFormProps {
+    onSubmit: (formData: FormDataModel, productId: string) => Promise<unknown>;
     title: string;
+    product_id: string;
     buttonText: string;
     fields: Field[];
 }
 
 const toFullWidth = '1/-1';
 
-const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}) => {
-    // State to store form values
-    // const [formData, setFormData] = useState<FormDataModel>(
-    //     fields.reduce<FormDataModel>((acc, field) => {
-    //         acc[field.name] = '';
-    //         return acc;
-    //     }, {images: [] as File[]})
-    // );
+const PromoForm: React.FC<PromoFormProps> = ({onSubmit, title, product_id, buttonText, fields}) => {
+
     const [formData, setFormData] = useState<FormDataModel>(
         fields.reduce<FormDataModel>((acc, field) => {
-            acc[field.name] = field.name === 'images' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
+            acc[field.name] = field.name === 'bg_image' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
             return acc;
         }, {} as FormDataModel)
     );
 
     const {errors, setErrors, message, setMessage, handleChange} = useFormDataChange(setFormData);
 
-    const postCategoryChange = (value: string) => {
-        if (formData.category === value) return;  // Only update if the value has changed
-        setFormData((prev) => ({...prev, category: value}));
-        setErrors((prev) => ({...prev, category: ''}));// Clear error
-    };
-
-    const postSubCategoryChange = (value: string) => {
-        if (formData.sub_category === value) return;  // Only update if the value has changed
-        setFormData((prev) => ({...prev, sub_category: value}));
-        setErrors((prev) => ({...prev, sub_category: ''}));// Clear error
-    };
-
-    const brandChange = (value: string) => {
-        if (formData.brand === value) return;  // Only update if the value has changed
-        setFormData((prev) => ({...prev, brand: value}));
-        setErrors((prev) => ({...prev, brand: ''}));// Clear error
-    };
-
     // Handle changes to file input (images)
     const handleFileChange = (files: File[]) => {
-        if (JSON.stringify(formData.images) === JSON.stringify(files)) return; // Only update if the files array is different
-        setFormData((prev) => ({...prev, images: files}));
-        setErrors((prev) => ({...prev, images: ''})); // Clear error
+        if (JSON.stringify(formData.bg_image) === JSON.stringify(files)) return; // Only update if the files array is different
+        setFormData((prev) => ({...prev, bg_image: files[0]}));
+        setErrors((prev) => ({...prev, bg_image: ''})); // Clear error
     };
 
     // Handle product colors selection
     const handleProductColors = (colors: string) => {
-        if (formData.product_colors === colors) return; // Only update if the colors have changed
-        setFormData((prev) => ({...prev, product_colors: colors}));
-        setErrors((prev) => ({...prev, product_colors: ''})); // Clear error
+        if (formData.bg_color === colors) return; // Only update if the colors have changed
+        setFormData((prev) => ({...prev, bg_color: colors}));
+        setErrors((prev) => ({...prev, bg_color: ''})); // Clear error
+    };
+
+    const handleScheduleChange = (data: { start: string; end: string }) => {
+        console.log('Send this to backend:', data);
+        if (formData.start_at === data.start && formData.end_at === data.end) return; // Only update if the colors have changed
+        setFormData((prev) => ({...prev, start_at: data.start, end_at: data.end}));
+        setErrors((prev) => ({...prev, start_at: '', end_at: ''})); // Clear error
     };
 
     // Form validation function
@@ -96,21 +79,9 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
             }
         });
 
-        if (!formData.category) {
-            errors.category = 'Category is required';
-        }
-        if (!formData.sub_category) {
-            errors.sub_category = 'Item category is required';
-        }
-        if (!formData.brand) {
-            errors.brand = 'Brand is required';
-        }
-        if (!formData.product_colors) {
-            errors.product_colors = 'Product color(s) is required';
-        }
-        const img = formData.images;
-        if (!(img && (img as File[]).length > 0)) {
-            errors.images = 'Please select at least one image';
+        if (!formData.bg_color && !formData.bg_image) {
+            errors.bg_color = 'Background color or image is required';
+            errors.bg_image = 'Background color or image is required';
         }
 
         return errors;
@@ -119,11 +90,9 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
     const resetForm = () => {
         setFormData((prev) => {
             const resetFormData = {...prev};
-            fields.forEach((field) => resetFormData[field.name] = field.name === 'images' ? [] : '');
-            resetFormData.product_colors = '';
-            resetFormData.category = '';
-            resetFormData.sub_category = '';
-            resetFormData.images = [];
+            fields.forEach((field) => resetFormData[field.name] = field.name === 'bg_image' ? [] : '');
+            resetFormData.bg_color = '';
+            resetFormData.bg_image = [];
             return resetFormData;
         });
     }
@@ -141,7 +110,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         }
 
         try {
-            const response = await onSubmit(formData);
+            const response = await onSubmit(formData, product_id);
 
             if (typeof response === 'object' && response !== null && 'message' in response) {
                 setMessage({success: (response as { message: string }).message});
@@ -173,35 +142,19 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                 noValidate
                 autoComplete="off"
             >
-                <CustomDropdown
-                    options={POST_CATEGORIES}
-                    label="Post Category"
-                    onSelectChange={postCategoryChange}
-                    isError={errors['category']}
-                    sx={{mt: 2, gridColumn: toFullWidth}}
-                />
-
-                {formData.category && (
-                    <CustomDropdown
-                        options={
-                            SUB_CATEGORIES[formData.category as keyof typeof SUB_CATEGORIES] || []
-                        }
-                        label="Item Category"
-                        onSelectChange={postSubCategoryChange}
-                        isError={errors['sub_category']}
-                        sx={{gridColumn: toFullWidth}}
-                    />
-                )}
-                <CustomDropdown
-                    options={POST_BRANDS}
-                    label="Brand"
-                    onSelectChange={brandChange}
-                    isError={errors['brand']}
-                    sx={{gridColumn: toFullWidth}}
-                />
+                <PromoSchedule onScheduleChange={handleScheduleChange} errors={errors}/>
                 <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
-                <MulticolorSelector onColorChange={handleProductColors} isError={errors['product_colors']}/>
-                <ImageUpload onFileChange={handleFileChange} isError={errors['images']}/>
+
+                <Box key="color-selector" sx={{gridColumn: toFullWidth}}>
+                    <Typography variant="body2" align='center' gutterBottom>
+                        Add background color or image
+                    </Typography>
+                </Box>
+                <MulticolorSelector onColorChange={handleProductColors} label='Add Background color'
+                                    isError={errors['bg_color']}/>
+                <ImageUpload onFileChange={handleFileChange} isError={errors['bg_image']}
+                             warningMsg='Add background image'/>
+
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
                     {message.error && <ToastMessage message={message.error}/>}
                     {message.success && <ToastMessage message={message.success} type="success"/>}
@@ -211,7 +164,8 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                 </Box>
             </Box>
         </Paper>
-    );
+    )
+        ;
 };
 
-export default PostForm;
+export default PromoForm;

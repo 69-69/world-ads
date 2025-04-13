@@ -1,16 +1,16 @@
 import Container from "@mui/material/Container";
 import {HOME_ROUTE} from "@/app/hooks/useConstants";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {Product} from "@/app/models/Post";
-import {marketplaceHandler} from "@/app/api/external/endPoints";
+import {Promo} from "@/app/models/Post";
+import {promoHandler} from "@/app/api/external/endPoints";
 import {Box, Typography} from "@mui/material";
-import ProductList from "@/app/components/admin/ProductList";
+import PromoList from "@/app/components/admin/PromoList";
 
 const ProductsPage = async () => {
-    const tableHeader = ['Name', 'Category', 'Sub', 'Brand', 'Price', 'Published', 'Promo', 'Action'];
+    const tableHeader = ['Name', 'Promo Price', 'Starts At', 'Ends At', 'Expired', 'Action'];
 
-    const {response, data} = await fetchWithRetry(HOME_ROUTE + marketplaceHandler, {method: 'GET'});
-    const products: Product[] = data;
+    const {response, data} = await fetchWithRetry(HOME_ROUTE + promoHandler, {method: 'GET'});
+    const promos: Promo[] = data;
 
     return (
         <Container maxWidth='lg' sx={{flexGrow: 1, pt: 20}}>
@@ -18,7 +18,7 @@ const ProductsPage = async () => {
                 Deal of the Day
             </Typography>
             <Box>
-                <ProductList products={products} tableHeader={tableHeader}/>
+                <PromoList promos={promos} tableHeader={tableHeader}/>
             </Box>
         </Container>
     )

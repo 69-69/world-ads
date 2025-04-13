@@ -53,8 +53,18 @@ const generateRandomHash = (length: number = 32): string => {
     return result;
 };
 
+// Is Expired
+const isExpired = (dateStr: string) => {
+
+    const endDate = new Date(dateStr);
+    const now = new Date();
+
+    return endDate < now;
+};
+
 export {
     inRange,
+    isExpired,
     getParts,
     toTitleCase,
     toSentenceCase,

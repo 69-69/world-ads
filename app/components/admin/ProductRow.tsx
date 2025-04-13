@@ -14,9 +14,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useState} from 'react';
 import {Product} from "@/app/models/Post";
-import {BACKEND_BASE_URL, BACKEND_IMAGE_PATH, BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
+import {
+    BACKEND_BASE_URL,
+    BACKEND_IMAGE_PATH,
+    BACKEND_MARKETPLACE_IMAGE_PATH,
+} from "@/env_config";
+import {ADMIN_PROMO_CREATE_ROUTE} from "@/app/hooks/useConstants";
+import {useRouter} from "next/navigation";
 
 const ProductRow = ({product}: { product: Product }) => {
+    const router = useRouter();
     const [switched, setSwitched] = useState<{
         published?: boolean;
         promo?: boolean;
@@ -30,8 +37,12 @@ const ProductRow = ({product}: { product: Product }) => {
         '/resize/' +
         product.images[0];
 
-    const onPromoChange = (value: boolean) => {
+    const onPromoChange = (value: boolean, post_id: string) => {
         product.is_promo = value;
+        if(value) {
+            router.push(ADMIN_PROMO_CREATE_ROUTE + '/' + post_id);
+            return;
+        }
         setSwitched(
             prev => ({...prev, promo: value})
         );
@@ -70,9 +81,7 @@ const ProductRow = ({product}: { product: Product }) => {
         <TableCell>
             <Switch
                 checked={switched.published}
-                onChange={() =>
-                    onPublish()
-                }
+                onChange={() => onPublish()}
                 color="success"
             />
         </TableCell>
@@ -80,7 +89,7 @@ const ProductRow = ({product}: { product: Product }) => {
         <TableCell>
             <Switch
                 checked={switched.promo}
-                onChange={() => onPromoChange(!switched.promo)}
+                onChange={() => onPromoChange(!switched.promo, product.hashed_id)}
                 color="warning"
             />
         </TableCell>

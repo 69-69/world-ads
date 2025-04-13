@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid2';
 import ProductCard from './ProductCard';
 
 // Importing the local image
-const productImg = '../assets/images/products.jpg';
+const productImg = '../assets/images/product.jpg';
 
 const posts = [
     {
@@ -65,7 +65,7 @@ const posts = [
 
 const HomeContent = () => {
     return (
-        <Box sx={{ flexGrow: 1, p: 3 }}>
+        <Box maxWidth="lg" sx={{ flexGrow: 1, p: 3 }}>
             <Grid container spacing={4} justifyContent="center">
                 {posts.map((ad) => (
                     <Grid size={{ xs: 12, sm: 6, md: 4 }} key={ad.id} sx={{ display: 'flex', justifyContent: 'center' }}>

@@ -16,6 +16,7 @@
 }*/
 
 interface Product {
+    id?: number | string;
     slug: string;
     hashed_id: string;
     store_id: number | string;
@@ -33,5 +34,18 @@ interface Product {
     description: string;
 }
 
-export type {Product};
+interface Promo {
+    id?: number | string;
+    hashed_id: string;
+    post_id: string;
+    title: string;
+    promo_price: number;
+    description: string;
+    start_at: string;          // e.g., '2025-04-13 06:58:29'
+    end_at: string;
+    background_image: string;
+}
+
+
+export type {Product, Promo};
 

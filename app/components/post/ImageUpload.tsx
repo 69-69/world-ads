@@ -7,9 +7,10 @@ import {Close, PhotoCamera} from "@mui/icons-material";
 interface ImageUploadProps {
     onFileChange: (files: File[]) => void;
     isError?: string | null;
+    warningMsg?: string | null;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({onFileChange, isError}) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({onFileChange, isError, warningMsg}) => {
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -97,7 +98,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({onFileChange, isError}) => {
 
             {/* Display message when no images are selected */}
             {imagePreviews.length === 0 && (
-                <ToastMessage key={isError} message={isError || 'No images selected'}/>
+                <ToastMessage key={isError} message={isError || warningMsg || 'No images selected'}/>
             )}
         </Box>
     );
