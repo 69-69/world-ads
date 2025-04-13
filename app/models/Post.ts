@@ -46,6 +46,15 @@ interface Promo {
     background_image: string;
 }
 
+interface PromoRowProps {
+    promo: Promo;
+    onAction: (id: number | string | undefined, action: 'edit' | 'delete') => void;
+}
 
-export type {Product, Promo};
+interface ProductRowProps {
+    product: Product;
+    onAction: (id: number | string | undefined, action: 'edit' | 'delete') => void;
+}
+
+export type {Product, Promo, PromoRowProps, ProductRowProps};
 

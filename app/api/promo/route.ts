@@ -7,8 +7,8 @@ import axios from "axios";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-    const postAdEndpoint = '/deal-of-the-day';
-
+    const endpoint = new URL(request.url).searchParams.get('endpoint');
+    const postAdEndpoint = `/deal-of-the-day${endpoint ?? ''}`;
 
     try {
         let headers: Record<string, string> | undefined = undefined;

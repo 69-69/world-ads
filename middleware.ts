@@ -54,11 +54,11 @@ const routeWithHashKey = (req: string, pathname: string): NextResponse => {
     return NextResponse.redirect(new URL(newUrl, req));
 }
 
-// Function to determine if a route needs to be protected for authenticated users
+// Function to determine if a route needs to be (protected) for authenticated users
 const isProtectedAuthRoute = (pathname: string): boolean =>
     PROTECTED_AUTH_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
-// Function to determine if a route needs to be protected for unauthenticated users
+// Function to determine if a route needs to be (protected) for unauthenticated users
 const isProtectedResourceRoute = (pathname: string): boolean =>
     PROTECTED_RESOURCES_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
@@ -74,7 +74,7 @@ export default authOptions.auth((req) => {
             return NextResponse.redirect(new URL(HOME_ROUTE, req.url));
         }
 
-        // Special case: Handle market-place ads route with dynamic hash generation
+        // Special case: Handle marketplace ads route with dynamic hash generation
         if (pathname === POST_ADS_ROUTE) {
             return routeWithHashKey(req.url, POST_ADS_ROUTE);
         }

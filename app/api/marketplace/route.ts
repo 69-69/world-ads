@@ -7,7 +7,8 @@ import axios from "axios";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-    const postAdEndpoint = '/listings';
+    const endpoint = new URL(request.url).searchParams.get('endpoint');
+    const postAdEndpoint = `/market-place${endpoint ?? ''}`;
 
 
     try {

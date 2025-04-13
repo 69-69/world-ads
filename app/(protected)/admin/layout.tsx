@@ -3,7 +3,7 @@ import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import {authOptions} from '@/auth';
 import {AppLinks} from "@/app/models/AppLinks";
-import {ADMIN_PRODUCT_ROUTE, ADMIN_PROMO_ROUTE} from "@/app/hooks/useConstants";
+import {ADMIN_DASHBOARD_ROUTE, ADMIN_PRODUCT_ROUTE, ADMIN_PROMO_ROUTE} from "@/app/hooks/useConstants";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -11,7 +11,7 @@ interface LayoutProps {
 }
 
 const SidebarMenu: AppLinks[] = [
-    {id: 1, title: 'Dashboard', url: '/dashboard'},
+    {id: 1, title: 'Dashboard', url: ADMIN_DASHBOARD_ROUTE},
     {
         id: 2, title: 'Products', url: ADMIN_PRODUCT_ROUTE,
         dropdown: [

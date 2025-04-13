@@ -4,7 +4,7 @@
 //
 const apiHandler = '/api/external';
 const signupHandler = '/api/register';
-const marketplaceHandler = '/api/market-place';
+const marketplaceHandler = '/api/marketplace';
 const promoHandler = '/api/promo'; // Deal of the Day
 const reviewHandler = '/api/user-review';
 const verifyHandler = '/api/verify';
@@ -15,7 +15,7 @@ const signinEndpoint = 'signin';
 // const signupEndpoint = 'signup';
 const signOutEndpoint = 'sign-out';
 // const autoSigninEndpoint = 'auto-signin';
-// const postAdEndpoint = 'market-place';
+// const postAdEndpoint = 'marketplace';
 const adsEndpoint = 'ads';
 const sendVerifyEmail = 'send-verify-email';
 const sendVerifyPhone = 'send-verify-phone';

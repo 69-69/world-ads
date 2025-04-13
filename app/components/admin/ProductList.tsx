@@ -15,10 +15,13 @@ import {
     InputAdornment
 } from '@mui/material';
 import Link from 'next/link';
-import {ADMIN_PRODUCT_ROUTE} from "@/app/hooks/useConstants";
+import {ADMIN_PRODUCT_ROUTE, HOME_ROUTE} from "@/app/hooks/useConstants";
 import ProductRow from "@/app/components/admin/ProductRow";
 import {Product} from "@/app/models/Post";
 import {Search} from "@mui/icons-material";
+import fetchWithRetry from "@/app/api/external/fetchWithRetry";
+import AlertDialog from "@/app/components/AlertDialog";
+import {marketplaceHandler} from "@/app/api/external/endPoints";
 
 type Props = {
     products: Product[];
@@ -27,10 +30,48 @@ type Props = {
 
 export default function ProductList({ products, tableHeader }: Props) {
     const [search, setSearch] = useState('');
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedProductId, setSelectedProductId] = useState<string | number | undefined>(undefined);
+    const [productData, setProductData] = useState<Product[]>(products);
 
-    const filtered = products.filter(p =>
-        p.title.toLowerCase().includes(search.toLowerCase())
-    );
+    const filtered = Array.isArray(productData)
+        ? productData.filter(p =>
+            p.title.toLowerCase().includes(search.toLowerCase())
+        )
+        : [];
+
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setSelectedProductId(undefined);
+    };
+
+    const confirmDeleteProduct = async () => {
+        try {
+            await fetchWithRetry(HOME_ROUTE + marketplaceHandler, {
+                method: 'DELETE',
+                endpoint: `/${selectedProductId}`,
+            });
+            // Update product data to reflect deletion
+            setProductData(prev => prev.filter(product => product.hashed_id !== selectedProductId));
+            handleCloseDialog();
+        } catch (error) {
+            console.error('Failed to delete product:', error);
+            alert('Failed to delete product. Try again later.');
+        }
+    };
+
+    const handleUserAction = (hashed_id: number | string | undefined, action: string) => {
+        if (!hashed_id) return;
+
+        if (action === 'edit') {
+            console.log('Edit product with ID:', hashed_id);
+            // handle edit logic (e.g., open modal or redirect)
+        } else if (action === 'delete') {
+            setSelectedProductId(hashed_id); // Save the product to delete
+            setOpenDialog(true);           // Show confirmation dialog
+        }
+    };
 
     return (
         <Box>
@@ -66,11 +107,22 @@ export default function ProductList({ products, tableHeader }: Props) {
                     </TableHead>
                     <TableBody>
                         {filtered.map(product => (
-                            <ProductRow key={product.hashed_id} product={product} />
+                            <ProductRow key={product.hashed_id} product={product} onAction={handleUserAction} />
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            {/* Confirmation Dialog */}
+            <AlertDialog
+                open={openDialog}
+                handleClose={handleCloseDialog}
+                handleAction={confirmDeleteProduct}
+                title='Delete Confirmation'
+                content='Are you sure you want to delete this product?'
+                firstLabel="Delete"
+                secLabel="Cancel"
+            />
         </Box>
     );
 }

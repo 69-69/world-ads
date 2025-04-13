@@ -237,6 +237,7 @@ const StoreForm = <T, U extends ApiResponse>({
             <AlertDialog
                 open={openDialog}
                 handleClose={handleCloseDialog}
+                handleAction={handleCloseDialog}
                 title='Registration Successful'
                 content='Store setup successful. Continue to sign in.'
                 firstLabel="Sign In"

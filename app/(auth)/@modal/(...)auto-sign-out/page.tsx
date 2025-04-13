@@ -29,6 +29,7 @@ const SessionTimeoutModal = ({open, remainingTime, handleClose}: modelInterface)
         <AlertDialog
             open={open}
             handleClose={handleRedirect}
+            handleAction={handleRedirect}
             title='Session Expired'
             content={`Your session has expired. Please sign in again to continue: ${time} minutes.`}
             firstLabel="Sign in again"

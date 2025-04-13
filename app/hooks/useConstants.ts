@@ -12,10 +12,11 @@ const SETUP_STORE_ROUTE = '/setup-store';
 const FORGOT_PASSWORD_ROUTE = '/forgot-password';
 const RESET_PASSWORD_ROUTE = '/reset-password';
 const POST_ADS_ROUTE = '/post';
-const ADMIN_PRODUCT_ROUTE = '/products';
-const ADMIN_DASHBOARD_ROUTE = '/dashboard';
-const ADMIN_PROMO_ROUTE = '/promo';
-const ADMIN_PROMO_CREATE_ROUTE = ADMIN_PROMO_ROUTE+'/create';
+const ADMIN_ROUTE = '/admin';
+const ADMIN_PRODUCT_ROUTE = ADMIN_ROUTE + '/products';
+const ADMIN_DASHBOARD_ROUTE = ADMIN_ROUTE + '/dashboard';
+const ADMIN_PROMO_ROUTE = ADMIN_ROUTE + '/promo';
+const ADMIN_PROMO_CREATE_ROUTE = ADMIN_PROMO_ROUTE + '/create';
 // const CART_ROUTE = '/cart';
 const SHOP_ROUTE = '/shop';
 const CHECKOUT_ROUTE = '/checkout';
@@ -28,6 +29,7 @@ const PROTECTED_RESOURCES_ROUTES = [
     POST_ADS_ROUTE + '/:path*',
     ORDER_ROUTE,
     CHECKOUT_ROUTE,
+    ADMIN_ROUTE + '/:path*',
 ];
 
 const PROTECTED_AUTH_ROUTES = [

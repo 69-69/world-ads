@@ -156,7 +156,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
     return (
         <Paper elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
             <Box key={title} sx={{mb: 2}}>
-                <Typography variant="h6" align="center" gutterBottom>
+                <Typography fontWeight="bold" variant="h6" align="center" gutterBottom>
                     {title}
                 </Typography>
             </Box>

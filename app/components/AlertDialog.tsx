@@ -8,6 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 type alertInterface = {
     open: boolean;
     handleClose: () => void;
+    handleAction: () => void;
     title?: string;
     content: string;
     firstLabel: string;
@@ -17,6 +18,7 @@ type alertInterface = {
 export default function AlertDialog({
                                         open,
                                         handleClose,
+                                        handleAction,
                                         title,
                                         content,
                                         firstLabel,
@@ -36,7 +38,7 @@ export default function AlertDialog({
                 <DialogContentText id="alert-dialog-description">{content}</DialogContentText>
             </DialogContent>
             <DialogActions sx={{justifyContent: 'space-around'}}>
-                <Button variant={"contained"} size={'small'} onClick={handleClose}>{firstLabel}</Button>
+                <Button variant={"contained"} size={'small'} onClick={handleAction}>{firstLabel}</Button>
                 {secLabel && <Button variant={"outlined"} size={'small'} onClick={handleClose} autoFocus>{secLabel}</Button>}
             </DialogActions>
         </Dialog>
