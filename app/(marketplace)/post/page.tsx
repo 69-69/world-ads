@@ -4,7 +4,7 @@ import StarRatingClient from "@/app/hooks/useStarRating";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {Product} from "@/app/models/Post";
 import Image from 'next/image'
-import {BACKEND_BASE_URL, BACKEND_IMAGE_PATH, BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
+import {BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
 import {marketplaceHandler} from "@/app/api/external/endPoints";
 
 const PostAdsPage = async () => {
@@ -21,7 +21,7 @@ const PostAdsPage = async () => {
                         <div key={post.hashed_id}>
                             {
                                 post.images.map((image, index) => {
-                                    const img = BACKEND_BASE_URL + BACKEND_IMAGE_PATH + BACKEND_MARKETPLACE_IMAGE_PATH + '/resize/' + image;
+                                    const img = BACKEND_MARKETPLACE_IMAGE_PATH + '/resize/' + image;
                                     return (
                                         <Image key={index} src={img} alt={post.title} width={200} height={200}/>
                                     );

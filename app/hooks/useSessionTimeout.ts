@@ -20,15 +20,14 @@ const useSessionTimeout = ({userSession, timeoutDuration = 60 * 60 * 1000}: sess
         if (isNaN(expiry)) return; // Check if expiry is a valid timestamp
         // console.log('expiry', expiry);
 
-        const timer = setInterval(() => {
+        const timer = setInterval(async () => {
             const currentTime = Date.now(); // Get the current time
             const remainingTime = expiry - currentTime; // Calculate remaining time until session expires
 
             if (remainingTime <= 0) {
                 clearInterval(timer); // Stop the timer when session expires
-                handleAutoSignOut(); // Call the server-side action to clear the cookies
+                await handleAutoSignOut(); // Call the server-side action to clear the cookies
                 router.push(SIGNIN_ROUTE); // Redirect to sign-in page
-                return;
             }
 
             setTimeRemaining(remainingTime); // Update the remaining time

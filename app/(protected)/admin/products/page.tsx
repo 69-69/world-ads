@@ -13,7 +13,7 @@ const ProductsPage = async () => {
     const products: Product[] = data;
 
     return (
-        <Container maxWidth='lg' sx={{flexGrow: 1, pt: 20}}>
+        <Container maxWidth='lg' sx={{flexGrow: 1, pt: 5}}>
             <Typography variant="h5" gutterBottom>
                 Product List
             </Typography>

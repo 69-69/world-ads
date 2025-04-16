@@ -20,7 +20,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SessionStatusSnackbar from "@/app/components/SessionStatusSnackbar";
 import {toTitleCase} from "@/app/hooks/useHelper";
 import SessionTimeoutModal from "@/app/(auth)/@modal/(...)auto-sign-out/page";
-// import useSessionTimeout from "@/app/hooks/useSessionTimeout";
 import {UserSession} from "@/app/models/UserSession";
 import useSessionTimeout from "@/app/hooks/useSessionTimeout";
 import {AppLinks} from "@/app/models/AppLinks";
@@ -40,7 +39,11 @@ const StyledLink = styled(Link)(({theme}) => ({
     },
 }));
 
-const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLinks[], }> = ({userSession, sideMenuLinks}) => {
+const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLinks[], }>
+    = ({
+           userSession,
+           sideMenuLinks
+       }) => {
 
     // Safely handle the case where session could be null
     const user = userSession?.user;
@@ -51,11 +54,16 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
 
-    // console.log('time-Remaining ' + timeRemaining);
+    console.log(
+        'time-Remaining:= ' + timeRemaining.toString(),
+        'Session-Expired:= ' + isSessionExpired.toString(),
+        'userSession:= ', userSession?.expires
+    );
 
     useEffect(() => {
-        if (timeRemaining <= 0) {
-            setIsSessionExpired(true); // Show modal when session expires
+        // Show modal dialog if session expires within 1 minute
+        if (timeRemaining <= (60 * 1000)) {
+            setIsSessionExpired(true);
         }
     }, [timeRemaining]);
 
@@ -86,7 +94,7 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
                         >
                             <MenuIcon/>
                         </IconButton>
-                        <StyledLink href={HOME_ROUTE}>
+                        <StyledLink key='home-route' href={HOME_ROUTE}>
                             <Box sx={{flexGrow: 1, fontFamily: 'monospace', fontSize: '2rem', fontWeight: 1000}}>
                                 {APP_NAME_SHORT}
                             </Box>
@@ -142,7 +150,8 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
             </HideOnScroll>
 
             {/* Sidebar */}
-            <SidebarMenu isOpen={openSidebar} onClose={handleSidebarToggle} isScrollingUp={isScrollUp} sideMenuLinks={sideMenuLinks}/>
+            <SidebarMenu isOpen={openSidebar} onClose={handleSidebarToggle} isScrollingUp={isScrollUp}
+                         sideMenuLinks={sideMenuLinks} isSession={userSession !== null}/>
 
             {/* Render Menu Components */}
             <DropdownMenu user={user} anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>

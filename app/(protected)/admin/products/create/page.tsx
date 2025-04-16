@@ -1,15 +1,13 @@
 'use client';
-import React, {use} from 'react';
+
 import Container from "@mui/material/Container";
 import PostForm from '@/app/components/post/PostForm';
 import usePostAd from '@/app/hooks/usePostAd';
 
-const ProductByCategoryPage = ({params}: { params: Promise<{ slug: string }> }) => {
-    const {slug} = use(params);
-
+const ProductByCategoryPage = () => {
     return (
         <Container maxWidth='sm' sx={{flexGrow: 1, pt: 5}}>
-            <p>Page: {slug}</p>
+
             <PostForm
                 title="Post Listing"
                 buttonText="Submit"

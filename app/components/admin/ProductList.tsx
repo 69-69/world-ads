@@ -89,7 +89,7 @@ export default function ProductList({ products, tableHeader }: Props) {
                         },
                     }}
                 />
-                <Link href={`${ADMIN_PRODUCT_ROUTE}/create`}>
+                <Link href={ADMIN_PRODUCT_ROUTE+'/create'}>
                     <Button variant="contained" color="primary">
                         + Add Product
                     </Button>

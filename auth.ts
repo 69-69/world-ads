@@ -104,8 +104,8 @@ export const authOptions = NextAuth({
         async session({session, token}) {
             // If not remember me, set session to expire in 24 hours
             if (!token?.remember_me) {
-                // console.log('Session expires in 1 hour');
-                session.expires = new Date(Date.now() + (60 * 60 * 1000)); // 1 hour in milliseconds
+                const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+                session.expires = new Date(Date.now() + oneHour);
             }
 
             // Attach token data to session

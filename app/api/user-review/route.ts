@@ -1,26 +1,28 @@
 'use server';
 import apiClient from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
-// import {authOptions} from "@/auth";
+import {authOptions} from "@/auth";
 import axios from "axios";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-    const reviewEndpoint = '/review';
-    console.log(`Steve-- ${method} REQUEST --`);
+    const endpoint = new URL(request.url).searchParams.get('endpoint');
+    const reviewEndpoint = `/review${endpoint ?? ''}`;
+
+    // console.log(`Steve-- ${method} REQUEST --`);
 
     try {
         // Get session from NextAuth
-        // const session = await authOptions.auth();
-        // if (!session) {
-        //     return NextResponse.json({error: 'You must be logged in to perform this action'}, {status: 401});
-        // }
-        //
-        // // Get the user_id from the session
-        // const userId = session.user.id;
-        // if (!userId) {
-        //     return NextResponse.json({error: 'User ID is missing from session'}, {status: 400});
-        // }
+        const session = await authOptions.auth();
+        if (!session) {
+            return NextResponse.json({error: 'You must be logged in to perform this action'}, {status: 401});
+        }
+
+        // Get the user_id from the session
+        const userId = session.user.id;
+        if (!userId) {
+            return NextResponse.json({error: 'User ID is missing from session'}, {status: 400});
+        }
 
         // Prepare body and headers for the request
         let headers: Record<string, string> | undefined = undefined;
@@ -28,7 +30,7 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
 
         if (body) {
             // Dynamically assign user_id from the session
-            body.user_id = '214ba36c1d788bd87a461a706835008ab7fe3597f99f9821997ac72b932cf891';
+            body.user_id = userId;
             headers = {'Content-Type': 'application/json'};
             console.log('Steve-Prepared headers for POST/PUT');
         }

@@ -12,23 +12,18 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {PromoRowProps} from "@/app/models/Post";
-import {BACKEND_BASE_URL, BACKEND_IMAGE_PATH, BACKEND_PROMO_IMAGE_PATH} from "@/env_config";
+import {BACKEND_PROMO_IMAGE_PATH} from "@/env_config";
 import {isExpired} from "@/app/hooks/useHelper";
 import {useMemo} from "react";
 
 
-const PromoRow: React.FC<PromoRowProps> = ({ promo, onAction }) => {
+const PromoRow: React.FC<PromoRowProps> = ({promo, onAction}) => {
 
     // Memoize the expiration status to avoid recalculating it multiple times
     const expirationStatus = useMemo(() => isExpired(promo.end_at), [promo.end_at]);
 
     const subItems = [promo.start_at, promo.end_at];
-    const img =
-        BACKEND_BASE_URL +
-        BACKEND_IMAGE_PATH +
-        BACKEND_PROMO_IMAGE_PATH +
-        '/resize/' +
-        promo.background_image;
+    const img = BACKEND_PROMO_IMAGE_PATH +  '/resize/' + promo.background_image;
 
     return <TableRow hover>
         <TableCell>

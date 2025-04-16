@@ -12,11 +12,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-    BACKEND_BASE_URL,
-    BACKEND_IMAGE_PATH,
-    BACKEND_MARKETPLACE_IMAGE_PATH,
-} from "@/env_config";
+import { BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
 import {ADMIN_PROMO_CREATE_ROUTE} from "@/app/hooks/useConstants";
 import {useRouter} from "next/navigation";
 import {useState} from 'react';
@@ -32,12 +28,7 @@ const ProductRow = ({product, onAction}: ProductRowProps) => {
     }>({published: product.published, promo: product.is_promo});
 
     const subItems = [product.category, product.sub_category, product.brand];
-    const img =
-        BACKEND_BASE_URL +
-        BACKEND_IMAGE_PATH +
-        BACKEND_MARKETPLACE_IMAGE_PATH +
-        '/resize/' +
-        product.images[0];
+    const img = BACKEND_MARKETPLACE_IMAGE_PATH + '/resize/' + product.images[0];
 
     const onPromoChange = (value: boolean, post_id: string) => {
         product.is_promo = value;

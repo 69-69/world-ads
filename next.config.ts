@@ -1,5 +1,5 @@
 import type {NextConfig} from "next";
-import {BACKEND_BASE_URL, BACKEND_IMAGE_PATH} from "@/env_config";
+import {BACKEND_BASE_URL, BACKEND_IMAGE_DIR} from "@/env_config";
 
 // Function to extract protocol, hostname and port (if exists)
 const extractProtocolHostAndPort = (url: string): { protocol?: 'http' | 'https', hostname: string, port?: string } => {
@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
                 protocol: urlParts.protocol ?? 'http',
                 hostname: urlParts.hostname,
                 port: urlParts.port,
-                pathname: BACKEND_IMAGE_PATH+'/**', // The path pattern for your images
+                pathname: BACKEND_IMAGE_DIR+'/**', // The path pattern for your images
                 search: '', // Optional
             }
         ],
