@@ -1,6 +1,6 @@
 import {Box, Button} from '@mui/material';
 import Link from 'next/link';
-import {HEADER_LINKS} from "@/app/hooks/useConstants";
+import {HEADER_LINKS} from "@/app/actions/useConstants";
 
 const WebMenu: React.FC = () => {
     return (

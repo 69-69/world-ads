@@ -6,7 +6,7 @@ import {
     POST_ADS_ROUTE,
     PROTECTED_AUTH_ROUTES,
     PROTECTED_RESOURCES_ROUTES, SIGNUP_ROUTE, VERIFICATION_ROUTE, SETUP_STORE_ROUTE,
-} from '@/app/hooks/useConstants';
+} from '@/app/actions/useConstants';
 // import {getToken} from '@auth/core/jwt';
 
 /* const removeParams = (pathname: string): string => {

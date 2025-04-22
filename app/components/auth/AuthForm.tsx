@@ -7,27 +7,19 @@ import CheckButton from '../CheckButton';
 import CustomTextField from "@/app/components/CustomTextField";
 import OrSeparator from "@/app/components/OrSeparator";
 import {GitHubSignInButton, GoogleSignInButton} from "@/app/components/auth/SocialAuthButton";
-import {githubSignIn, googleSignIn} from "@/app/hooks/useSocialAuthButton";
+import {githubSignIn, googleSignIn} from "@/app/actions/useSocialAuthButton";
 import {useRouter} from "next/navigation";
 import {
     ACC_ROLE,
     HOME_ROUTE,
     POLICY_ROUTE
-} from "@/app/hooks/useConstants";
+} from "@/app/actions/useConstants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/hooks/useHelper";
-import {useFormDataChange} from "@/app/hooks/useFormDataChange";
+import {inRange} from "@/app/actions/useHelper";
+import {useFormDataChange} from "@/app/actions/useFormDataChange";
 import CountrySelector from "@/app/components/CountrySelector/CountrySelector";
 import {FormDataModel} from "@/app/models/FormDataModel";
-
-interface Field {
-    name: string;
-    label?: string;
-    suffix?: string;
-    type?: string;
-    value?: string;
-    isTextArea?: boolean;
-}
+import {Field} from "@/app/models/TextField";
 
 interface AuxButton {
     title: string;

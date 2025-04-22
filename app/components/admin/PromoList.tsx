@@ -1,27 +1,15 @@
 'use client';
 
 import React, {useState} from 'react';
-import {
-    Box,
-    Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
-    Paper,
-    InputAdornment
-} from '@mui/material';
-import Link from 'next/link';
-import {ADMIN_PRODUCT_ROUTE, HOME_ROUTE} from "@/app/hooks/useConstants";
 import {Promo} from "@/app/models/Post";
-import {Search} from "@mui/icons-material";
 import PromoRow from "@/app/components/admin/PromoRow";
-import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {promoHandler} from "@/app/api/external/endPoints";
-import AlertDialog from "@/app/components/AlertDialog";
+import ListTable from "@/app/components/admin/ListTable";
+import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
+import {deleteAction} from "@/app/actions/admin/deleteAction";
+import {Box} from "@mui/material";
+import UpdateDialogPage from "@/app/(protected)/admin/deal-of-the-day/updateDialogPage";
+import {handlePromoEdit} from "@/app/actions/admin/editPromo";
 
 type ActionProps = {
     promos: Promo[];
@@ -30,8 +18,15 @@ type ActionProps = {
 
 const PromoList: React.FC<ActionProps> = ({promos, tableHeader}) => {
     const [search, setSearch] = useState('');
-    const [openDialog, setOpenDialog] = useState(false);
-    const [selectedPromoId, setSelectedPromoId] = useState<string | number | undefined>(undefined);
+    const [openAlert, setOpenAlert] = useState<{ open: boolean, id?: string | number | undefined }>({
+        open: false,
+        id: undefined
+    });
+    const [openEditDialog, setOpenEditDialog] = useState<{ open: boolean, id?: string | number | undefined }>({
+        open: false,
+        id: undefined
+    });
+
     const [promoData, setPromoData] = useState<Promo[]>(promos);
 
     const filtered = Array.isArray(promoData)
@@ -41,23 +36,20 @@ const PromoList: React.FC<ActionProps> = ({promos, tableHeader}) => {
         : [];
 
 
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-        setSelectedPromoId(undefined);
-    };
+    const handleCloseAlert = () => setOpenAlert({open: false, id: undefined});
+    const handleCloseDialog = () => setOpenEditDialog({open: false, id: undefined});
 
     const confirmDeletePromo = async () => {
-        try {
-            await fetchWithRetry(HOME_ROUTE + promoHandler, {
-                method: 'DELETE',
-                endpoint: `/${selectedPromoId}`,
-            });
-            // Update promo data to reflect deletion
-            setPromoData(prev => prev.filter(promo => promo.hashed_id !== selectedPromoId));
-            handleCloseDialog();
-        } catch (error) {
-            console.error('Failed to delete promo:', error);
-            alert('Failed to delete promo. Try again later.');
+        const result = await deleteAction({
+            route: promoHandler,
+            id: openAlert.id as string,
+        });
+        if (result?.success) {
+            setPromoData(prev => prev.filter(promo => promo.hashed_id !== openAlert.id));
+            handleCloseAlert();
+        } else {
+            console.error('Failed to delete promo:', result?.error);
+            alert(`Failed to delete promo: ${result?.error}`);
         }
     };
 
@@ -65,63 +57,57 @@ const PromoList: React.FC<ActionProps> = ({promos, tableHeader}) => {
         if (!hashed_id) return;
 
         if (action === 'edit') {
-            console.log('Edit promo with ID:', hashed_id);
+            setOpenEditDialog({open: true, id: hashed_id}); // Save the deal-of-the-day to edit
+            console.log('Edit deal-of-the-day with ID:', hashed_id);
             // handle edit logic (e.g., open modal or redirect)
         } else if (action === 'delete') {
-            setSelectedPromoId(hashed_id); // Save the promo to delete
-            setOpenDialog(true);           // Show confirmation dialog
+            setOpenAlert({open: true, id: hashed_id});           // Show confirmation dialog
         }
     };
 
+      const handleUpdate = async (formData: FormData) => {
+          const hashed_id = openEditDialog.id;
+          if (!hashed_id) return;
+
+          const result = await handlePromoEdit(formData, hashed_id as string);
+
+          if (result?.success) {
+              setPromoData(prev => prev.map(promo => promo.hashed_id === hashed_id ? {...promo, ...formData} : promo));
+              handleCloseDialog();
+          } else {
+              console.error('Failed to update promo:', result?.error);
+              // alert(`Failed to update promo: ${result?.error}`);
+          }
+      };
+
+    const promoRows = filtered.map(promo => {
+        return (
+            <PromoRow key={promo.hashed_id} promo={promo} onAction={handleUserAction}/>
+        );
+    });
+
     return (
         <Box>
-            <Box display="flex" justifyContent="space-between" mb={2}>
-                <TextField
-                    variant="outlined"
-                    placeholder="Search Product..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    size="small"
-                    sx={{width: 'auto'}}
-                    slotProps={{
-                        input: {
-                            startAdornment: <InputAdornment position="start"><Search/></InputAdornment>,
-                        },
-                    }}
-                />
-                <Link href={ADMIN_PRODUCT_ROUTE}>
-                    <Button variant="contained" color="primary">
-                        + Add Promo
-                    </Button>
-                </Link>
-            </Box>
-
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {tableHeader.map((header, index) => (
-                                <TableCell key={index}><b>{header}</b></TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filtered.map(promo => (
-                            <PromoRow key={promo.hashed_id} promo={promo} onAction={handleUserAction}/>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-            {/* Confirmation Dialog */}
-            <AlertDialog
-                open={openDialog}
+            <ListTable
+                tableHeader={tableHeader}
+                rows={promoRows}
+                openDialog={openAlert.open}
+                onCloseDialog={handleCloseDialog}
+                onConfirmAction={confirmDeletePromo}
+                dialogTitle="Delete Confirmation"
+                dialogContent="Are you sure you want to delete this promo?"
+                confirmLabel="Delete"
+                cancelLabel="Cancel"
+                showSearch
+                searchValue={search}
+                onSearchChange={setSearch}
+                labelLink={{ref: ADMIN_PRODUCT_ROUTE, label: 'Add New Promo'}}
+            />
+            <UpdateDialogPage
+                open={openEditDialog.open}
                 handleClose={handleCloseDialog}
-                handleAction={confirmDeletePromo}
-                title='Delete Confirmation'
-                content='Are you sure you want to delete this promo?'
-                firstLabel="Delete"
-                secLabel="Cancel"
+                handleSubmit={handleUpdate}
+                id={openEditDialog.id as string}
             />
         </Box>
     );

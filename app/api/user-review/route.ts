@@ -1,8 +1,10 @@
 'use server';
-import apiClient from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 import {authOptions} from "@/auth";
 import axios from "axios";
+import {redirect} from "next/navigation";
+import {SIGNIN_ROUTE} from "@/app/actions/useConstants";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
@@ -15,6 +17,7 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
         // Get session from NextAuth
         const session = await authOptions.auth();
         if (!session) {
+            redirect(SIGNIN_ROUTE);
             return NextResponse.json({error: 'You must be logged in to perform this action'}, {status: 401});
         }
 
@@ -36,7 +39,8 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
         }
 
         // Make the API request using the provided method
-        const response = await apiClient({
+        const apiClient = await getApiClientWithAuth();
+        const response = await apiClient.request({
             method,
             url: reviewEndpoint,
             data: body,

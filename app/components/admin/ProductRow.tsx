@@ -12,47 +12,51 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
-import {ADMIN_PROMO_CREATE_ROUTE} from "@/app/hooks/useConstants";
+import {BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
+import {ADMIN_PROMO_CREATE_ROUTE, ADMIN_PROMO_ROUTE} from "@/app/actions/useConstants";
 import {useRouter} from "next/navigation";
 import {useState} from 'react';
 import {ProductRowProps} from "@/app/models/Post";
+import publishProduct from "@/app/actions/admin/publishProduct";
+import StatusSnackbar from "@/app/components/StatusSnackbar";
 
 const ProductRow = ({product, onAction}: ProductRowProps) => {
 
     const router = useRouter();
+    const [status, setStatus] = useState<{open:boolean, msg?:string}>({open: false});
+    const handleClose = () => setStatus({open: false});
 
     const [switched, setSwitched] = useState<{
         published?: boolean;
         promo?: boolean;
     }>({published: product.published, promo: product.is_promo});
 
-    const subItems = [product.category, product.sub_category, product.brand];
+    const subItems = [product.category, product.sub_category, product.brand, product.stock_level];
     const img = BACKEND_MARKETPLACE_IMAGE_PATH + '/resize/' + product.images[0];
 
-    const onPromoChange = (value: boolean, post_id: string) => {
-        product.is_promo = value;
-        setSwitched(
-            prev => ({...prev, promo: value})
-        );
-        if (value) {
-            router.push(ADMIN_PROMO_CREATE_ROUTE + '/' + post_id);
-            return;
-        }
+    const onPromoChange = () => {
+        setSwitched(prev => ({...prev, promo: !prev.promo}));
+        const promoMsg = switched.promo ? 'undo':'create';
+        setStatus({open: true, msg: `Please wait while we ${promoMsg} your promo`});
+
+        const gotTo = !switched.promo ? ADMIN_PROMO_CREATE_ROUTE + '/' + product.hashed_id : ADMIN_PROMO_ROUTE;
+        router.push(gotTo);
     };
 
-    const onPublish = () => {
-        setSwitched(
-            prev => ({...prev, published: !prev.published,})
-        );
+    const onPublish = async () => {
+        setSwitched(prev => ({...prev, published: !prev.published,}));
+        const pubMsg = switched.published ? 'unpublish':'publish';
+        setStatus({open: true, msg: `Please wait while we ${pubMsg} your product`});
+
+        await publishProduct(product.hashed_id);
     };
 
     return <TableRow hover>
         <TableCell>
             <Box display="flex" alignItems="center" gap={2}>
-                <Avatar src={img} alt={product.title}/>
+                <Avatar src={img} alt={product.name}/>
                 <Box>
-                    <Typography variant="body1">{product.title}</Typography>
+                    <Typography variant="body1">{product.name}</Typography>
                     <Typography variant="caption" color="text.secondary">
                         {product.slug}
                     </Typography>
@@ -66,22 +70,28 @@ const ProductRow = ({product, onAction}: ProductRowProps) => {
 
         <TableCell>
             <Typography fontWeight="medium">
-                ${product.regular_price.toFixed(2)}
+                ${Number(product.regular_price as number).toFixed(2)}
             </Typography>
         </TableCell>
 
         <TableCell>
             <Switch
                 checked={switched.published}
-                onChange={() => onPublish()}
+                onChange={async () => await onPublish()}
                 color="success"
             />
         </TableCell>
 
         <TableCell>
+            <StatusSnackbar
+                open={status.open}
+                onClose={handleClose}
+                message={status.msg}
+                sx={{ bottom: { xs: 90, sm: 0 } }}
+            />
             <Switch
                 checked={switched.promo}
-                onChange={() => onPromoChange(!switched.promo, product.hashed_id)}
+                onChange={() => onPromoChange()}
                 color="warning"
             />
         </TableCell>

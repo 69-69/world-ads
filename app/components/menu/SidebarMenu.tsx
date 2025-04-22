@@ -1,10 +1,10 @@
 import {Drawer, Box, ListItemButton, ListItemText, Collapse, List} from '@mui/material';
 import Link from 'next/link';
-import {HEADER_LINKS, SIGNIN_ROUTE} from "@/app/hooks/useConstants";
+import {HEADER_LINKS, SIGNIN_ROUTE} from "@/app/actions/useConstants";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import {useState} from "react";
 import {AppLinks} from "@/app/models/AppLinks";
-import {handleAutoSignOut} from "@/app/hooks/useAutoSignOut";
+import {handleAutoSignOut} from "@/app/actions/auth/useAutoSignOut";
 import {useRouter} from "next/navigation";
 
 // Sidebar Component

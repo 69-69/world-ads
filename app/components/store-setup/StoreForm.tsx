@@ -8,24 +8,17 @@ import {
     HOME_ROUTE,
     POLICY_ROUTE, SELLER_TYPE, SIGNIN_ROUTE,
     STORE_CATEGORIES
-} from "@/app/hooks/useConstants";
+} from "@/app/actions/useConstants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/hooks/useHelper";
-import {useFormDataChange} from "@/app/hooks/useFormDataChange";
+import {inRange} from "@/app/actions/useHelper";
+import {useFormDataChange} from "@/app/actions/useFormDataChange";
 import CustomDropdown from "@/app/components/CustomDropdown";
 import CustomRadio from "@/app/components/CustomRadio";
 import CountrySelector from "@/app/components/CountrySelector/CountrySelector";
 import ImageUpload from "@/app/components/post/ImageUpload";
 import {FormDataModel} from "@/app/models/FormDataModel";
 import AlertDialog from "@/app/components/AlertDialog";
-
-interface Field {
-    name: string;
-    label?: string;
-    type?: string;
-    value?: string;
-    isTextArea?: boolean;
-}
+import {Field} from "@/app/models/TextField";
 
 /*
 NOTE:
@@ -186,13 +179,12 @@ const StoreForm = <T, U extends ApiResponse>({
                     options={STORE_CATEGORIES}
                     onSelectChange={handleDropdownChange}
                     isError={errors['category']}
-                    sx={{mt: 2, gridColumn: toFullWidth}}
+                    isFullWidth={false}
                 />
                 <CountrySelector
                     handleChange={handleCountry}
                     isError={errors['country']}
                     label="Store location"
-                    sx={{mt: 2, gridColumn: toFullWidth}}
                 />
                 <Divider sx={{gridColumn: toFullWidth}}/>
                 <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>

@@ -1,54 +1,45 @@
 'use server';
-import apiClient from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
-import {authOptions} from "@/auth";
 import axios from "axios";
 
 
 // General API handler for GET, POST, PUT, DELETE
-async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-    const endpoint = new URL(request.url).searchParams.get('endpoint');
-    const postAdEndpoint = `/market-place${endpoint ?? ''}`;
+async function handleRequest(req: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
+    const endpoint = new URL(req.url).searchParams.get('endpoint');
 
+    const fullEndpoint = `/market-place${endpoint ?? ''}`;
+    // console.log('Steve-Full-Endpoint-2:', fullEndpoint);
+    const isWriteMethod = method === 'POST' || method === 'PUT';
 
     try {
-        let headers: Record<string, string> | undefined = undefined;
-        const body = method === 'POST' || method === 'PUT' ? await request.formData() : undefined;
-        if (body) {
-            // Get session from NextAuth
-            const session = await authOptions.auth();
-            if (!session) {
-                return NextResponse.json({error: 'You must be logged in to perform this action'}, {status: 401});
+
+        const apiClient = await getApiClientWithAuth(req);
+        const headers: Record<string, string> = {};
+
+        let data = undefined;
+        if (isWriteMethod) {
+            // Parse the body differently depending on the method
+            if (method === 'PUT') {
+                data = await req.json();
+                headers['Content-Type'] = 'application/json';
+            } else {
+                data = await req.formData();
+                headers['Content-Type'] = 'multipart/form-data';
             }
-
-            body.append('user_id', session.user.id);
-            headers = {
-                'Content-Type': 'multipart/form-data',
-            };
         }
 
-        const response = await apiClient({
-            method,
-            url: postAdEndpoint,
-            data: body,
-            headers,
-        });
+        const res = await apiClient.request({method, url: fullEndpoint, data, headers});
+        return NextResponse.json(res.data, {status: res.status});
 
-        const {data} = response;
-
-        return NextResponse.json(data, {status: response.status});
-    } catch (error: unknown) {
-        // Type-guarding the error to ensure it's an AxiosError
+    } catch (error) {
         if (axios.isAxiosError(error)) {
-            // console.log('Steve-Axios-error:', error.message, 'steve-res-error', error.response?.data);
-            const errorMessage = error.response?.data?.message || 'Something went wrong';
-            const statusCode = error.response?.status || 500; // Use status from the error response or default to 500
-
-            return NextResponse.json({error: errorMessage}, {status: statusCode});
-        } else {
-            // Handle non-Axios errors (if any)
-            return NextResponse.json({error: 'Something went wrong'}, {status: 500});
+            const message = error.response?.data?.message || error.message || 'Request failed';
+            const status = error.response?.status || 500;
+            return NextResponse.json({error: message}, {status});
         }
+
+        return NextResponse.json({error: 'Unexpected server error'}, {status: 500});
     }
 }
 

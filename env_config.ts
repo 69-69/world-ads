@@ -1,5 +1,5 @@
-const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';  // Access this URL in your browser to see the app
-const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || 'http://127.0.0.1:5000';
+const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 'https://arizona.istorezhona.shop';  // Access this URL in your browser to see the app
+const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || 'https://api.istorezhona.shop';
 const BACKEND_API_ENDPOINT = `${BACKEND_BASE_URL}/api/v1`;
 
 const BACKEND_IMAGE_DIR = process.env.BACKEND_IMAGE_PATH || '/static/uploads';

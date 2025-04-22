@@ -2,7 +2,7 @@
 import React from 'react';
 import Container from "@mui/material/Container";
 import PostForm from '@/app/components/post/PostForm';
-import usePostAd from '@/app/hooks/usePostAd';
+import createProduct from '@/app/actions/admin/createProduct';
 
 const PostAdsPage = () => {
     return (
@@ -11,12 +11,12 @@ const PostAdsPage = () => {
                 title="Post Your Listing"
                 buttonText="Submit"
                 fields={[
-                    {name: 'title', label: 'Title', fullWidth: true},
+                    {name: 'name', label: 'Name', fullWidth: true},
                     {name: 'price', label: 'Price', fullWidth: true},
                     {name: 'discount_price', label: 'Discount Price', fullWidth: true},
                     {name: 'description', label: 'Description', isTextArea: true, fullWidth: true},
                 ]}
-                onSubmit={usePostAd}
+                onSubmit={createProduct}
             />
         </Container>
     );

@@ -3,20 +3,11 @@ import {Button, Paper, Box, Typography} from '@mui/material';
 import ImageUpload from './ImageUpload';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
-import {useFormDataChange} from "@/app/hooks/useFormDataChange";
+import {useFormDataChange} from "@/app/actions/useFormDataChange";
 import MulticolorSelector from "@/app/components/post/MulticolorSelector";
 import {FormDataModel} from "@/app/models/FormDataModel";
 import PromoSchedule from "@/app/components/admin/PromoSchedule";
-
-// Types for the form data and error state
-interface Field {
-    name: string;
-    label: string;
-    type?: string;
-    value?: string;
-    fullWidth?: boolean;
-    isTextArea?: boolean;
-}
+import {Field} from "@/app/models/TextField";
 
 interface PromoFormProps {
     onSubmit: (formData: FormDataModel, productId: string) => Promise<unknown>;
@@ -54,7 +45,7 @@ const PromoForm: React.FC<PromoFormProps> = ({onSubmit, title, product_id, butto
     };
 
     const handleScheduleChange = (data: { start: string; end: string }) => {
-        console.log('Send this to backend:', data);
+        // console.log('Send this to backend:', data);
         if (formData.start_at === data.start && formData.end_at === data.end) return; // Only update if the colors have changed
         setFormData((prev) => ({...prev, start_at: data.start, end_at: data.end}));
         setErrors((prev) => ({...prev, start_at: '', end_at: ''})); // Clear error

@@ -2,9 +2,9 @@
 
 import Container from "@mui/material/Container";
 import PostForm from '@/app/components/post/PostForm';
-import usePostAd from '@/app/hooks/usePostAd';
+import createProduct from '@/app/actions/admin/createProduct';
 
-const ProductByCategoryPage = () => {
+const CreatePage = () => {
     return (
         <Container maxWidth='sm' sx={{flexGrow: 1, pt: 5}}>
 
@@ -12,16 +12,15 @@ const ProductByCategoryPage = () => {
                 title="Post Listing"
                 buttonText="Submit"
                 fields={[
-                    {name: 'title', label: 'Title', fullWidth: true},
+                    {name: 'name', label: 'Name', fullWidth: false},
+                    {name: 'stock_level', label: 'Stock Level', fullWidth: false},
                     {name: 'regular_price', label: 'Regular Price', fullWidth: false},
                     {name: 'sales_price', label: 'Sales Price', fullWidth: false},
-                    {name: 'condition', label: 'Condition', fullWidth: false},
-                    {name: 'stock_level', label: 'Stock Level', fullWidth: false},
                     {name: 'description', label: 'Description', isTextArea: true, fullWidth: true},
                 ]}
-                onSubmit={usePostAd}
+                onSubmit={createProduct}
             />
         </Container>
     );
 };
-export default ProductByCategoryPage
+export default CreatePage

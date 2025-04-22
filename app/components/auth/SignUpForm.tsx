@@ -1,10 +1,10 @@
 'use client';
 
-import {useSignUp} from '@/app/hooks/useSignUp';
+import {createSignUp} from '@/app/actions/auth/createSignUp';
 import AuthForm from '@/app/components/auth/AuthForm';
 import {ApiResponse} from "@/app/models";
 import {SignUpForm, SignUpResponse} from "@/app/models/SignUp";
-import {SIGNIN_ROUTE, VERIFICATION_ROUTE} from '@/app/hooks/useConstants';
+import {SIGNIN_ROUTE, VERIFICATION_ROUTE} from '@/app/actions/useConstants';
 
 
 const SignInForm = () => {
@@ -25,7 +25,7 @@ const SignInForm = () => {
                 {name: 'confirmPassword', label: 'Confirm Password', type: 'password'},
                 {name: 'dial_code', label: 'Dial code', type: 'hidden'},
             ]}
-            onSubmit={useSignUp}
+            onSubmit={createSignUp}
         />
     );
 }

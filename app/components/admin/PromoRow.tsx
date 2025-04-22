@@ -13,7 +13,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {PromoRowProps} from "@/app/models/Post";
 import {BACKEND_PROMO_IMAGE_PATH} from "@/env_config";
-import {isExpired} from "@/app/hooks/useHelper";
+import {isExpired, toSentenceCase} from "@/app/actions/useHelper";
 import {useMemo} from "react";
 
 
@@ -30,7 +30,7 @@ const PromoRow: React.FC<PromoRowProps> = ({promo, onAction}) => {
             <Box display="flex" alignItems="center" gap={2}>
                 <Avatar src={img} alt={promo.title}/>
                 <Box>
-                    <Typography variant="body1">{promo.title}</Typography>
+                    <Typography variant="body1">{toSentenceCase(promo.title)}</Typography>
                     <Typography variant="caption" color="error" fontWeight='bold'>
                         {expirationStatus ? 'Expired' : 'Active'}
                     </Typography>
@@ -38,15 +38,12 @@ const PromoRow: React.FC<PromoRowProps> = ({promo, onAction}) => {
             </Box>
         </TableCell>
 
-        {subItems.map((item, index) => <TableCell key={index}>
-            <Chip label={item}/>
-        </TableCell>)}
-
         <TableCell>
             <Typography fontWeight="medium">
                 ${promo.promo_price.toFixed(2)}
             </Typography>
         </TableCell>
+        {subItems.map((item, index) => <TableCell key={index}><Chip label={item}/></TableCell>)}
 
         <TableCell>
             <IconButton color="info" onClick={() => onAction(promo.hashed_id, 'edit')}>

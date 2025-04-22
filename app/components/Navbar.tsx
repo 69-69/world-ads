@@ -13,16 +13,16 @@ import {
     MailButton,
     NotificationButton,
 } from './menu';
-import {APP_NAME_SHORT, HOME_ROUTE} from '@/app/hooks/useConstants';
+import {APP_NAME_SHORT, HOME_ROUTE} from '@/app/actions/useConstants';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 import SessionStatusSnackbar from "@/app/components/SessionStatusSnackbar";
-import {toTitleCase} from "@/app/hooks/useHelper";
-import SessionTimeoutModal from "@/app/(auth)/@modal/(...)auto-sign-out/page";
+import {toTitleCase} from "@/app/actions/useHelper";
 import {UserSession} from "@/app/models/UserSession";
-import useSessionTimeout from "@/app/hooks/useSessionTimeout";
+import useSessionTimeout from "@/app/actions/auth/useSessionTimeout";
 import {AppLinks} from "@/app/models/AppLinks";
+import LogoutModal from "@/app/(auth)/@modal/(...)logout/page";
 
 // Styled components
 const StyledLink = styled(Link)(({theme}) => ({
@@ -54,11 +54,11 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
 
-    console.log(
+    /*console.log(
         'time-Remaining:= ' + timeRemaining.toString(),
         'Session-Expired:= ' + isSessionExpired.toString(),
         'userSession:= ', userSession?.expires
-    );
+    );*/
 
     useEffect(() => {
         // Show modal dialog if session expires within 1 minute
@@ -77,7 +77,7 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
 
     const handleSidebarToggle = () => setOpenSidebar((prev) => !prev);
 
-    const snackBarMsg = isSessionExpired ? 'Session Expired' : "Welcome " + toTitleCase(user?.name ?? 'Guest');
+    const snackBarMsg = isSessionExpired ? 'Session Expired' : 'Welcome ' + toTitleCase(user?.name ?? 'Guest');
 
     return (
         <Box sx={{flexGrow: 1}}>
@@ -158,13 +158,17 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
             <MobileMenu mobileMoreAnchorEl={mobileMoreAnchorEl} handleMenuToggle={handleMenuToggle}
                         setMobileMoreAnchorEl={setMobileMoreAnchorEl}/>
 
-            {isSessionExpired &&
-                <SessionTimeoutModal
-                    open={isSessionExpired}
-                    remainingTime={timeRemaining}
-                    handleClose={handleModalClose}
-                />}
-            <SessionStatusSnackbar isSignIn={Boolean(user)} message={snackBarMsg}/>
+            {isSessionExpired && (
+                <LogoutModal
+                    params={Promise.resolve({
+                        open: isSessionExpired,
+                        remainingTime: timeRemaining,
+                        handleClose: handleModalClose,
+                    })}
+                />
+            )}
+
+            {snackBarMsg && <SessionStatusSnackbar isSignIn={Boolean(user)} message={snackBarMsg}/>}
         </Box>
     );
 };

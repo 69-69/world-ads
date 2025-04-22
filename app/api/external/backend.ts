@@ -2,10 +2,10 @@ import {AxiosResponse} from 'axios';
 import fetchWithRetry from "./fetchWithRetry";
 import {ApiResponse, Profile, SignUp} from '@/app/models';
 import { Product} from "@/app/models/Post";
-import {getSignupToken} from "@/app/hooks/useCookies";
+import {getSignupToken} from "@/app/actions/useCookies";
 import {SignUpResponse} from "@/app/models/SignUp";
-import {handleApiError} from "@/app/hooks/useThrowError";
-import {getParts, inRange} from "@/app/hooks/useHelper";
+import {handleApiError} from "@/app/actions/useThrowError";
+import {getParts, inRange} from "@/app/actions/useHelper";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
 import {AllCountries} from "@/app/models/AllCountries";
 import {
@@ -66,8 +66,7 @@ const verifyUserEmail = async (email_code: string): Promise<ApiResponse<VerifyCo
         // Extract the User ID from the Signup-signupToken
         const user_id = getParts(signupToken, 0);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {response, data} = await fetchWithRetry(verifyHandler, {
+        const {response} = await fetchWithRetry(verifyHandler, {
             method: 'POST',
             endpoint: `${verifyEmailEndpoint}&verify=email`,
             body: JSON.stringify({user_id, email_code}),
@@ -111,8 +110,7 @@ const verifyUserPhone = async (sms_code: string): Promise<ApiResponse<VerifyCont
         // Extract the User ID from the Signup-signupToken
         const user_id = getParts(signupToken, 0);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {response, data} = await fetchWithRetry(apiHandler, {
+        const {response} = await fetchWithRetry(apiHandler, {
             method: 'POST',
             endpoint: `${verifyPhoneEndpoint}verify=phone`,
             body: JSON.stringify({user_id, sms_code}),

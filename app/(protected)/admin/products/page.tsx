@@ -1,16 +1,13 @@
 import Container from "@mui/material/Container";
-import {HOME_ROUTE} from "@/app/hooks/useConstants";
-import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {Product} from "@/app/models/Post";
-import {marketplaceHandler} from "@/app/api/external/endPoints";
+import { Product} from "@/app/models/Post";
 import {Box, Typography} from "@mui/material";
 import ProductList from "@/app/components/admin/ProductList";
+import getAdminData from "@/app/actions/admin/getAdminData";
+import { marketplaceHandler} from "@/app/api/external/endPoints";
 
 const ProductsPage = async () => {
-    const tableHeader = ['Name', 'Category', 'Sub', 'Brand', 'Price', 'Published', 'Promo', 'Action'];
-
-    const {response, data} = await fetchWithRetry(HOME_ROUTE + marketplaceHandler, {method: 'GET'});
-    const products: Product[] = data;
+    const tableHeader = ['Name', 'Category', 'Sub', 'Brand', 'Stock', 'Price', 'Published', 'Promo', 'Action'];
+    const products: Product[] = await getAdminData<Product[]>({route: marketplaceHandler, endpoint: 'store/'});
 
     return (
         <Container maxWidth='lg' sx={{flexGrow: 1, pt: 5}}>
@@ -25,40 +22,5 @@ const ProductsPage = async () => {
 }
 
 export default ProductsPage;
-
-/*const products: Product[] = [
-    {
-        title: 'Blue Premium T-shirt',
-        category: 'Fashion',
-        sub_category: 'T-shirts',
-        brand: 'Raymond',
-        regular_price: 21.0,
-        sales_price: 21.0,
-        published: true,
-        product_colors: 'blue, red',
-        condition: 'new',
-        slug: 'blue-premium-tshirt',
-        hashed_id: '138942f0',
-        store_id: '1',
-        description: 'A premium quality blue t-shirt made from 100% cotton.',
-        images: ['tshirt.png'],
-    },
-    {
-        title: 'Blue Premium T-shirt',
-        category: 'Fashion',
-        sub_category: 'T-shirts',
-        brand: 'Raymond',
-        regular_price: 21.0,
-        sales_price: 21.0,
-        published: false,
-        product_colors: 'blue, red',
-        condition: 'new',
-        slug: 'blue-premium-tshirt',
-        hashed_id: '738942f0',
-        store_id: '1',
-        description: 'A premium quality blue t-shirt made from 100% cotton.',
-        images: ['tshirt.png'],
-    },
-];*/
 
 

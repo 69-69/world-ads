@@ -1,23 +1,16 @@
 import React, {useState, FormEvent} from 'react';
 import {Button, Paper, Box, Typography} from '@mui/material';
 import ImageUpload from './ImageUpload';
-import CustomDropdown from '../CustomDropdown';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
-import {useFormDataChange} from "@/app/hooks/useFormDataChange";
+import {useFormDataChange} from "@/app/actions/useFormDataChange";
 import MulticolorSelector from "@/app/components/post/MulticolorSelector";
-import {POST_BRANDS, POST_CATEGORIES, SUB_CATEGORIES} from "@/app/hooks/useConstants";
 import {FormDataModel} from "@/app/models/FormDataModel";
-
-// Types for the form data and error state
-interface Field {
-    name: string;
-    label: string;
-    type?: string;
-    value?: string;
-    fullWidth?: boolean;
-    isTextArea?: boolean;
-}
+import {Field} from "@/app/models/TextField";
+import BrandsDropdown from "@/app/components/BrandsDropdown";
+import SubCategoriesDropdown from "@/app/components/SubCategoriesDropdown";
+import ConditionsDropdown from "@/app/components/ConditionsDropdown";
+import ParentCategoriesDropdown from "@/app/components/ParentCategoriesDropdown";
 
 interface PostFormProps {
     onSubmit: (formData: FormDataModel) => Promise<unknown>;
@@ -63,6 +56,12 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         setErrors((prev) => ({...prev, brand: ''}));// Clear error
     };
 
+    const conditionChange = (value: string) => {
+        if (formData.condition === value) return;  // Only update if the value has changed
+        setFormData((prev) => ({...prev, condition: value}));
+        setErrors((prev) => ({...prev, condition: ''}));// Clear error
+    };
+
     // Handle changes to file input (images)
     const handleFileChange = (files: File[]) => {
         if (JSON.stringify(formData.images) === JSON.stringify(files)) return; // Only update if the files array is different
@@ -104,6 +103,9 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         }
         if (!formData.brand) {
             errors.brand = 'Brand is required';
+        }
+        if (!formData.condition) {
+            errors.condition = 'Condition is required';
         }
         if (!formData.product_colors) {
             errors.product_colors = 'Product color(s) is required';
@@ -173,35 +175,41 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                 noValidate
                 autoComplete="off"
             >
-                <CustomDropdown
-                    options={POST_CATEGORIES}
+                <ParentCategoriesDropdown
                     label="Post Category"
                     onSelectChange={postCategoryChange}
                     isError={errors['category']}
-                    sx={{mt: 2, gridColumn: toFullWidth}}
+                    isFullWidth={false}
                 />
-
-                {formData.category && (
-                    <CustomDropdown
-                        options={
-                            SUB_CATEGORIES[formData.category as keyof typeof SUB_CATEGORIES] || []
-                        }
-                        label="Item Category"
-                        onSelectChange={postSubCategoryChange}
-                        isError={errors['sub_category']}
-                        sx={{gridColumn: toFullWidth}}
-                    />
-                )}
-                <CustomDropdown
-                    options={POST_BRANDS}
+                <BrandsDropdown
                     label="Brand"
                     onSelectChange={brandChange}
                     isError={errors['brand']}
-                    sx={{gridColumn: toFullWidth}}
+                    isFullWidth={false}
                 />
+                {formData.category && (
+                    <>
+                        <SubCategoriesDropdown
+                            /*options={
+                                SUB_CATEGORIES[formData.category as keyof typeof SUB_CATEGORIES] || []
+                            }*/
+                            label="Item Category"
+                            onSelectChange={postSubCategoryChange}
+                            isError={errors['sub_category']}
+                            isFullWidth={false}
+                        />
+                        <ConditionsDropdown
+                            label="Condition"
+                            onSelectChange={conditionChange}
+                            isError={errors['condition']}
+                            isFullWidth={false}
+                        />
+                    </>
+                )}
                 <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
                 <MulticolorSelector onColorChange={handleProductColors} isError={errors['product_colors']}/>
                 <ImageUpload onFileChange={handleFileChange} isError={errors['images']}/>
+
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
                     {message.error && <ToastMessage message={message.error}/>}
                     {message.success && <ToastMessage message={message.success} type="success"/>}

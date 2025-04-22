@@ -1,11 +1,11 @@
 'use client';
 
-import {useSignIn} from '@/app/hooks/useSignIn';
+import {useSignIn} from '@/app/actions/auth/useSignIn';
 import AuthForm from '@/app/components/auth/AuthForm';
 import {
     ADMIN_DASHBOARD_ROUTE,
     SIGNUP_ROUTE,
-} from '@/app/hooks/useConstants';
+} from '@/app/actions/useConstants';
 import {ApiResponse, SignIn} from "@/app/models";
 
 

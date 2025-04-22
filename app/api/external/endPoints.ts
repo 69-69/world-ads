@@ -5,6 +5,9 @@
 const apiHandler = '/api/external';
 const signupHandler = '/api/register';
 const marketplaceHandler = '/api/marketplace';
+const brandHandler = '/api/brand'; // Deal of the Day
+const conditionHandler = '/api/condition'; // Deal of the Day
+const categoryHandler = '/api/category'; // Deal of the Day
 const promoHandler = '/api/promo'; // Deal of the Day
 const reviewHandler = '/api/user-review';
 const verifyHandler = '/api/verify';
@@ -36,8 +39,9 @@ export {
     // signupEndpoint,
     signOutEndpoint,
     promoHandler,
-    // autoSigninEndpoint,
-    // postAdEndpoint,
+    brandHandler,
+    conditionHandler,
+    categoryHandler,
     adsEndpoint,
     sendVerifyEmail,
     sendVerifyPhone,

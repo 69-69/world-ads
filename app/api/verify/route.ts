@@ -1,5 +1,5 @@
 'use server';
-import apiClient from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 
 // Set Cookies utility function
@@ -27,7 +27,8 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.json() : undefined;
 
-        const response = await apiClient({method, url: `/${endpoint}`, data: body});
+        const apiClient = await getApiClientWithAuth();
+        const response = await apiClient.request({method, url: `/${endpoint}`, data: body});
 
         const {data} = response;
 

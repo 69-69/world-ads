@@ -2,17 +2,9 @@ import {IconButton, InputAdornment, TextField} from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import React, {useState} from "react";
-import {toSentenceCase} from "@/app/hooks/useHelper";
+import {toSentenceCase} from "@/app/actions/useHelper";
+import {Field} from "@/app/models/TextField";
 
-interface Field {
-    name: string;
-    label?: string;
-    suffix?: string;
-    type?: string;
-    value?: string;
-    fullWidth?: boolean;
-    isTextArea?: boolean;
-}
 
 interface CustomFormData {
     [key: string]: string | number | File | File[];
@@ -48,11 +40,11 @@ const CustomTextField = ({fields, formData, handleChange, errors}: CustomTextPro
         return (
             <TextField
                 key={index}
-                label={toSentenceCase(field.label!)}
                 name={field.name}
+                label={toSentenceCase(field.value || field.label!)}
                 type={fieldType}
                 variant="outlined"
-                value={formData[field.name]}
+                defaultValue={field.value || formData[field.name]}
                 onChange={handleChange}
                 fullWidth={lastIndexIsOdd}
                 multiline={field.isTextArea}
@@ -91,9 +83,10 @@ const CustomTextField = ({fields, formData, handleChange, errors}: CustomTextPro
 
     return fields.map((field: Field, index: number) => {
         const visibleFields = fields.filter((f) => f.type !== 'hidden');
+        const isOdd = field.fullWidth ?? true;
         const totalFields = visibleFields.length;
         const isLast = index === totalFields - 1;
-        const lastIndexIsOdd = isLast && (totalFields % 2 !== 0);
+        const lastIndexIsOdd = isOdd && (isLast && (totalFields % 2 !== 0));
 
         return renderTextInput(field, lastIndexIsOdd, index);
     });

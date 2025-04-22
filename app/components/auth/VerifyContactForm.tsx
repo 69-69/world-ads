@@ -3,21 +3,13 @@
 import React, {ChangeEvent, useEffect, useState} from 'react';
 import {TextField, InputAdornment, Button, Paper, Box, Typography} from '@mui/material';
 import {useRouter} from 'next/navigation';
-import {ACC_ROLE, SETUP_STORE_ROUTE} from "@/app/hooks/useConstants";
+import {ACC_ROLE, SETUP_STORE_ROUTE} from "@/app/actions/useConstants";
 import {ApiResponse} from "@/app/models";
 import ToastMessage from "@/app/components/ToastMessage";
-import {inRange} from "@/app/hooks/useHelper";
+import {inRange} from "@/app/actions/useHelper";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
-import {getIsVerified} from "@/app/hooks/useCookies";
-
-
-// Types for the form data and error state
-interface Field {
-    name: string;
-    label: string;
-    type?: string;
-    value?: string;
-}
+import {getIsVerified} from "@/app/actions/useCookies";
+import {Field} from "@/app/models/TextField";
 
 interface PostFormProps {
     onSubmit: (formData: FormData) => Promise<ApiResponse<VerifyContactResponse>>;
@@ -48,7 +40,8 @@ const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, 
     // Manage state dynamically for each field
     const [formData, setFormData] = useState<Record<string, string>>(
         fields.reduce<Record<string, string>>((acc, field) => {
-            acc[field.name] = field.value || ''; // Initialize field values
+            // acc[field.name] = field.value || ''; // Initialize field values
+            acc[field.name] = String(field.value || ''); // Initialize field values
             return acc;
         }, {})
     );

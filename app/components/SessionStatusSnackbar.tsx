@@ -1,3 +1,39 @@
+import {useEffect, useState} from "react";
+import StatusSnackbar from "@/app/components/StatusSnackbar";
+import StatusAlert from "@/app/components/StatusAlert";
+
+
+interface StatusSnackbarProps {
+    isSignIn: boolean;
+    message: string;
+}
+
+const SessionStatusSnackbar = ({isSignIn, message}: StatusSnackbarProps) => {
+    const [open, setOpen] = useState(true);
+
+    useEffect(() => setOpen(isSignIn), [isSignIn]);
+
+    const handleClose = () => setOpen(false);
+    return (
+        <StatusSnackbar
+            open={open}
+            onClose={handleClose}
+        >
+            {
+                StatusAlert({
+                    message: message,
+                    onClose: handleClose,
+                    severity: isSignIn ? "success" : "error",
+                })
+            }
+        </StatusSnackbar>
+    );
+};
+
+export default SessionStatusSnackbar
+
+
+/*
 import * as React from 'react';
 import Snackbar, {SnackbarCloseReason} from '@mui/material/Snackbar';
 import Alert from "@mui/material/Alert";
@@ -35,7 +71,7 @@ const SessionStatusSnackbar: React.FC<StatusSnackbarProps> = ({isSignIn, message
             <Alert onClose={() => setOpen(false)}
                    severity={isSignIn ? "success" : "error"}
                    variant="filled"
-                   sx={{width: '100%', py: 0, mx: 10,bgcolor: 'background.paper'}}>
+                   sx={{width: '100%', py: 0, mx: 10,bgcolor: 'background.card'}}>
                 {message}
             </Alert>
         </Snackbar>
@@ -43,3 +79,4 @@ const SessionStatusSnackbar: React.FC<StatusSnackbarProps> = ({isSignIn, message
 };
 
 export default SessionStatusSnackbar
+*/

@@ -15,28 +15,30 @@
     images: string[];
 }*/
 
-interface Product {
+interface ids {
     id?: number | string;
-    slug: string;
     hashed_id: string;
+}
+
+interface Product extends ids {
+    slug: string;
     store_id: number | string;
     is_promo: boolean;
-    title: string;
+    name: string;
     images: string[];
     category: string;
     sub_category: string;
     brand: string;
     condition: string;
-    regular_price: number;
-    sales_price: number;
+    regular_price: string | number;
+    sales_price: number | string;
+    stock_level: number | string;
     product_colors: string;
     published: boolean;
     description: string;
 }
 
-interface Promo {
-    id?: number | string;
-    hashed_id: string;
+interface Promo extends ids {
     post_id: string;
     title: string;
     promo_price: number;
@@ -46,15 +48,57 @@ interface Promo {
     background_image: string;
 }
 
-interface PromoRowProps {
+interface OnActionProps {
+    onAction: (id: number | string | undefined, action: 'edit' | 'delete') => void;
+}
+
+interface Brand extends ids {
+    brand: string;
+    store_id: string;
+}
+
+interface Condition extends ids {
+    condition: string;
+    store_id: string;
+}
+
+interface Category extends ids {
+    store_id: string;
+    category: string;
+    parent_category: string;
+}
+
+
+interface BrandProps extends OnActionProps {
+    brand: Brand;
+}
+
+interface ConditionProps extends OnActionProps {
+    condition: Condition;
+}
+
+interface CategoryProps extends OnActionProps {
+    category: Category;
+}
+
+interface PromoRowProps extends OnActionProps {
     promo: Promo;
-    onAction: (id: number | string | undefined, action: 'edit' | 'delete') => void;
 }
 
-interface ProductRowProps {
+interface ProductRowProps extends OnActionProps {
     product: Product;
-    onAction: (id: number | string | undefined, action: 'edit' | 'delete') => void;
 }
 
-export type {Product, Promo, PromoRowProps, ProductRowProps};
+export type {
+    Product,
+    Promo,
+    Brand,
+    Condition,
+    Category,
+    PromoRowProps,
+    ProductRowProps,
+    BrandProps,
+    ConditionProps,
+    CategoryProps
+};
 

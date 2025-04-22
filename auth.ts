@@ -3,8 +3,8 @@ import Google from "@auth/core/providers/google";
 import GitHub from "@auth/core/providers/github";
 import Credentials from "@auth/core/providers/credentials";
 import {Profile} from "@/app/models/Profile";
-import {inRange} from "@/app/hooks/useHelper";
-import apiClient from "@/app/api/external/apiClient";
+import {inRange} from "@/app/actions/useHelper";
+import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {signinEndpoint, signOutEndpoint} from "@/app/api/external/endPoints";
 import {cookies} from "next/headers";
 
@@ -14,7 +14,8 @@ const _signIn = '/signin';
 async function findUser(credentials: Partial<Record<"email" | "password", unknown>>) {
     const {email, password} = credentials;
 
-    const response = await apiClient({
+    const apiClient = await getApiClientWithAuth();
+    const response = await apiClient.request({
         method: 'POST',
         url: `/${signinEndpoint}`,
         data: {email, password},
@@ -29,14 +30,14 @@ async function findUser(credentials: Partial<Record<"email" | "password", unknow
         const cookieStore = await cookies();
         cookieStore.set('access_token', profile.access_token, {
             httpOnly: true,
-            maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
-            secure: process.env.COOKIE_SECURE === "production",
-            path: '/',
+            secure: process.env.COOKIE_SECURE === 'production',
             sameSite: 'lax',
+            path: '/',
+            maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
         });
     }
-
     return profile;
+
 }
 
 const authConfig = [
@@ -135,16 +136,17 @@ export const handleSignOut = async () => {
         }
 
         // Else, sign out using the Backend-API
-        const response = await apiClient({method: 'POST', url: `/${signOutEndpoint}`});
-        if (inRange(response.status, 200, 299)) {
-            const cookieStore = await cookies();
-            cookieStore.delete('authjs.session-token');
-            cookieStore.delete('access_token');
-            cookieStore.delete('profile');
-            cookieStore.delete('signin_method');
-            cookieStore.delete('signup_token');
-            return true;
-        }
+        const apiClient = await getApiClientWithAuth();
+        await apiClient.request({method: 'POST', url: `/${signOutEndpoint}`});
+
+        const cookieStore = await cookies();
+        cookieStore.delete('authjs.session-token');
+        cookieStore.delete('access_token');
+        cookieStore.delete('profile');
+        cookieStore.delete('signin_method');
+        cookieStore.delete('signup_token');
+        return true;
+
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Something went wrong, please try again"

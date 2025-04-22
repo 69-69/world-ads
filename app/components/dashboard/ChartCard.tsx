@@ -6,7 +6,7 @@ export default function ChartCard({label, value, percentage, type}: {
     percentage: number;
     type?: string
 }) {
-
+    console.log('ChartCard', label, value, percentage, type);
     return (
         <Paper elevation={1} component={Box} p={2.5} bgcolor="#fff" borderRadius={2}>
             <Typography variant="body2" color="text.secondary" mb={1}>{label}</Typography>

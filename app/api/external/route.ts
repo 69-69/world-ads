@@ -1,5 +1,5 @@
 'use server';
-import apiClient from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 import axios, {AxiosResponse} from "axios";
 
@@ -51,10 +51,12 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
 
         // console.log('Tony-Request URL:', request.url);
 
+        const apiClient = await getApiClientWithAuth();
+
         // Make the actual request depending on whether it's a third-party API or your own backend API
         const response = isThirdParty
             ? await axios({method, url: endpoint, data: body})
-            : await apiClient({method, url: `/${endpoint}`, data: body});
+            : await apiClient.request({method, url: `/${endpoint}`, data: body});
 
         const res = NextResponse.json(response.data);
 
@@ -91,7 +93,7 @@ export const DELETE = async (request: NextRequest) => await handleRequest(reques
 'use server';
 import apiClient from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
-import {parseJSON, stringifyJSON} from "@/app/hooks/useCookies";
+import {parseJSON, stringifyJSON} from "@/app/actions/useCookies";
 import axios, {AxiosResponse} from "axios";
 
 // Set Cookies

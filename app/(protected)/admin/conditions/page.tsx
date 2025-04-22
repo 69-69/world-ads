@@ -1,0 +1,26 @@
+import Container from "@mui/material/Container";
+import {Condition} from "@/app/models/Post";
+import {conditionHandler} from "@/app/api/external/endPoints";
+import {Box, Typography} from "@mui/material";
+import ConditionList from "@/app/components/admin/ConditionList";
+import getAdminData from "@/app/actions/admin/getAdminData";
+
+const ConditionPage = async () => {
+    const tableHeader = ['Condition', 'Action'];
+
+    const conditions: Condition[] = await await getAdminData<Condition[]>({ route: conditionHandler });
+
+    return (
+        <Container maxWidth='lg' sx={{flexGrow: 1, pt: 5}}>
+            <Typography variant="h5" gutterBottom>
+                Condition List
+            </Typography>
+            <Box>
+                <ConditionList conditions={conditions} tableHeader={tableHeader}/>
+            </Box>
+        </Container>
+    )
+}
+
+export default ConditionPage;
+

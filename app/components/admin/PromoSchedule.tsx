@@ -5,7 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Box from '@mui/material/Box';
 import dayjs, { Dayjs } from 'dayjs';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 type PromoScheduleProps = {
     errors: Record<string, string>;
@@ -16,6 +16,23 @@ export default function PromoSchedule({ errors, onScheduleChange }: PromoSchedul
     const [startDateTime, setStartDateTime] = useState<Dayjs | null>(dayjs());
     const [endDateTime, setEndDateTime] = useState<Dayjs | null>(dayjs().add(1, 'hour'));
     const [validationErrors, setValidationErrors] = useState<{ start?: string; end?: string }>({});
+
+    // Memoize the validateTimes function
+    const validateTimes = useCallback(() => {
+        const errors: { start?: string; end?: string } = {};
+
+        if (!startDateTime || !endDateTime) return;
+
+        if (startDateTime.isAfter(endDateTime)) {
+            errors.end = 'End date must be after start date';
+        }
+
+        if (startDateTime.isBefore(dayjs())) {
+            errors.start = 'Start date cannot be in the past';
+        }
+
+        setValidationErrors(errors);
+    }, [startDateTime, endDateTime]);
 
     useEffect(() => {
         validateTimes();
@@ -31,23 +48,7 @@ export default function PromoSchedule({ errors, onScheduleChange }: PromoSchedul
                 end: endDateTime.toISOString(),
             });
         }
-    }, [startDateTime, endDateTime]);
-
-    const validateTimes = () => {
-        const errors: { start?: string; end?: string } = {};
-
-        if (!startDateTime || !endDateTime) return;
-
-        if (startDateTime.isAfter(endDateTime)) {
-            errors.end = 'End date must be after start date';
-        }
-
-        if (startDateTime.isBefore(dayjs())) {
-            errors.start = 'Start date cannot be in the past';
-        }
-
-        setValidationErrors(errors);
-    };
+    }, [startDateTime, endDateTime, onScheduleChange, validateTimes]);  // Add the missing dependencies here
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -60,6 +61,7 @@ export default function PromoSchedule({ errors, onScheduleChange }: PromoSchedul
             >
                 <DateTimePicker
                     label="Start Date"
+                    name="start_at"
                     value={startDateTime}
                     onChange={(newValue) => setStartDateTime(newValue)}
                     slotProps={{
@@ -73,6 +75,7 @@ export default function PromoSchedule({ errors, onScheduleChange }: PromoSchedul
                 />
                 <DateTimePicker
                     label="End Date"
+                    name="end_at"
                     value={endDateTime}
                     onChange={(newValue) => setEndDateTime(newValue)}
                     slotProps={{
