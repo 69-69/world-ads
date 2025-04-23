@@ -1,4 +1,4 @@
-const PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://arizona.istorezhona.shop';  // Access this URL in your browser to see the app
+const PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://istorezhona.vercel.app';  // Access this URL in your browser to see the app
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://istorezhona.shop/world_ad_api';
 const BACKEND_API_ENDPOINT = `${BACKEND_API_BASE_URL}/api/v1`;
 

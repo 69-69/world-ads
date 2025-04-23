@@ -24,7 +24,7 @@ const extractProtocolHostAndPort = (url: string): {
 
 // Usage
 const urlParts = extractProtocolHostAndPort(BACKEND_API_BASE_URL);
-console.log('steve-urlParts-hostname', urlParts.path ?? 'no-path'); // { protocol: 'https', hostname: 'istorezhona.shop', port: undefined }
+// console.log('steve-urlParts-hostname', urlParts.path ?? 'no-path'); // { protocol: 'https', hostname: 'istorezhona.shop', port: undefined }
 const nextConfig: NextConfig = {
     /* config options here */
 
