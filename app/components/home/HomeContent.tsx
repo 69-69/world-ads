@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid2';
 import ProductCard from './ProductCard';
 
 // Importing the local image
-const productImg = '../assets/images/product.jpg';
+const productImg = '../assets/images/products.jpeg';
 
 const posts = [
     {
@@ -18,20 +18,20 @@ const posts = [
     },
     {
         id: 2,
-        title: "New Product",
+        title: "iPhone 16 Pro",
         seller: "Special Offer",
-        description: "Introducing our new collection of gadgets. Shop now!",
+        description: "Get 50% off your first purchase. Don't miss out!",
         imageUrl: productImg,
-        price: "$19.99",
+        price: "$1200.99",
         link: "/new-products"
     },
     {
         id: 3,
         title: "Winter Sale",
         seller: "Special Zeo",
-        description: "Up to 70% off on winter clothing. Hurry, limited time offer!",
+        description: "Get your iPhone 16 Pro at a discounted price. Limited time offer!",
         imageUrl: productImg,
-        price: "$19.99",
+        price: "$1000.99",
         link: "/winter-sale"
     },
     {
@@ -40,7 +40,7 @@ const posts = [
         seller: "Special Zeo",
         description: "Enjoy free shipping on orders over $50. Shop now!",
         imageUrl: productImg,
-        price: "$19.99",
+        price: "$1900.99",
         link: "/free-shipping"
     },
     {
@@ -49,7 +49,7 @@ const posts = [
         seller: "Special Two",
         description: "Enjoy free shipping on orders over $50. Shop now!",
         imageUrl: productImg,
-        price: "$19.99",
+        price: "$999.99",
         link: "/free-shipping"
     },
     {
@@ -58,7 +58,7 @@ const posts = [
         seller: "Special One",
         description: "Enjoy free shipping on orders over $50. Shop now!",
         imageUrl: productImg,
-        price: "$19.99",
+        price: "$988.99",
         link: "/free-shipping"
     }
 ];
