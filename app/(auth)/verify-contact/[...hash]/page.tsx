@@ -3,7 +3,7 @@
 import VerifyContactForm from '@/app/components/auth/VerifyContactForm';
 import Container from "@mui/material/Container";
 import {useVerifyContact} from "@/app/actions/auth/useVerifyContact";
-import {POST_ADS_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_DASHBOARD_ROUTE} from "@/app/actions/useConstants";
 
 
 const VerifyContactPage = () => {
@@ -17,7 +17,7 @@ const VerifyContactPage = () => {
                     {name: 'email_code', label: 'Email Verification Code'},
                     {name: 'phone_code', label: 'Mobile Verification Code'},
                 ]}
-                redirectTo={POST_ADS_ROUTE}
+                redirectTo={ADMIN_DASHBOARD_ROUTE}
                 onSubmit={useVerifyContact}
             />
         </Container>

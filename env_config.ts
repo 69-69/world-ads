@@ -1,12 +1,12 @@
-const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 'https://arizona.istorezhona.shop';  // Access this URL in your browser to see the app
-const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || 'https://api.istorezhona.shop';
+const PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://arizona.istorezhona.shop';  // Access this URL in your browser to see the app
+const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || 'https://istorezhona.shop/world_ad_api';
 const BACKEND_API_ENDPOINT = `${BACKEND_BASE_URL}/api/v1`;
 
-const BACKEND_IMAGE_DIR = process.env.BACKEND_IMAGE_PATH || '/static/uploads';
+const BACKEND_IMAGE_DIR = process.env.NEXT_PUBLIC_BACKEND_IMAGE_PATH || '/static/uploads';
 const BACKEND_IMAGE_PATH = BACKEND_BASE_URL + BACKEND_IMAGE_DIR;
-const BACKEND_MARKETPLACE_IMAGE_PATH = BACKEND_IMAGE_PATH + (process.env.BACKEND_MARKETPLACE_IMAGE_PATH || '/marketplace_images');
-const BACKEND_PROMO_IMAGE_PATH = BACKEND_IMAGE_PATH + (process.env.BACKEND_PROMO_IMAGE_PATH || '/promo_bg_images');
-const BACKEND_STORE_SETUP_LOGO_PATH = BACKEND_IMAGE_PATH + (process.env.BACKEND_STORE_SETUP_LOGO_PATH || '/store_setup_logo');
+const BACKEND_MARKETPLACE_IMAGE_PATH = BACKEND_IMAGE_PATH + (process.env.NEXT_PUBLIC_BACKEND_MARKETPLACE_IMAGE_PATH || '/marketplace_images');
+const BACKEND_PROMO_IMAGE_PATH = BACKEND_IMAGE_PATH + (process.env.NEXT_PUBLIC_BACKEND_PROMO_IMAGE_PATH || '/promo_bg_images');
+const BACKEND_STORE_SETUP_LOGO_PATH = BACKEND_IMAGE_PATH + (process.env.NEXT_PUBLIC_BACKEND_STORE_SETUP_LOGO_PATH || '/store_setup_logo');
 
 export {
     PUBLIC_BASE_URL,

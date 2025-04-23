@@ -3,7 +3,6 @@ import {NextResponse} from 'next/server';
 import {
     HOME_ROUTE,
     SIGNIN_ROUTE,
-    POST_ADS_ROUTE,
     PROTECTED_AUTH_ROUTES,
     PROTECTED_RESOURCES_ROUTES, SIGNUP_ROUTE, VERIFICATION_ROUTE, SETUP_STORE_ROUTE,
 } from '@/app/actions/useConstants';
@@ -75,9 +74,9 @@ export default authOptions.auth((req) => {
         }
 
         // Special case: Handle marketplace ads route with dynamic hash generation
-        if (pathname === POST_ADS_ROUTE) {
+        /*if (pathname === POST_ADS_ROUTE) {
             return routeWithHashKey(req.url, POST_ADS_ROUTE);
-        }
+        }*/
     }
 
     if (!session) {

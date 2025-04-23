@@ -33,7 +33,12 @@ const nextConfig: NextConfig = {
                 search: '', // Optional
             }
         ],
-    }
+    },
+    experimental: {
+        serverActions: {
+            bodySizeLimit: '3mb',
+        },
+    },
 };
 
 export default nextConfig;

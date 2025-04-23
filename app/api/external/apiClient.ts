@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import axios, {AxiosError, AxiosInstance} from "axios";
 import {BACKEND_API_ENDPOINT} from "@/env_config";
 import {cookies} from "next/headers";

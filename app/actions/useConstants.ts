@@ -11,7 +11,6 @@ const VERIFICATION_ROUTE = '/verify-contact';
 const SETUP_STORE_ROUTE = '/setup-store';
 const FORGOT_PASSWORD_ROUTE = '/forgot-password';
 const RESET_PASSWORD_ROUTE = '/reset-password';
-const POST_ADS_ROUTE = '/post';
 
 const ADMIN_ROUTE = '/admin';
 const ADMIN_DASHBOARD_ROUTE = ADMIN_ROUTE + '/dashboard';
@@ -43,7 +42,6 @@ const ABOUT_ROUTE = '/about';
 const FAQ_ROUTE = '/faq';
 
 const PROTECTED_RESOURCES_ROUTES = [
-    POST_ADS_ROUTE + '/:path*',
     ORDER_ROUTE,
     CHECKOUT_ROUTE,
     ADMIN_ROUTE + '/:path*',
@@ -61,7 +59,7 @@ const ACC_ROLE = ['buyer', 'seller'];
 
 const HEADER_LINKS: AppLinks[] = [
     {title: 'Home', url: HOME_ROUTE},
-    {title: 'Start Selling', url: POST_ADS_ROUTE},
+    {title: 'Start Selling', url: ADMIN_DASHBOARD_ROUTE},
     {title: 'My Account', url: SIGNIN_ROUTE},
     {title: 'Settings', url: ADMIN_DASHBOARD_ROUTE},
 ];
@@ -77,7 +75,7 @@ const FOOTER_LINKS: AppLinks[] = [
     /* Center Section - Links (Second Link Group) */
     {title: 'My Account', url: SIGNIN_ROUTE},
     {title: 'Sign Up', url: SIGNUP_ROUTE},
-    {title: 'Start Selling', url: POST_ADS_ROUTE},
+    {title: 'Start Selling', url: ADMIN_DASHBOARD_ROUTE},
 
     /* Right Section - Links (Third Link Group) */
     {title: 'Terms & Conditions', url: POLICY_ROUTE},
@@ -267,7 +265,6 @@ export {
     RESET_PASSWORD_ROUTE,
     ADMIN_PRO_CONDITION_ROUTE,
     ADMIN_PRO_CONDITION_CREATE_ROUTE,
-    POST_ADS_ROUTE,
     CHECKOUT_ROUTE,
     ORDER_ROUTE,
     ABOUT_ROUTE,

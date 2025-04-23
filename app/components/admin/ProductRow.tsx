@@ -20,7 +20,13 @@ import {ProductRowProps} from "@/app/models/Post";
 import publishProduct from "@/app/actions/admin/publishProduct";
 import StatusSnackbar from "@/app/components/StatusSnackbar";
 
-const ProductRow = ({product, onAction}: ProductRowProps) => {
+interface ProductRowType extends ProductRowProps {
+    open: boolean;
+    handlePopoverClose: () => void;
+    handlePopoverOpen: (event: React.MouseEvent<HTMLElement>) => void;
+}
+
+const ProductRow = ({product, onAction, open, handlePopoverOpen, handlePopoverClose}: ProductRowType) => {
 
     const router = useRouter();
     const [status, setStatus] = useState<{open:boolean, msg?:string}>({open: false});
@@ -53,7 +59,12 @@ const ProductRow = ({product, onAction}: ProductRowProps) => {
 
     return <TableRow hover>
         <TableCell>
-            <Box display="flex" alignItems="center" gap={2}>
+            <Box display="flex" alignItems="center" gap={2}
+                 aria-owns={open ? 'mouse-over-popover' : undefined}
+                 aria-haspopup="true"
+                 onMouseEnter={handlePopoverOpen}
+                 onMouseLeave={handlePopoverClose}
+            >
                 <Avatar src={img} alt={product.name}/>
                 <Box>
                     <Typography variant="body1">{product.name}</Typography>

@@ -23,7 +23,7 @@
     "@mui/x-date-pickers": "^7.28.3",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
-    "next": "15.1.3",
+    "next": "15.2.4",
     "next-auth": "^5.0.0-beta.25",
     "nookies": "^2.5.2",
     "react": "^19.0.0",
