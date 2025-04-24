@@ -10,7 +10,7 @@ interface ErrorProps {
 
 const ErrorPage: React.FC<ErrorProps> = ({error, reset}) => {
     const router = useRouter();
-    console.log('ErrorPage: error: ', error);
+    console.log('ErrorPage: error: ', error?.toString());
 
     const handleReload = () => {
         router.push('/');
@@ -35,7 +35,7 @@ const ErrorPage: React.FC<ErrorProps> = ({error, reset}) => {
                 Something went wrong!
             </Typography>
             <Typography variant="body1" sx={{marginBottom: 2}}>
-                {error?.message || 'An unexpected error occurred...'}
+                {'An unexpected error occurred...'}
             </Typography>
             <Button variant="contained" color="primary" onClick={handleReload}>
                 Try Again

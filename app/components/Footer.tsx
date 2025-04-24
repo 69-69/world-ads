@@ -106,7 +106,7 @@ const Footer = () => {
                     {/* Right Section - Copyright */}
                     <Grid size={{xs: 12, sm: 12, md: 12}} sx={{textAlign: 'right'}}>
                         <Typography variant="body2">
-                            &copy; {new Date().getFullYear()} Your Company. All rights reserved.
+                            &copy; {new Date().getFullYear()} Your {APP_NAME}. All rights reserved.
                         </Typography>
                     </Grid>
                 </Grid>

@@ -5,13 +5,14 @@ import HomeContent from "@/app/components/home/HomeContent";
 import {APP_NAME, SIGNUP_ROUTE} from "@/app/actions/useConstants";
 
 // Importing the local image
-const heroImage = '../assets/images/ads-bg.png';
+const heroImage = '../assets/images/istorezhona-bg.png';
 
 const heroBanner = () => {
     return (
         <Hero
-            title={APP_NAME}
-            subtitle="Global platform to connect advertisers with audiences across various digital channels."
+            title=""
+            subtitle="Shop all your favorite products in one place."
+            // subtitle="Global platform to connect advertisers with audiences across various digital channels."
             buttonText="Get Started"
             buttonLink={SIGNUP_ROUTE}
             backgroundImage={heroImage}
@@ -26,7 +27,7 @@ const HomePage = () => {
             {heroBanner()}
             <Container maxWidth='lg' sx={{textAlign: 'center', marginTop: 4}}>
                 <Typography variant="h3" gutterBottom>
-                    Welcome to the App!
+                    Welcome to {APP_NAME}
                 </Typography>
                 {/* Content Section */}
                 <HomeContent/>

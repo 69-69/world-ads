@@ -66,6 +66,7 @@ export default authOptions.auth((req) => {
     const session = req.auth;
     // await getToken({req, secret: process.env.AUTH_SEC});
     const {pathname} = req.nextUrl;
+    console.log('steve-middleware-pathname', pathname);
 
     if (session) {
         // If user is authenticated, protect auth routes (e.g. sign-in, sign-up, setup-store,...)
@@ -120,6 +121,8 @@ export const config = {
         '/checkout',
         '/setup-store',
         '/post/:path*', // Dynamic route
+        '/admin/dashboard',
+        '/admin/:path*', // Dynamic route
 
         // Auth Routes
         '/signin',

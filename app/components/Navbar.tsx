@@ -13,7 +13,7 @@ import {
     MailButton,
     NotificationButton,
 } from './menu';
-import {APP_NAME_SHORT, HOME_ROUTE} from '@/app/actions/useConstants';
+import {APP_NAME, HOME_ROUTE} from '@/app/actions/useConstants';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -96,7 +96,7 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
                         </IconButton>
                         <StyledLink key='home-route' href={HOME_ROUTE}>
                             <Box sx={{flexGrow: 1, fontFamily: 'monospace', fontSize: '2rem', fontWeight: 1000}}>
-                                {APP_NAME_SHORT}
+                                {APP_NAME}
                             </Box>
                         </StyledLink>
 

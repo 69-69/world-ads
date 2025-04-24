@@ -1,8 +1,7 @@
 import {PUBLIC_BASE_URL} from "@/env_config";
 import {AppLinks} from "@/app/models/AppLinks";
 
-const APP_NAME = 'World Ads Center';
-const APP_NAME_SHORT = 'iStoreZhona'; // WAC
+const APP_NAME = 'iStorezhona';
 const HOME_ROUTE = PUBLIC_BASE_URL;
 const POLICY_ROUTE = '/terms-and-conditions';
 const SIGNIN_ROUTE = '/signin';
@@ -44,6 +43,7 @@ const FAQ_ROUTE = '/faq';
 const PROTECTED_RESOURCES_ROUTES = [
     ORDER_ROUTE,
     CHECKOUT_ROUTE,
+    ADMIN_ROUTE,
     ADMIN_ROUTE + '/:path*',
 ];
 
@@ -235,7 +235,6 @@ const SELLER_TYPE = [
 
 export {
     APP_NAME,
-    APP_NAME_SHORT,
     ACC_ROLE,
     SELLER_TYPE,
     PARENT_CATEGORIES,

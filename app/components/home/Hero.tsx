@@ -43,7 +43,7 @@ const Hero: React.FC<HeroProps> = ({title, subtitle, buttonText, buttonLink, bac
                 <Typography variant="h3" sx={{fontWeight: 'bold', mb: 2}}>
                     {title}
                 </Typography>
-                <Typography variant="h5" sx={{mb: 4}}>
+                <Typography variant="h5" sx={{mb: 4, color: 'white'}}>
                     {subtitle}
                 </Typography>
                 <StyledButton
