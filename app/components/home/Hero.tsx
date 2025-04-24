@@ -38,7 +38,7 @@ const StyledBox = styled(Box, {
 
 const Hero: React.FC<HeroProps> = ({title, subtitle, buttonText, buttonLink, backgroundImage}) => {
     return (
-        <StyledBox bgImage={backgroundImage}  sx={{my:8}}>
+        <StyledBox bgImage={backgroundImage}  sx={{my:8, height: '100vh'}}>
             <Box sx={{maxWidth: '600px', color: 'red'}}>
                 <Typography variant="h3" sx={{fontWeight: 'bold', mb: 2}}>
                     {title}

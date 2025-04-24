@@ -1,11 +1,10 @@
 import {Drawer, Box, ListItemButton, ListItemText, Collapse, List} from '@mui/material';
 import Link from 'next/link';
-import {HEADER_LINKS, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {HEADER_LINKS} from "@/app/actions/useConstants";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import {useState} from "react";
 import {AppLinks} from "@/app/models/AppLinks";
-import {handleAutoSignOut} from "@/app/actions/auth/useAutoSignOut";
-import {useRouter} from "next/navigation";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 // Sidebar Component
 const SidebarMenu: React.FC<{
@@ -22,11 +21,6 @@ const SidebarMenu: React.FC<{
           onClose,
       }) => {
 
-    const router = useRouter();
-    const handleLogout = async () => {
-        await handleAutoSignOut();
-        router.push(SIGNIN_ROUTE);
-    }
     const marginTop = isOpen && isScrollingUp ? 0 : 8;
 
     const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean }>({});
@@ -70,6 +64,11 @@ const SidebarMenu: React.FC<{
         );
     };
 
+    const handleSignOut = async () => {
+        await signOut();
+        onClose(); // Close the sidebar after sign out
+    }
+
     return (
         <Drawer
             variant="temporary"
@@ -94,7 +93,7 @@ const SidebarMenu: React.FC<{
 
                 {/* Logout button pushed to the bottom */}
                 <Box sx={{mt: 'auto', mb: marginTop, display: isSession ? 'block' : 'none'}}>
-                    <ListItemButton onClick={handleLogout} component="div">
+                    <ListItemButton onClick={handleSignOut} component="div">
                         <ListItemText primary="Logout"/>
                     </ListItemButton>
                 </Box>

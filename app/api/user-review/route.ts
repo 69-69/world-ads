@@ -1,7 +1,7 @@
 'use server';
 import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {NextRequest, NextResponse} from "next/server";
-import {authOptions} from "@/auth";
+import authOptions from "@/auth";
 import axios from "axios";
 import {redirect} from "next/navigation";
 import {SIGNIN_ROUTE} from "@/app/actions/useConstants";

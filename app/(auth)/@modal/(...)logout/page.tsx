@@ -1,8 +1,8 @@
 'use client';
-import {redirect, usePathname } from "next/navigation";
+import {usePathname } from "next/navigation";
 import {SIGNIN_ROUTE} from "@/app/actions/useConstants";
 import AlertDialog from "@/app/components/AlertDialog";
-import {handleAutoSignOut} from "@/app/actions/auth/useAutoSignOut";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 import { useEffect, useState} from "react";
 
 type logoutModalProps = {
@@ -48,9 +48,8 @@ export default function LogoutModal({ params }: logoutModalProps ) {
         return null; // Don't show the modal if on the sign-in page
     }
     const handleRedirect = async () => {
-        await handleAutoSignOut();
+        await signOut();
         handleClose(); // Close the modal
-        redirect(SIGNIN_ROUTE);
     };
 
     return (

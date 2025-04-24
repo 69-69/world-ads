@@ -5,7 +5,7 @@ import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {promoHandler} from "@/app/api/external/endPoints";
 import {handleApiError} from "@/app/actions/useThrowError";
 import {NextResponse} from "next/server";
-import {authOptions} from "@/auth";
+import authOptions from "@/auth";
 import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
 import {redirect} from "next/navigation";
 

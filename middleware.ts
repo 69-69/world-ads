@@ -1,4 +1,4 @@
-import {authOptions} from "@/auth";
+import authOptions from "@/auth";
 import {NextResponse} from 'next/server';
 import {
     HOME_ROUTE,

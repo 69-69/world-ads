@@ -1,7 +1,7 @@
 // app/actions/getAdminData.ts
 'use server';
 
-import {authOptions} from "@/auth";
+import authOptions from "@/auth";
 import {HOME_ROUTE} from "@/app/actions/useConstants";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 
@@ -36,7 +36,7 @@ export default getAdminData;
 
 /*
 'use server';
-import {authOptions} from "@/auth";
+import authOptions from "@/auth";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {HOME_ROUTE} from "@/app/actions/useConstants";
 import {brandHandler} from "@/app/api/external/endPoints";

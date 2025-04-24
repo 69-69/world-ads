@@ -4,7 +4,7 @@
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {brandHandler} from "@/app/api/external/endPoints";
 import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
-import {authOptions} from "@/auth";
+import authOptions from "@/auth";
 import {redirect} from "next/navigation";
 
 export async function handleSubmit(formData: FormData) {

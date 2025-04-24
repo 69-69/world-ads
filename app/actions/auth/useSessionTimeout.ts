@@ -1,8 +1,7 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {SIGNIN_ROUTE} from "@/app/actions/useConstants";
 import {UserSession} from "@/app/models/UserSession";
-import {handleAutoSignOut} from "@/app/actions/auth/useAutoSignOut";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 interface sessionStatusInter {
     userSession: UserSession | null;
@@ -26,8 +25,7 @@ const useSessionTimeout = ({userSession, timeoutDuration = 60 * 60 * 1000}: sess
 
             if (remainingTime <= 0) {
                 clearInterval(timer); // Stop the timer when session expires
-                await handleAutoSignOut(); // Call the server-side action to clear the cookies
-                router.push(SIGNIN_ROUTE); // Redirect to sign-in page
+                await signOut();
             }
 
             setTimeRemaining(remainingTime); // Update the remaining time

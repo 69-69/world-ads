@@ -1,7 +1,7 @@
 import {Box, Paper, Typography} from '@mui/material';
 import Image from 'next/image';
 import Greeting from "@/app/components/Greeting";
-import {authOptions} from "@/auth";
+import authOptions from "@/auth";
 import {toSentenceCase} from "@/app/actions/useHelper";
 
 export default async function DashboardHeader() {

@@ -1,6 +1,6 @@
 'use server';
 
-import {authOptions} from '@/auth';
+import authOptions from '@/auth';
 import {SignIn} from "@/app/models/SignIn";
 import {handleUIError} from "@/app/actions/useThrowError";
 import {ApiResponse} from "@/app/models/ApiResponse";
@@ -20,6 +20,7 @@ export const useSignIn = async (formData: SignIn): Promise<ApiResponse> => {
             message: isSuccess ? 'Sign-in successful' : 'Sign-in failed',
         };
     } catch (error) {
+        console.error('Error during sign-in:', error);
         handleUIError(error, 'Sign-in');
     }
 };

@@ -7,7 +7,7 @@ import CheckButton from '../CheckButton';
 import CustomTextField from "@/app/components/CustomTextField";
 import OrSeparator from "@/app/components/OrSeparator";
 import {GitHubSignInButton, GoogleSignInButton} from "@/app/components/auth/SocialAuthButton";
-import {githubSignIn, googleSignIn} from "@/app/actions/useSocialAuthButton";
+import {githubSignIn, googleSignIn} from "@/app/actions/auth/socialAuth";
 import {useRouter} from "next/navigation";
 import {
     ACC_ROLE,

@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
-import {authOptions} from '@/auth';
+import authOptions from '@/auth';
 import {AppLinks} from "@/app/models/AppLinks";
 import {
     ADMIN_BRAND_CREATE_ROUTE,

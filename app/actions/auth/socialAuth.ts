@@ -1,5 +1,5 @@
 'use server';
-import {authOptions, handleSignOut} from "@/auth";
+import authOptions from "@/auth";
 import {handleUIError} from "@/app/actions/useThrowError";
 
 // Google Sign-In function
@@ -24,12 +24,4 @@ const githubSignIn = async () => {
     }
 }
 
-const userSignOut = async () => {
-    try {
-        return await handleSignOut();
-    } catch (error) {
-        handleUIError(error, 'Sign-Out');
-    }
-}
-
-export {googleSignIn, githubSignIn, userSignOut};
+export {googleSignIn, githubSignIn};

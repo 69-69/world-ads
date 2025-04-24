@@ -1,9 +1,9 @@
 import React from "react";
 import {Menu, MenuItem} from '@mui/material';
-import {userSignOut} from "@/app/actions/useSocialAuthButton";
 import {toTitleCase} from "@/app/actions/useHelper";
-import {ADMIN_DASHBOARD_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_DASHBOARD_ROUTE} from "@/app/actions/useConstants";
 import {useRouter} from "next/navigation";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 interface RenderDropdownProps {
     user?: Record<string, unknown> | null;
@@ -21,10 +21,7 @@ const DropdownMenu: React.FC<RenderDropdownProps> = ({anchorEl, setAnchorEl, use
         {label: 'My account', action: () => console.log('My account')},
         {label: 'Settings', action: () => router.push(ADMIN_DASHBOARD_ROUTE)},
         {
-            label: 'Sign out', action: async () => {
-                userSignOut().then(() => router.push(SIGNIN_ROUTE));
-                return;
-            }
+            label: 'Sign out', action: async () => await signOut()
         },
     ];
 

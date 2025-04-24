@@ -26,8 +26,15 @@ const extractProtocolHostAndPort = (url: string): {
 const urlParts = extractProtocolHostAndPort(BACKEND_API_BASE_URL);
 // console.log('steve-urlParts-hostname', urlParts.path ?? 'no-path'); // { protocol: 'https', hostname: 'istorezhona.shop', port: undefined }
 const nextConfig: NextConfig = {
-    /* config options here */
-
+    env: {
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+        BACKEND_API_BASE_URL: BACKEND_API_BASE_URL,
+        BACKEND_IMAGE_DIR: BACKEND_IMAGE_DIR,
+        BACKEND_IMAGE_PATH: BACKEND_API_BASE_URL + BACKEND_IMAGE_DIR,
+        BACKEND_MARKETPLACE_IMAGE_PATH: BACKEND_API_BASE_URL + (process.env.NEXT_PUBLIC_BACKEND_MARKETPLACE_IMAGE_PATH || '/marketplace_images'),
+        BACKEND_STORE_SETUP_LOGO_PATH: BACKEND_API_BASE_URL + (process.env.NEXT_PUBLIC_BACKEND_STORE_SETUP_LOGO_PATH || '/store_setup_logo'),
+        BACKEND_PROMO_IMAGE_PATH: BACKEND_API_BASE_URL + (process.env.NEXT_PUBLIC_BACKEND_PROMO_IMAGE_PATH || '/promo_bg_images'),
+    },
     // config hostname for image optimization
     images: {
         remotePatterns: [

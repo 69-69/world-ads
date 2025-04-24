@@ -5,11 +5,9 @@ import Credentials from "@auth/core/providers/credentials";
 import {Profile} from "@/app/models/Profile";
 import {inRange} from "@/app/actions/useHelper";
 import {getApiClientWithAuth} from "@/app/api/external/apiClient";
-import {signinEndpoint, signOutEndpoint} from "@/app/api/external/endPoints";
+import {signinEndpoint} from "@/app/api/external/endPoints";
 import {cookies} from "next/headers";
 
-
-const _signIn = '/signin';
 
 async function findUser(credentials: Partial<Record<"email" | "password", unknown>>) {
     const {email, password} = credentials;
@@ -33,7 +31,7 @@ async function findUser(credentials: Partial<Record<"email" | "password", unknow
             secure: process.env.COOKIE_SECURE === 'production',
             sameSite: 'lax',
             path: '/',
-            maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
+            maxAge: 60 * 60, // 1 hour in seconds  * 1000
         });
     }
     return profile;
@@ -77,10 +75,13 @@ const authConfig = [
     }),
 ];
 
-export const authOptions = NextAuth({
+const authOptions = NextAuth({
     providers: authConfig,
-    session: {strategy: "jwt"},
-    pages: {signIn: _signIn, error: '/error'},
+    session: {
+        strategy: "jwt",
+        maxAge: 24 * 60 * 60, // 24 hours in seconds
+    },
+    pages: {signIn: '/signin', error: '/error'},
     callbacks: {
         async redirect({url, baseUrl}) {
             // Ensure that the redirect URL is valid and points to a safe location
@@ -123,34 +124,10 @@ export const authOptions = NextAuth({
             return session;
         },
     },
+    secret: process.env.AUTH_SECRET,
 });
 
-// Handle sign-out based on the sign-in method
-export const handleSignOut = async () => {
-    try {
-        // If Signed in via Social Media, sign out using the Auth provider
-        const session = await authOptions.auth();
-        if (session?.user.signin_method !== 'credentials') {
-            await authOptions.signOut({redirectTo: _signIn});
-            return true;
-        }
-
-        // Else, sign out using the Backend-API
-        const apiClient = await getApiClientWithAuth();
-        await apiClient.request({method: 'POST', url: `/${signOutEndpoint}`});
-
-        const cookieStore = await cookies();
-        cookieStore.delete('authjs.session-token');
-        cookieStore.delete('access_token');
-        cookieStore.delete('profile');
-        cookieStore.delete('signin_method');
-        cookieStore.delete('signup_token');
-        return true;
-
-    } catch (error) {
-        throw new Error(
-            error instanceof Error ? error.message : "Something went wrong, please try again"
-        );
-    }
-};
-
+/*export const { auth, handlers, signIn, signOut } = NextAuth({
+  providers: [GitHub, Google],
+})*/
+export default authOptions;

@@ -7,28 +7,19 @@ import {APP_NAME, SIGNUP_ROUTE} from "@/app/actions/useConstants";
 // Importing the local image
 const heroImage = '../assets/images/istorezhona-bg.png';
 
-const heroBanner = () => {
-    return (
-        <Hero
-            title=""
-            subtitle="Shop all your favorite products in one place."
-            // subtitle="Global platform to connect advertisers with audiences across various digital channels."
-            buttonText="Get Started"
-            buttonLink={SIGNUP_ROUTE}
-            backgroundImage={heroImage}
-        />
-    );
-};
-
 const HomePage = () => {
     return (
         <Box>
-            {/* Hero Section */}
-            {heroBanner()}
+            <Hero
+                title=""
+                subtitle="Shop all your favorite products in one place."
+                // subtitle="Global platform to connect advertisers with audiences across various digital channels."
+                buttonText="Get Started"
+                buttonLink={SIGNUP_ROUTE}
+                backgroundImage={heroImage}
+            />
             <Container maxWidth='lg' sx={{textAlign: 'center', marginTop: 4}}>
-                <Typography variant="h3" gutterBottom>
-                    Welcome to {APP_NAME}
-                </Typography>
+                <Typography variant="h3" gutterBottom> Welcome to {APP_NAME} </Typography>
                 {/* Content Section */}
                 <HomeContent/>
             </Container>

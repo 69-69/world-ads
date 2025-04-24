@@ -3,7 +3,7 @@
 
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
 import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
-import {authOptions} from "@/auth";
+import authOptions from "@/auth";
 import {redirect} from "next/navigation";
 
 export const deleteAction = async (param: { route: string; id: string }) => {

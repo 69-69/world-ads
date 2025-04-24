@@ -115,8 +115,6 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
                                 <>
                                     <MailButton count={3}/>
                                     <NotificationButton count={2}/>
-                                    <MailButton count={2}/>
-                                    <NotificationButton count={4}/>
                                     <IconButton
                                         size="large"
                                         edge="end"
