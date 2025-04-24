@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {ChromePicker} from 'react-color';
 import Grid from '@mui/material/Grid2';
 import {Box, Button, Typography, Dialog, DialogActions, DialogContent} from '@mui/material';
 import ToastMessage from "@/app/components/ToastMessage";
+import {ChromePicker} from "@/app/types/react-color";
 
 interface Color {
     hex: string;
