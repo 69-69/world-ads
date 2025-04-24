@@ -1,4 +1,4 @@
-declare module '@/app/types/react-color' {
+declare module 'react-color' {
     import * as React from 'react';
 
     export interface ChromePickerProps {
