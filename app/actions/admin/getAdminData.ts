@@ -4,13 +4,14 @@
 import authOptions from "@/auth";
 import {HOME_ROUTE} from "@/app/actions/useConstants";
 import fetchWithRetry from "@/app/api/external/fetchWithRetry";
+import {inRange} from "@/app/actions/useHelper";
 
 type AdminDataParams = {
     route: string;
     endpoint?: string;
 };
 
-const getAdminData = async <T>({ route, endpoint }: AdminDataParams): Promise<T | []> => {
+const getAdminData = async <T>({route, endpoint}: AdminDataParams): Promise<T | []> => {
     const session = await authOptions.auth();
     if (!session?.user) {
         return [];
@@ -18,13 +19,16 @@ const getAdminData = async <T>({ route, endpoint }: AdminDataParams): Promise<T 
 
     try {
         const extra = endpoint ? endpoint : '';
-        const {data} = await fetchWithRetry(HOME_ROUTE + route, {
+        const {response, data} = await fetchWithRetry(HOME_ROUTE + route, {
             method: 'GET',
             endpoint: `/${extra}${session?.user.store_id}`,
             headers: {Authorization: `Bearer ${session?.user.access_token}`}
         });
+        if (inRange(response.status, 200, 299)) {
+            return data as T;
+        }
 
-        return data as T;
+        return [] as T;
     } catch (error) {
         console.error(`Failed to fetch data from :`, error);
         return [];

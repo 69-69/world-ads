@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {PromoRowProps} from "@/app/models/Post";
 import {BACKEND_PROMO_IMAGE_PATH} from "@/env_config";
 import {isExpired, toSentenceCase} from "@/app/actions/useHelper";
-import {useMemo} from "react";
+import React, {useMemo} from "react";
 
 
 const PromoRow: React.FC<PromoRowProps> = ({promo, onAction}) => {
@@ -23,12 +23,20 @@ const PromoRow: React.FC<PromoRowProps> = ({promo, onAction}) => {
     const expirationStatus = useMemo(() => isExpired(promo.end_at), [promo.end_at]);
 
     const subItems = [promo.start_at, promo.end_at];
-    const img = BACKEND_PROMO_IMAGE_PATH +  '/resize/' + promo.background_image;
+
+    // check if promo.background_image a color code or image path
+    if (!promo.background_image.includes('#')) {
+        promo.background_image = BACKEND_PROMO_IMAGE_PATH + '/resize/' + promo.background_image;
+    }
 
     return <TableRow hover>
         <TableCell>
             <Box display="flex" alignItems="center" gap={2}>
-                <Avatar src={img} alt={promo.title}/>
+                <Avatar
+                    src={promo.background_image}
+                    alt={promo.title}
+                    sx={{background: promo.background_image}}
+                />
                 <Box>
                     <Typography variant="body1">{toSentenceCase(promo.title)}</Typography>
                     <Typography variant="caption" color="error" fontWeight='bold'>

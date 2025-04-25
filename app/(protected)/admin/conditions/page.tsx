@@ -8,7 +8,8 @@ import getAdminData from "@/app/actions/admin/getAdminData";
 const ConditionPage = async () => {
     const tableHeader = ['Condition', 'Action'];
 
-    const conditions: Condition[] = await await getAdminData<Condition[]>({ route: conditionHandler });
+    const data = await await getAdminData<Condition[]>({route: conditionHandler});
+    const conditions: Condition[] = data.length ? data : [];
 
     return (
         <Container maxWidth='lg' sx={{flexGrow: 1, pt: 5}}>
@@ -16,7 +17,13 @@ const ConditionPage = async () => {
                 Condition List
             </Typography>
             <Box>
-                <ConditionList conditions={conditions} tableHeader={tableHeader}/>
+                {
+                    conditions.length === 0 ?
+                        <Typography variant="h6" gutterBottom sx={{textAlign: 'center', mt: 5}}>
+                            No Conditions Found
+                        </Typography> :
+                        <ConditionList conditions={conditions} tableHeader={tableHeader}/>
+                }
             </Box>
         </Container>
     )

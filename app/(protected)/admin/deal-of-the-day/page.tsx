@@ -8,8 +8,8 @@ import {promoHandler} from "@/app/api/external/endPoints";
 const PromosPage = async () => {
     const tableHeader = ['Name', 'Promo Price', 'Starts At', 'Ends At', 'Action'];
 
-    const promos: Promo[] = await getAdminData<Promo[]>({route: promoHandler, endpoint: 'store/'});
-
+    const data = await getAdminData<Promo[]>({route: promoHandler, endpoint: 'store/'});
+    const promos: Promo[] = data.length ? data : [];
 
     return (
         <Container maxWidth='lg' sx={{flexGrow: 1, pt: 5}}>
@@ -17,7 +17,13 @@ const PromosPage = async () => {
                 Deal of the Day
             </Typography>
             <Box>
-                <PromoList promos={promos} tableHeader={tableHeader}/>
+                {
+                    promos.length === 0 ?
+                        <Typography variant="h6" gutterBottom sx={{textAlign: 'center', mt: 5}}>
+                            No Deal of the Day Found
+                        </Typography> :
+                        <PromoList promos={promos} tableHeader={tableHeader}/>
+                }
             </Box>
         </Container>
     )

@@ -2,6 +2,7 @@ import {Menu, MenuItem, IconButton, Badge} from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import React from "react";
 
 interface RenderMobileMenuProps {
     mobileMoreAnchorEl: null | HTMLElement;

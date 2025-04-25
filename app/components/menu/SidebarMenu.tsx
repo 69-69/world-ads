@@ -2,7 +2,7 @@ import {Drawer, Box, ListItemButton, ListItemText, Collapse, List} from '@mui/ma
 import Link from 'next/link';
 import {HEADER_LINKS} from "@/app/actions/useConstants";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
-import {useState} from "react";
+import React, {useState} from "react";
 import {AppLinks} from "@/app/models/AppLinks";
 import {signOut} from "@/app/actions/auth/handleSignOut";
 
@@ -23,15 +23,24 @@ const SidebarMenu: React.FC<{
 
     const marginTop = isOpen && isScrollingUp ? 0 : 8;
 
-    const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean }>({});
+    // const [openDropdown, setOpenDropdown] = useState<{ [key: string]: boolean }>({});
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
     const toggleDropdown = (title: string) => {
-        setOpenDropdowns((prev: { [x: string]: boolean }) => ({...prev, [title]: !prev[title]}));
+        // setOpenDropdown((prev: { [x: string]: boolean }) => ({...prev, [title]: !prev[title]}));
+        setOpenDropdown((prev: string | null): string | null => prev === title ? null : title);
     };
 
     const renderLink = (link: AppLinks) => {
+        // Hide some links when session is active
+        if (['My Account', 'Start Selling'].includes(link.title) && isSession) {
+            return null;
+        }
+
+
         const hasDropdown = Array.isArray(link.dropdown) && link.dropdown.length > 0;
-        const isOpen = openDropdowns[link.title];
+        // const isOpen = openDropdown[link.title];
+        const isOpen = openDropdown === link.title;
 
         return (
             <Box key={link.title}>

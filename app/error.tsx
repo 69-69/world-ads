@@ -2,6 +2,7 @@
 
 import {Box, Typography, Button} from '@mui/material';
 import {useRouter} from 'next/navigation';
+import React from "react";
 
 interface ErrorProps {
     error?: Error;

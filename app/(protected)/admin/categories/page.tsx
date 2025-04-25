@@ -8,7 +8,8 @@ import {categoryHandler} from "@/app/api/external/endPoints";
 const CategoryPage = async () => {
     const tableHeader = ['Category', 'Parent', 'Action'];
 
-    const categories: Category[] = await getAdminData<Category[]>({ route: categoryHandler });
+    const data = await getAdminData<Category[]>({ route: categoryHandler });
+    const categories: Category[] = data.length ? data : [];
 
     return (
         <Container maxWidth='lg' sx={{flexGrow: 1, pt: 5}}>
@@ -16,7 +17,14 @@ const CategoryPage = async () => {
                 Category List
             </Typography>
             <Box>
+                {
+                    categories.length === 0 ?
+                        <Typography variant="h6" gutterBottom sx={{textAlign: 'center', mt: 5}}>
+                            No Categories Found
+                        </Typography> :
                 <CategoryList categories={categories} tableHeader={tableHeader}/>
+
+                }
             </Box>
         </Container>
     )

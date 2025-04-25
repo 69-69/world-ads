@@ -5,10 +5,10 @@
 const apiHandler = '/api/external';
 const signupHandler = '/api/register';
 const marketplaceHandler = '/api/marketplace';
-const brandHandler = '/api/brand'; // Deal of the Day
-const conditionHandler = '/api/condition'; // Deal of the Day
-const categoryHandler = '/api/category'; // Deal of the Day
-const promoHandler = '/api/promo'; // Deal of the Day
+const brandHandler = '/api/brand';
+const conditionHandler = '/api/condition';
+const categoryHandler = '/api/category';
+const promoHandler = '/api/promo';
 const reviewHandler = '/api/user-review';
 const verifyHandler = '/api/verify';
 const setupStoreHandler = '/api/setup-store';
