@@ -106,7 +106,7 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
                             justifyContent: 'flex-end'
                         }}>
                             {/* Web menu */}
-                            <WebMenu isSession={user !== null}/>
+                            <WebMenu isSession={userSession !== null}/>
 
                             {/* Cart, Mail, Notification, Account */}
                             <CartButton count={5}/>
