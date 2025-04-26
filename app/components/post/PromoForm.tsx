@@ -1,5 +1,5 @@
 import React, {useState, FormEvent} from 'react';
-import {Button, Paper, Box, Typography} from '@mui/material';
+import {Button, Paper, Box, Typography, Divider} from '@mui/material';
 import ImageUpload from './ImageUpload';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
@@ -8,6 +8,8 @@ import MulticolorSelector from "@/app/components/post/MulticolorSelector";
 import {FormDataModel} from "@/app/models/FormDataModel";
 import PromoSchedule from "@/app/components/admin/PromoSchedule";
 import {Field} from "@/app/models/TextField";
+import {useRouter} from "next/navigation";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 interface PromoFormProps {
     onSubmit: (formData: FormDataModel, productId: string) => Promise<unknown>;
@@ -21,6 +23,8 @@ const toFullWidth = '1/-1';
 
 const PromoForm: React.FC<PromoFormProps> = ({onSubmit, title, product_id, buttonText, fields}) => {
 
+    const router = useRouter();
+    const [formKey, setFormKey] = useState(0);
     const [formData, setFormData] = useState<FormDataModel>(
         fields.reduce<FormDataModel>((acc, field) => {
             acc[field.name] = field.name === 'bg_image' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
@@ -86,6 +90,9 @@ const PromoForm: React.FC<PromoFormProps> = ({onSubmit, title, product_id, butto
             resetFormData.bg_image = [];
             return resetFormData;
         });
+
+        router.refresh();       // Refreshes server data
+        setFormKey(prev => prev + 1);  // Forces client component remount
     }
 
     // Form submission handler
@@ -114,12 +121,18 @@ const PromoForm: React.FC<PromoFormProps> = ({onSubmit, title, product_id, butto
     };
 
     return (
-        <Paper elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
-            <Box key={title} sx={{mb: 2}}>
-                <Typography variant="h6" align="center" gutterBottom>
+        <Paper key={formKey} elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
+
+            <Box key={title} sx={{mb: 2}} display="flex" justifyContent="space-between" alignItems="center">
+                <Typography fontWeight="bold" variant="h6" align="center" gutterBottom>
                     {title}
                 </Typography>
+
+                <Button variant="outlined" onClick={() => resetForm()} size='small' startIcon={<RefreshIcon />}>
+                    Refresh
+                </Button>
             </Box>
+            <Divider sx={{mb: 2}}/>
             <Box
                 key="form-div"
                 component="form"

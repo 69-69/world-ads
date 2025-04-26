@@ -1,5 +1,5 @@
 import React, {useState, FormEvent} from 'react';
-import {Button, Paper, Box, Typography} from '@mui/material';
+import {Button, Paper, Box, Typography, Divider} from '@mui/material';
 import ImageUpload from './ImageUpload';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
@@ -11,6 +11,8 @@ import BrandsDropdown from "@/app/components/BrandsDropdown";
 import SubCategoriesDropdown from "@/app/components/SubCategoriesDropdown";
 import ConditionsDropdown from "@/app/components/ConditionsDropdown";
 import ParentCategoriesDropdown from "@/app/components/ParentCategoriesDropdown";
+import {useRouter} from 'next/navigation';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface PostFormProps {
     onSubmit: (formData: FormDataModel) => Promise<unknown>;
@@ -29,6 +31,8 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
     //         return acc;
     //     }, {images: [] as File[]})
     // );
+    const router = useRouter();
+    const [formKey, setFormKey] = useState(0);
     const [formData, setFormData] = useState<FormDataModel>(
         fields.reduce<FormDataModel>((acc, field) => {
             acc[field.name] = field.name === 'images' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
@@ -128,6 +132,9 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
             resetFormData.images = [];
             return resetFormData;
         });
+
+        router.refresh();       // Refreshes server data
+        setFormKey(prev => prev + 1);  // Forces client component remount
     }
 
     // Form submission handler
@@ -156,12 +163,18 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
     };
 
     return (
-        <Paper elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
-            <Box key={title} sx={{mb: 2}}>
+        <Paper key={formKey} elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
+
+            <Box key={title} sx={{mb: 2}} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography fontWeight="bold" variant="h6" align="center" gutterBottom>
                     {title}
                 </Typography>
+
+                <Button variant="outlined" onClick={() => resetForm()} size='small' startIcon={<RefreshIcon/>}>
+                    Refresh
+                </Button>
             </Box>
+            <Divider sx={{mb: 2}}/>
             <Box
                 key="form-div"
                 component="form"
