@@ -4,8 +4,9 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
-    Button,
-    Container,
+    Button, Chip,
+    Container, ImageList, ImageListItem,
+    ImageListItemBar,
     Link,
     TextField,
     Typography,
@@ -20,6 +21,11 @@ import SubCategoriesDropdown from "@/app/components/SubCategoriesDropdown";
 import ConditionsDropdown from "@/app/components/ConditionsDropdown";
 import ParentCategoriesDropdown from "@/app/components/ParentCategoriesDropdown";
 import StatusSnackbar from "@/app/components/StatusSnackbar";
+import MulticolorSelector from "@/app/components/post/MulticolorSelector";
+import Image from "next/image";
+import IconButton from '@mui/material/IconButton';
+import {BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
+import {ChangeCircle} from "@mui/icons-material";
 
 
 function getQueryParamAsObject<T>(param: string | string[] | null | undefined): T | null {
@@ -33,8 +39,8 @@ function getQueryParamAsObject<T>(param: string | string[] | null | undefined): 
     return null;
 }
 
-const exclude_this = ['hashed_id', 'images', 'store_id', 'is_promo', 'published', 'product_colors', 'slug'];
-const exclude_keys = ['condition', 'brand', 'sub_category', 'category'];
+const exclude_this = ['hashed_id', 'store_id', 'is_promo', 'published', 'slug', 'images'];
+const not_textFields = ['condition', 'brand', 'sub_category', 'product_colors', 'category'];
 
 const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
     const {slug} = use(params);
@@ -53,7 +59,8 @@ const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
         initialEntries as ProductEntry[]
     );
     const [expanded, setExpanded] = useState<string | false>(false);
-    const [status, setStatus] = useState<{open:boolean, msg?:string}>({open: false});
+    const [status, setStatus] = useState<{ open: boolean, msg?: string }>({open: false});
+    const [productColors, setProductColors] = useState<string>(product?.product_colors || '');
 
     const handleChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
@@ -75,7 +82,7 @@ const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
 
     if (!product) {
         return (
-            <Container maxWidth="sm" sx={{ pt: 5 }}>
+            <Container maxWidth="sm" sx={{pt: 5}}>
                 <Typography variant="h6">Invalid product data</Typography>
             </Container>
         );
@@ -87,6 +94,18 @@ const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
         sub_category: '',
     }
 
+    const showChip = (value: string) =>
+        value?.split(',').map((color, index) => (
+            <Chip key={index} sx={{background: color.trim(), width: 20, height: 20, mx: 1}}/>
+        ));
+
+    const handleProductColors = (colors: string) => {
+
+        setProductColors(colors);
+    };
+    const imgPath = `${BACKEND_MARKETPLACE_IMAGE_PATH}/resize/`;
+
+
     return (
         <Container maxWidth="md" sx={{flexGrow: 1, pt: 5}}>
             <Typography variant="h5" gutterBottom sx={{mb: 3}}>
@@ -94,11 +113,10 @@ const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
             </Typography>
             {
                 productEntries.map(([key, value]) => (
-
                     <Box key={`${key}form-data`}
                          component="form" action={handleSubmit}
                          noValidate
-                         autoComplete="off">
+                         autoComplete="off" mt={1}>
                         <Accordion key={key} expanded={expanded === key} onChange={handleChange(key)}>
                             <AccordionSummary
                                 expandIcon={<Link key={`${key}-toggle-btn`} href="#" variant="body2"
@@ -110,10 +128,27 @@ const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
                                     {toTitleCase(removeSpecialChars(key))}
                                 </Typography>
                                 <Typography component="span" sx={{color: 'text.secondary'}}>
-                                    {toTitleCase(value?.toString() ?? '')}
+                                    {key !== 'product_colors' && toTitleCase(value?.toString() ?? '')}
+
+                                    {key === 'product_colors' && showChip(value?.toString() || '')}
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
+                                {
+                                    !not_textFields.includes(key) && (
+                                        <TextField
+                                            name="value"
+                                            label={toTitleCase(removeSpecialChars(key))}
+                                            variant="outlined"
+                                            size="small"
+                                            defaultValue={value}
+                                            multiline={key === 'description'}
+                                            rows={key === 'description' ? 3 : 1}
+                                            fullWidth
+                                            sx={{gridColumn: '1/-1'}}
+                                        />
+                                    )
+                                }
                                 {
                                     key === 'category' && (<ParentCategoriesDropdown
                                         label="Category"
@@ -149,6 +184,20 @@ const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
                                     />)
                                 }
                                 {
+                                    key === 'product_colors' && (
+                                        <>
+                                            <TextField
+                                                name="value"
+                                                type="hidden"
+                                                value={productColors}
+                                                sx={{display: 'none'}}
+                                                hidden
+                                            />
+                                            <MulticolorSelector onColorChange={handleProductColors}/>
+                                        </>
+                                    )
+                                }
+                                {
                                     key === 'condition' && (<ConditionsDropdown
                                         label="Condition"
                                         name="value"
@@ -159,21 +208,6 @@ const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
                                         isError={errors['condition']}
                                         isFullWidth={false}
                                     />)
-                                }
-                                {
-                                    !exclude_keys.includes(key) && (
-                                        <TextField
-                                            name="value"
-                                            label={toTitleCase(removeSpecialChars(key))}
-                                            variant="outlined"
-                                            size="small"
-                                            defaultValue={value}
-                                            multiline={key === 'description'}
-                                            rows={key === 'description' ? 3 : 1}
-                                            fullWidth
-                                            sx={{gridColumn: '1/-1'}}
-                                        />
-                                    )
                                 }
                                 <TextField name="key" type="hidden" value={key} sx={{display: 'none'}} hidden/>
                                 <TextField name="hashed_id" type="hidden" value={slug} sx={{display: 'none'}} hidden/>
@@ -186,164 +220,53 @@ const EditProductPage = ({params}: { params: Promise<{ slug: string }> }) => {
                                     color="primary"
                                     fullWidth
                                     sx={{gridColumn: '1/-1', mt: 2}}
-                                >Submit</Button>
+                                >Save changes</Button>
                             </AccordionDetails>
                         </Accordion>
                     </Box>
                 ))
             }
+            <Box sx={{my: 2}}>
+                {
+                    product.images && (
+                        <ImageList variant="masonry" cols={4} gap={8}>
+                            {product.images.map((image, index) => (
+                                <ImageListItem key={image.trim()}>
+                                    <Image
+                                        src={imgPath + image.trim()}
+                                        alt={image.trim()}
+                                        width={200}
+                                        height={200}
+                                        loading="lazy"
+                                        style={{borderRadius: '8px'}}
+                                    />
+                                    <ImageListItemBar
+                                        sx={{background: 'transparent'}}
+                                        position="top"
+                                        actionIcon={
+                                            <IconButton aria-label={`star ${index}`}
+                                                        sx={{backgroundColor: 'rgba(5,5,5,0.6)'}}>
+                                                <ChangeCircle color="secondary"
+                                                              sx={{":hover": {color: 'rgba(249, 1, 1, 0.9)'}}}/>
+                                            </IconButton>
+                                        }
+                                        actionPosition="left"
+                                    />
+                                </ImageListItem>
+                            )) || ''}
+
+                        </ImageList>
+                    )
+                }
+            </Box>
             <StatusSnackbar
                 open={status.open}
                 onClose={handleClose}
                 message='Please wait while we update your product'
-                sx={{ bottom: { xs: 90, sm: 0 } }}
+                sx={{bottom: {xs: 90, sm: 0}}}
             />
         </Container>
     );
 };
 
 export default EditProductPage;
-
-/*
-const EditProductPage = ({params}: { params: Promise<{ slug: string, name: string, product: string }> }) => {
-    const {slug} = use(params);
-    console.log(`product ${slug}`);
-
-    const searchParams = useSearchParams();
-    const productParam = searchParams.get('product') || '';
-    const product: Product | null = getQueryParamAsObject<Product>(productParam);
-
-    const productEntries = product
-        ? Object.entries(product).filter(([key]) =>
-            !['hashed_id', 'images', 'store_id'].includes(key)
-        )
-        : [];
-
-    const [enableInput, setEnableInput] = React.useState<string | false>(false);
-
-    if (!product) {
-        return (
-            <Container maxWidth="sm" sx={{ pt: 5 }}>
-                <p>Invalid product data</p>
-            </Container>
-        );
-    }
-
-    return (
-        <Container maxWidth="sm" sx={{ flexGrow: 1, pt: 5 }}>
-            {productEntries.map(([key, value]) => (
-                <List key={key} sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                    <ListItem
-                        alignItems="flex-start"
-                        disablePadding
-                        secondaryAction={
-                            <Button
-                                variant="text"
-                                size="small"
-                                onClick={() =>
-                                    setEnableInput(enableInput === key ? false : key)
-                                }
-                            >
-                                {enableInput === key ? 'Cancel' : 'Edit'}
-                            </Button>
-                        }
-                    >
-                        <Box
-                            component="form"
-                            action={handleSubmit}
-                            sx={{
-                                display: 'row',
-                                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-                                gap: 2,
-                                width: '85%'
-                            }}
-                            noValidate
-                            autoComplete="off"
-                        >
-                            {/!*<input type="hidden" name="slug" value={slug} />
-                            <input type="hidden" name="field" value={key} />*!/}
-                            <TextField
-                                name="value"
-                                disabled={enableInput !== key}
-                                label={toTitleCase(key)}
-                                variant="outlined"
-                                size="small"
-                                defaultValue={value}
-                                fullWidth
-                                sx={{
-                                    gridColumn: '1/-1', width: '80%',
-                                }}
-                            />
-                            {enableInput === key && (
-                                <Button type="submit" variant="contained" size="small"
-                                sx={{ width: '16%', ml: 1, py: 1 }}>
-                                    Done
-                                </Button>
-                            )}
-                        </Box>
-                    </ListItem>
-                </List>
-            ))}
-        </Container>
-    );
-};
-
-export default EditProductPage;
-*/
-
-
-/*
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import Typography from '@mui/material/Typography';
-
-    const [expanded, setExpanded] = React.useState<string | false>(false);
-
-    const handleChange =
-        (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-            setExpanded(isExpanded ? panel : false);
-        };
- productEntries.map(([key, value]) => (
-                    <Accordion key={key} expanded={expanded === key} onChange={handleChange(key)}>
-                        <AccordionSummary
-                            expandIcon={<Button variant="outlined" size="small" key={`${key}-toggle-btn`}>Edit</Button>}
-                            aria-controls={`${key}-content`}
-                            id={`${key}-header`}
-                        >
-                            <Typography component="span" sx={{width: '33%', flexShrink: 0}}>
-                                {toTitleCase(key.replace(/_/g, ' '))}
-                            </Typography>
-                            <Typography component="span" sx={{color: 'text.secondary'}}>
-                                {value?.toString()}
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Box
-                                component="form"
-                                action={handleSubmit}>
-<TextField
-    name={key}
-    type={key=== 'hashed_id' ? 'hidden' : 'text'}
-    label={toTitleCase(key)}
-    variant="outlined"
-    size="small"
-    defaultValue={value}
-    fullWidth={false}
-    sx={{gridColumn: '1/-1'}}
-/>
-<Button
-    key={`${key}-edit-btn`}
-    variant="outlined"
-    color="primary"
-    onClick={() => {
-        // Handle the edit action here
-        console.log(`Edit ${key}: ${value}`);
-    }}
->
-    Done
-</Button>
-</Box>
-</AccordionDetails>
-</Accordion>
-))*/

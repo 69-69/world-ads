@@ -49,7 +49,8 @@ const nextConfig: NextConfig = {
     },
     experimental: {
         serverActions: {
-            bodySizeLimit: '200mb',
+            bodySizeLimit: '1024mb',
+            allowedOrigins: ['istorezhona.shop', '*.istorezhona.shop'],
         },
     },
 };

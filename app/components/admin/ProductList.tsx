@@ -150,18 +150,11 @@ const ProductList = ({products, tableHeader}: ProProps) => {
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <ImageList
-                    sx={{width: 200, height: 'auto'}}
-                    cols={3}
-                    rowHeight={164}
-                    gap={2}
-                    variant="woven"
-                    style={{overflowY: 'auto'}}
-                >
+                <ImageList variant="masonry" cols={3} gap={8}>
                     {getImg.map((image) => (
                         <ImageListItem key={image}>
                             <Image
-                                src={`${imgPath}${image}`}
+                                src={imgPath+image}
                                 alt={image}
                                 width={100}
                                 height={100}

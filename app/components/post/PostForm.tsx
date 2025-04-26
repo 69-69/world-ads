@@ -1,5 +1,5 @@
 import React, {useState, FormEvent} from 'react';
-import {Button, Paper, Box, Typography, Divider, Stack} from '@mui/material';
+import {Button, Paper, Box, Typography, Divider, Stack, Tooltip} from '@mui/material';
 import ImageUpload from './ImageUpload';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
@@ -14,9 +14,11 @@ import ParentCategoriesDropdown from "@/app/components/ParentCategoriesDropdown"
 import {useRouter} from 'next/navigation';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
+import {ApiResponse} from "@/app/models";
+import {inRange} from "@/app/actions/useHelper";
 
 interface PostFormProps {
-    onSubmit: (formData: FormDataModel) => Promise<unknown>;
+    onSubmit: (formData: FormDataModel) => Promise<ApiResponse>;
     title: string;
     buttonText: string;
     fields: Field[];
@@ -123,6 +125,11 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         return errors;
     };
 
+    function refreshPage() {
+        router.refresh();       // Refreshes server data
+        setFormKey(prev => prev + 1);  // Forces client component remount
+    }
+
     const resetForm = () => {
         setFormData((prev) => {
             const resetFormData = {...prev};
@@ -135,8 +142,8 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         });
 
         setErrors({}); // Clear all errors
-        router.refresh();       // Refreshes server data
-        setFormKey(prev => prev + 1);  // Forces client component remount
+        setMessage({success: '', error: ''}); // Clear messages
+        refreshPage();
     }
 
     // Form submission handler
@@ -155,9 +162,13 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
             const response = await onSubmit(formData);
 
             if (typeof response === 'object' && response !== null && 'message' in response) {
-                setMessage({success: (response as { message: string }).message});
-                // Reset form data after successful submission
-                resetForm();
+                if (response.status && inRange(response.status, 200, 299)) {
+                    setMessage({success: (response as { message: string }).message});
+                    // Reset form data after successful submission
+                    resetForm();
+                    return;
+                }
+                setMessage({error: (response as { message: string }).message});
             }
         } catch (err) {
             setMessage({error: err instanceof Error ? err.message : 'Something went wrong, please try again'});
@@ -171,10 +182,11 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                 <Typography fontWeight="bold" variant="h6" align="center" gutterBottom>
                     {title}
                 </Typography>
-
-                <Button variant="outlined" onClick={() => resetForm()} size='small' startIcon={<RefreshIcon/>}>
-                    Refresh
-                </Button>
+                <Tooltip title="Refresh data">
+                    <Button variant="outlined" onClick={() => refreshPage()} size='small' startIcon={<RefreshIcon/>}>
+                        Refresh
+                    </Button>
+                </Tooltip>
             </Box>
             <Divider sx={{mb: 2}}/>
             <Box
@@ -227,20 +239,23 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
 
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
                     {message.error && <ToastMessage message={message.error}/>}
-                    {message.success && <ToastMessage message={message.success} href={ADMIN_PRODUCT_ROUTE} type="success"/>}
+                    {message.success &&
+                        <ToastMessage href={ADMIN_PRODUCT_ROUTE} message={message.success} type="success"/>}
                     <Stack
                         spacing={2}
-                        direction= {{ xs: 'column', sm: 'row', md: 'row', lg: 'row' }}
+                        direction={{xs: 'column', sm: 'row', md: 'row', lg: 'row'}}
                         sx={{display: 'flex', justifyContent: 'space-between'}}
                     >
-                        <Button
-                            variant="outlined"
-                            sx={{width: {lg: 'auto'}}}
-                            color="error" onClick={() => resetForm()}
-                            fullWidth
-                        >
-                            Reset
-                        </Button>
+                        <Tooltip title="Reset the form">
+                            <Button
+                                variant="outlined"
+                                sx={{width: {lg: 'auto'}}}
+                                color="error" onClick={() => resetForm()}
+                                fullWidth
+                            >
+                                Reset
+                            </Button>
+                        </Tooltip>
                         <Button type="submit" variant="outlined" sx={{width: {lg: 'auto'}}} fullWidth>
                             {buttonText}
                         </Button>

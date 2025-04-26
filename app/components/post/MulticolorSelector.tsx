@@ -24,11 +24,12 @@ type MultiColors = {
     onColorChange: (value: string) => void,
     isError?: string | null,
     label?: string,
+    defaultColors?: string[],
 };
 
 // MulticolorSelector component
-const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError, label}) => {
-    const [selectedColors, setSelectedColors] = useState<string[]>([]);
+const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError, label, defaultColors}) => {
+    const [selectedColors, setSelectedColors] = useState<string[]>(defaultColors || []);
     const [currentColor, setCurrentColor] = useState<string>('#ff0000');
     const [openPicker, setOpenPicker] = useState<boolean>(false);
 
@@ -72,7 +73,7 @@ const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError, labe
                 variant="contained"
                 onClick={handleOpenPicker}
                 sx={{border: '2px solid #fff', borderRadius: '8px 22px'}}
-                fullWidth>
+            >
                 {label || 'Pick Product Color'}
             </Button>
 
