@@ -4,6 +4,8 @@ import {Box, Typography} from "@mui/material";
 import ProductList from "@/app/components/admin/ProductList";
 import getAdminData from "@/app/actions/admin/getAdminData";
 import {marketplaceHandler} from "@/app/api/external/endPoints";
+import NoItemFound from "@/app/components/NoItemFound";
+import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
 
 const ProductsPage = async () => {
     const tableHeader = ['Name', 'Category', 'Sub', 'Brand', 'Stock', 'Price', 'Published', 'Promo', 'Action'];
@@ -18,9 +20,11 @@ const ProductsPage = async () => {
             <Box>
                 {
                     products.length === 0 ?
-                        <Typography variant="h6" gutterBottom sx={{textAlign: 'center', mt: 5}}>
-                            No Products Found
-                        </Typography> :
+                        <NoItemFound
+                            route={ADMIN_PRODUCT_ROUTE}
+                            message={'No Product Found'}
+                            label={'Add Product'}
+                        /> :
                         <ProductList products={products} tableHeader={tableHeader}/>
                 }
             </Box>

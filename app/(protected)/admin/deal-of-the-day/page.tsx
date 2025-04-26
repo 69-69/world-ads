@@ -4,6 +4,8 @@ import {Box, Typography} from "@mui/material";
 import PromoList from "@/app/components/admin/PromoList";
 import getAdminData from "@/app/actions/admin/getAdminData";
 import {promoHandler} from "@/app/api/external/endPoints";
+import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
+import NoItemFound from "@/app/components/NoItemFound";
 
 const PromosPage = async () => {
     const tableHeader = ['Name', 'Promo Price', 'Starts At', 'Ends At', 'Action'];
@@ -19,9 +21,11 @@ const PromosPage = async () => {
             <Box>
                 {
                     promos.length === 0 ?
-                        <Typography variant="h6" gutterBottom sx={{textAlign: 'center', mt: 5}}>
-                            No Deal of the Day Found
-                        </Typography> :
+                        <NoItemFound
+                            route={ADMIN_PRODUCT_ROUTE}
+                            message={'No Deal of the Day Found'}
+                            label={'Add New Deal'}
+                        /> :
                         <PromoList promos={promos} tableHeader={tableHeader}/>
                 }
             </Box>

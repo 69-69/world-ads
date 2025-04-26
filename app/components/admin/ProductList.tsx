@@ -1,6 +1,6 @@
 'use client';
 
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {useRouter} from 'next/navigation';
 import {
     Box,
@@ -17,6 +17,7 @@ import {deleteAction} from "@/app/actions/admin/deleteAction";
 import {Product} from "@/app/models/Post";
 import {marketplaceHandler} from "@/app/api/external/endPoints";
 import {BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
+import StatusSnackbar from "@/app/components/StatusSnackbar";
 
 type ProProps = {
     products: Product[];
@@ -32,6 +33,7 @@ const ProductList = ({products, tableHeader}: ProProps) => {
     const [productData, setProductData] = useState<Product[]>(products);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [getImg, setImg] = useState<string[]>([]);
+    const [editRedirect, setEditRedirect] = useState(false);
 
     const open = Boolean(anchorEl);
 
@@ -84,6 +86,7 @@ const ProductList = ({products, tableHeader}: ProProps) => {
         )}`;
         router.push(url);
     };
+    const handleClose = () => setEditRedirect(false);
 
     const handleUserAction = (hashed_id: string | number | undefined, action: string) => {
         if (!hashed_id) return;
@@ -91,6 +94,7 @@ const ProductList = ({products, tableHeader}: ProProps) => {
         if (action === 'edit') {
             const product = productData.find(p => p.hashed_id === hashed_id);
             if (product) {
+                setEditRedirect(true);
                 goToEditProduct(product);
             }
         } else if (action === 'delete') {
@@ -167,6 +171,13 @@ const ProductList = ({products, tableHeader}: ProProps) => {
                     ))}
                 </ImageList>
             </Popover>
+
+            <StatusSnackbar
+                open={editRedirect}
+                onClose={handleClose}
+                message='Opening product editor, please wait...'
+                sx={{ bottom: { xs: 90, sm: 0 } }}
+            />
         </Box>
     );
 };

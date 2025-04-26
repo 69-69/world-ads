@@ -4,6 +4,8 @@ import {conditionHandler} from "@/app/api/external/endPoints";
 import {Box, Typography} from "@mui/material";
 import ConditionList from "@/app/components/admin/ConditionList";
 import getAdminData from "@/app/actions/admin/getAdminData";
+import NoItemFound from "@/app/components/NoItemFound";
+import {ADMIN_PRO_CONDITION_CREATE_ROUTE} from "@/app/actions/useConstants";
 
 const ConditionPage = async () => {
     const tableHeader = ['Condition', 'Action'];
@@ -19,9 +21,11 @@ const ConditionPage = async () => {
             <Box>
                 {
                     conditions.length === 0 ?
-                        <Typography variant="h6" gutterBottom sx={{textAlign: 'center', mt: 5}}>
-                            No Conditions Found
-                        </Typography> :
+                        <NoItemFound
+                            route={ADMIN_PRO_CONDITION_CREATE_ROUTE}
+                            message={'No Condition Found'}
+                            label={'Add Condition'}
+                        /> :
                         <ConditionList conditions={conditions} tableHeader={tableHeader}/>
                 }
             </Box>

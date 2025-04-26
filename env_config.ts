@@ -1,5 +1,8 @@
-const PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://istorezhona.vercel.app'; // 'http://localhost:300';  // Access this URL in your browser to see the app
-const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://istorezhona.shop/world_ad_api'; // 'http://127.0.0.1:5000';
+// const PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+// const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:5000';
+
+const PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://istorezhona.vercel.app';
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://istorezhona.shop/world_ad_api';
 const BACKEND_API_ENDPOINT = `${BACKEND_API_BASE_URL}/api/v1`;
 
 const BACKEND_IMAGE_DIR = process.env.NEXT_PUBLIC_BACKEND_IMAGE_PATH || '/static/uploads';

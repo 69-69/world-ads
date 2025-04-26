@@ -29,7 +29,7 @@ type MultiColors = {
 // MulticolorSelector component
 const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError, label}) => {
     const [selectedColors, setSelectedColors] = useState<string[]>([]);
-    const [currentColor, setCurrentColor] = useState<string>('#000000');
+    const [currentColor, setCurrentColor] = useState<string>('#ff0000');
     const [openPicker, setOpenPicker] = useState<boolean>(false);
 
     // Handle color change in the color picker
@@ -67,7 +67,12 @@ const MulticolorSelector: React.FC<MultiColors> = ({onColorChange, isError, labe
     return (
         <Box py={1}>
             {/* Button to open the color picker dialog */}
-            <Button variant="contained" size='small' color="primary" onClick={handleOpenPicker} fullWidth>
+            <Button
+                size='small'
+                variant="contained"
+                onClick={handleOpenPicker}
+                sx={{border: '2px solid #fff', borderRadius: '8px 22px'}}
+                fullWidth>
                 {label || 'Pick Product Color'}
             </Button>
 

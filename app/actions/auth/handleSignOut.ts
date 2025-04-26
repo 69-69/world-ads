@@ -5,26 +5,20 @@ import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {signOutEndpoint} from "@/app/api/external/endPoints";
 import {cookies} from "next/headers";
 import {SIGNIN_ROUTE} from "@/app/actions/useConstants";
-import {redirect} from "next/navigation";
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 // Clear all relevant auth cookies and redirect
 const clearCookiesAndRedirect = async () => {
     const cookieStore = await cookies();
-    const keys = [
-        'authjs.session-token',
-        'access_token',
-        'profile',
-        'signin_method',
-        'signup_token'
-    ];
+    cookieStore.delete('authjs.session-token');
+    cookieStore.delete('access_token');
+    cookieStore.delete('profile');
+    cookieStore.delete('signin_method');
+    cookieStore.delete('signup_token');
 
-    for (const key of keys) {
-        if (cookieStore.has(key)) {
-            cookieStore.delete(key);
-        }
-    }
-
-    redirect(SIGNIN_ROUTE);
+    revalidatePath(SIGNIN_ROUTE) // clears cache for this route
+    redirect(SIGNIN_ROUTE) // will load fresh data
 };
 
 export const signOut = async (): Promise<void> => {
@@ -44,10 +38,7 @@ export const signOut = async (): Promise<void> => {
 
         // Handle credential-based sign-out via backend API
         const apiClient = await getApiClientWithAuth();
-        await apiClient.request({
-            method: 'POST',
-            url: `/${signOutEndpoint}`
-        });
+        await apiClient.request({method: 'POST', url: `/${signOutEndpoint}`});
 
         await clearCookiesAndRedirect();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

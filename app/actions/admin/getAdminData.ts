@@ -19,6 +19,7 @@ const getAdminData = async <T>({route, endpoint}: AdminDataParams): Promise<T | 
 
     try {
         const extra = endpoint ? endpoint : '';
+
         const {response, data} = await fetchWithRetry(HOME_ROUTE + route, {
             method: 'GET',
             endpoint: `/${extra}${session?.user.store_id}`,

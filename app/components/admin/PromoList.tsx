@@ -101,7 +101,7 @@ const PromoList: React.FC<ActionProps> = ({promos, tableHeader}) => {
                 showSearch
                 searchValue={search}
                 onSearchChange={setSearch}
-                labelLink={{ref: ADMIN_PRODUCT_ROUTE, label: 'Add New Promo'}}
+                labelLink={{ref: ADMIN_PRODUCT_ROUTE, label: 'Add New Deal'}}
             />
             <UpdateDialogPage
                 open={openEditDialog.open}

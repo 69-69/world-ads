@@ -121,7 +121,6 @@ export const config = {
         '/checkout',
         '/setup-store',
         '/post/:path*', // Dynamic route
-        '/admin/dashboard',
         '/admin/:path*', // Dynamic route
 
         // Auth Routes

@@ -6,6 +6,8 @@ import {Box, Typography} from "@mui/material";
 import BrandList from "@/app/components/admin/BrandList";
 import getAdminData from "@/app/actions/admin/getAdminData";
 import {brandHandler} from "@/app/api/external/endPoints";
+import NoItemFound from "@/app/components/NoItemFound";
+import {ADMIN_BRAND_CREATE_ROUTE} from "@/app/actions/useConstants";
 
 const BrandPage = async () => {
     const tableHeader = ['Name', 'Action'];
@@ -21,10 +23,12 @@ const BrandPage = async () => {
             <Box>
                 {
                     brands.length === 0 ?
-                        <Typography variant="h6" gutterBottom sx={{textAlign: 'center', mt: 5}}>
-                            No Brands Found
-                        </Typography> :
-                <BrandList brands={brands} tableHeader={tableHeader}/>
+                        <NoItemFound
+                            route={ADMIN_BRAND_CREATE_ROUTE}
+                            message={'No Brand Found'}
+                            label={'Add Brand'}
+                        /> :
+                        <BrandList brands={brands} tableHeader={tableHeader}/>
                 }
             </Box>
         </Container>

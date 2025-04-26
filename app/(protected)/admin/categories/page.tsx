@@ -4,6 +4,8 @@ import {Box, Typography} from "@mui/material";
 import CategoryList from "@/app/components/admin/CategoryList";
 import getAdminData from "@/app/actions/admin/getAdminData";
 import {categoryHandler} from "@/app/api/external/endPoints";
+import NoItemFound from "@/app/components/NoItemFound";
+import {ADMIN_CATEGORY_CREATE_ROUTE} from "@/app/actions/useConstants";
 
 const CategoryPage = async () => {
     const tableHeader = ['Category', 'Parent', 'Action'];
@@ -19,9 +21,11 @@ const CategoryPage = async () => {
             <Box>
                 {
                     categories.length === 0 ?
-                        <Typography variant="h6" gutterBottom sx={{textAlign: 'center', mt: 5}}>
-                            No Categories Found
-                        </Typography> :
+                        <NoItemFound
+                            route={ADMIN_CATEGORY_CREATE_ROUTE}
+                            message={'No Category Found'}
+                            label={'Add Category'}
+                        /> :
                 <CategoryList categories={categories} tableHeader={tableHeader}/>
 
                 }
