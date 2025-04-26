@@ -18,7 +18,8 @@ const clearCookiesAndRedirect = async () => {
     cookieStore.delete('signup_token');
 
     revalidatePath(HOME_ROUTE) // clears cache for this route
-    redirect(HOME_ROUTE) // will load fresh data
+    revalidatePath(SIGNIN_ROUTE) // clears cache for this route
+    redirect(SIGNIN_ROUTE) // will load fresh data
 };
 
 export const signOut = async (): Promise<void> => {
