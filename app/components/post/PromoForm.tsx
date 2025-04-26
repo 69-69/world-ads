@@ -1,5 +1,5 @@
 import React, {useState, FormEvent} from 'react';
-import {Button, Paper, Box, Typography, Divider} from '@mui/material';
+import {Button, Paper, Box, Typography, Divider, Stack} from '@mui/material';
 import ImageUpload from './ImageUpload';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
@@ -10,6 +10,7 @@ import PromoSchedule from "@/app/components/admin/PromoSchedule";
 import {Field} from "@/app/models/TextField";
 import {useRouter} from "next/navigation";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import {ADMIN_PROMO_ROUTE} from "@/app/actions/useConstants";
 
 interface PromoFormProps {
     onSubmit: (formData: FormDataModel, productId: string) => Promise<unknown>;
@@ -91,6 +92,7 @@ const PromoForm: React.FC<PromoFormProps> = ({onSubmit, title, product_id, butto
             return resetFormData;
         });
 
+        setErrors({}); // Clear all errors
         router.refresh();       // Refreshes server data
         setFormKey(prev => prev + 1);  // Forces client component remount
     }
@@ -128,7 +130,7 @@ const PromoForm: React.FC<PromoFormProps> = ({onSubmit, title, product_id, butto
                     {title}
                 </Typography>
 
-                <Button variant="outlined" onClick={() => resetForm()} size='small' startIcon={<RefreshIcon />}>
+                <Button variant="outlined" onClick={() => resetForm()} size='small' startIcon={<RefreshIcon/>}>
                     Refresh
                 </Button>
             </Box>
@@ -161,10 +163,26 @@ const PromoForm: React.FC<PromoFormProps> = ({onSubmit, title, product_id, butto
 
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
                     {message.error && <ToastMessage message={message.error}/>}
-                    {message.success && <ToastMessage message={message.success} type="success"/>}
-                    <Button type="submit" variant="outlined" color="primary" fullWidth sx={{mt: 2}}>
-                        {buttonText}
-                    </Button>
+                    {message.success &&
+                        <ToastMessage message={message.success} href={ADMIN_PROMO_ROUTE} type="success"/>}
+
+                    <Stack
+                        spacing={2}
+                        direction= {{ xs: 'column', sm: 'row', md: 'row', lg: 'row' }}
+                        sx={{display: 'flex', justifyContent: 'space-between'}}
+                    >
+                        <Button
+                            variant="outlined"
+                            sx={{width: {lg: 'auto'}}}
+                            color="error" onClick={() => resetForm()}
+                            fullWidth
+                        >
+                            Reset
+                        </Button>
+                        <Button type="submit" variant="outlined" sx={{width: {lg: 'auto'}}} fullWidth>
+                            {buttonText}
+                        </Button>
+                    </Stack>
                 </Box>
             </Box>
         </Paper>

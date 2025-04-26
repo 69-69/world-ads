@@ -1,5 +1,5 @@
 import React, {useState, FormEvent} from 'react';
-import {Button, Paper, Box, Typography, Divider} from '@mui/material';
+import {Button, Paper, Box, Typography, Divider, Stack} from '@mui/material';
 import ImageUpload from './ImageUpload';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
@@ -13,6 +13,7 @@ import ConditionsDropdown from "@/app/components/ConditionsDropdown";
 import ParentCategoriesDropdown from "@/app/components/ParentCategoriesDropdown";
 import {useRouter} from 'next/navigation';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
 
 interface PostFormProps {
     onSubmit: (formData: FormDataModel) => Promise<unknown>;
@@ -133,6 +134,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
             return resetFormData;
         });
 
+        setErrors({}); // Clear all errors
         router.refresh();       // Refreshes server data
         setFormKey(prev => prev + 1);  // Forces client component remount
     }
@@ -225,10 +227,24 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
 
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
                     {message.error && <ToastMessage message={message.error}/>}
-                    {message.success && <ToastMessage message={message.success} type="success"/>}
-                    <Button type="submit" variant="outlined" color="primary" fullWidth sx={{mt: 2}}>
-                        {buttonText}
-                    </Button>
+                    {message.success && <ToastMessage message={message.success} href={ADMIN_PRODUCT_ROUTE} type="success"/>}
+                    <Stack
+                        spacing={2}
+                        direction= {{ xs: 'column', sm: 'row', md: 'row', lg: 'row' }}
+                        sx={{display: 'flex', justifyContent: 'space-between'}}
+                    >
+                        <Button
+                            variant="outlined"
+                            sx={{width: {lg: 'auto'}}}
+                            color="error" onClick={() => resetForm()}
+                            fullWidth
+                        >
+                            Reset
+                        </Button>
+                        <Button type="submit" variant="outlined" sx={{width: {lg: 'auto'}}} fullWidth>
+                            {buttonText}
+                        </Button>
+                    </Stack>
                 </Box>
             </Box>
         </Paper>

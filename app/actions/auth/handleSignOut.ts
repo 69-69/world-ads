@@ -4,7 +4,7 @@ import authOptions from "@/auth";
 import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {signOutEndpoint} from "@/app/api/external/endPoints";
 import {cookies} from "next/headers";
-import {SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -18,7 +18,7 @@ const clearCookiesAndRedirect = async () => {
     cookieStore.delete('signup_token');
 
     revalidatePath(SIGNIN_ROUTE) // clears cache for this route
-    redirect(SIGNIN_ROUTE) // will load fresh data
+    redirect(HOME_ROUTE+SIGNIN_ROUTE) // will load fresh data
 };
 
 export const signOut = async (): Promise<void> => {
