@@ -92,7 +92,7 @@ const PromoList: React.FC<ActionProps> = ({promos, tableHeader}) => {
                 tableHeader={tableHeader}
                 rows={promoRows}
                 openDialog={openAlert.open}
-                onCloseDialog={handleCloseDialog}
+                onCloseDialog={handleCloseAlert}
                 onConfirmAction={confirmDeletePromo}
                 dialogTitle="Delete Confirmation"
                 dialogContent="Are you sure you want to delete this promo?"
