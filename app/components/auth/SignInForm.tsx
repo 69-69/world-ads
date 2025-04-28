@@ -7,16 +7,18 @@ import {
     SIGNUP_ROUTE,
 } from '@/app/actions/useConstants';
 import {ApiResponse, SignIn} from "@/app/models";
+import { generateRandomHash } from '@/app/actions/useHelper';
 
 
 const SignInForm = () => {
+    const redirectTo=`${ADMIN_DASHBOARD_ROUTE}?session=${generateRandomHash()}`;
 
     return (
         <AuthForm<SignIn, ApiResponse>
             title="Sign In"
             buttonText="Sign In"
             isSignUp={false}
-            redirectTo={ADMIN_DASHBOARD_ROUTE}
+            redirectTo={redirectTo}
             auxButton={[{link: SIGNUP_ROUTE, title: 'Sign Up'}]}
             fields={[
                 {name: 'email', label: 'Email', type: 'email'},

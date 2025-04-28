@@ -4,9 +4,11 @@ import VerifyContactForm from '@/app/components/auth/VerifyContactForm';
 import Container from "@mui/material/Container";
 import {useVerifyContact} from "@/app/actions/auth/useVerifyContact";
 import {ADMIN_DASHBOARD_ROUTE} from "@/app/actions/useConstants";
+import {generateRandomHash} from "@/app/actions/useHelper";
 
 
 const VerifyContactPage = () => {
+    const redirectTo=`${ADMIN_DASHBOARD_ROUTE}?session=${generateRandomHash()}`;
 
     return (
         <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>
@@ -17,7 +19,7 @@ const VerifyContactPage = () => {
                     {name: 'email_code', label: 'Email Verification Code'},
                     {name: 'phone_code', label: 'Mobile Verification Code'},
                 ]}
-                redirectTo={ADMIN_DASHBOARD_ROUTE}
+                redirectTo={redirectTo}
                 onSubmit={useVerifyContact}
             />
         </Container>
