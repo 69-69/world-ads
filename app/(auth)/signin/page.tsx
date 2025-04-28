@@ -12,17 +12,18 @@ const SignInPage = () => {
     const isLoggingOut = getLogout === 'true';
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>
-                {/* Show snackbar only if the user is logging out */}
-                {
-                    isLoggingOut && <SessionStatusSnackbar
+        <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>
+            <Suspense fallback={<span>Loading...</span>}>
+                {/* Show snackbar only if the user is logging out */
+                    isLoggingOut &&
+                    <SessionStatusSnackbar
                         isOpen={isLoggingOut}
-                        message="You've been logged out"/>
+                        message="You've been logged out"
+                    />
                 }
-                <SignInForm/>
-            </Container>
-        </Suspense>
+            </Suspense>
+            <SignInForm/>
+        </Container>
     );
 };
 
