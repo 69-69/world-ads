@@ -4,18 +4,15 @@ import authOptions from "@/auth";
 import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {signOutEndpoint} from "@/app/api/external/endPoints";
 import {cookies} from "next/headers";
-import {APP_COOKIE_KEYS, HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
+import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {revalidatePath} from 'next/cache'
+import {redirect} from 'next/navigation'
 
 // Clear all relevant auth cookies and redirect
 const clearCookiesAndRedirect = async () => {
     const cookieStore = await cookies();
 
-    for (const key of APP_COOKIE_KEYS) {
-        cookieStore.delete(key);
-    }
-
+    cookieStore.getAll().map((cookie) => cookieStore.delete(cookie.name));
     // Clear cache for relevant routes
     revalidatePath(HOME_ROUTE);
     revalidatePath(SIGNIN_ROUTE);

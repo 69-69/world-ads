@@ -234,14 +234,16 @@ const SELLER_TYPE = [
 ];
 
 const APP_COOKIE_KEYS = [
-    'authjs.session-token',
     'access_token',
-    'profile',
-    'signin_method',
-    'signup_token',
     '__Secure-authjs.session-token',
     '__Secure-authjs.callback-url',
     '__Host-authjs.csrf-token',
+    'authjs.session-token',
+    'session_token',
+    'refresh_token',
+    'signin_method',
+    'profile',
+    'signup_token',
 ];
 
 export {

@@ -44,12 +44,6 @@ const DropdownMenu: React.FC<RenderDropdownProps> = ({anchorEl, setAnchorEl, use
                     </MenuItem>
                 );
             })}
-            {/*<SignOutButton
-                size="medium"
-                variant="text"
-                sx={{mx:0, color: 'inherit', textTransform: 'none'}}
-                onSubmit={userSignOut}
-            />*/}
         </Menu>
     );
 };
