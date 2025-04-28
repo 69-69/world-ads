@@ -7,6 +7,7 @@ import {inRange} from "@/app/actions/useHelper";
 import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {signinEndpoint} from "@/app/api/external/endPoints";
 import {cookies} from "next/headers";
+import {errorUtils} from "@/app/actions/useThrowError";
 
 
 async function findUser(credentials: Partial<Record<"email" | "password", unknown>>) {
@@ -21,7 +22,8 @@ async function findUser(credentials: Partial<Record<"email" | "password", unknow
     });
 
     if (!inRange(response.status, 200, 299)) {
-        throw new Error("Invalid email or password.");
+        errorUtils.getError(response);
+        // throw new Error("Invalid email or password.");
     }
 
     const profile = response.data as Profile;

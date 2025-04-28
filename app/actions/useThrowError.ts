@@ -40,5 +40,32 @@ const errorUtils = {
     },
 };
 
+/*// ERROR HANDLERS
+export async function handleServerError(error: any) {
+  try {
+    if (error && error.message === "Unauthorized") await logout();
+    if (axios.isAxiosError(error)) {
+      const response = error.response;
+      if (response?.statusText === "Unauthorized" || response?.data.message === "Unauthorized") await logout();
+      if (response && response.data) {
+        const { message, statusCode } = response.data;
+        // Handle specific status code 409
+        if (statusCode !== 200) {
+          console.log("Conflict error: ", message);
+          return { message, statusCode };
+        }
+        return { message, statusCode };
+      }
+      if (error.code === "ECONNREFUSED") {
+        return { message: "Connection refused. Please try again later or contact support.", statusCode: 500 };
+      }
+    } else {
+      return { message: "Unknown server error, Please try again later or contact support.", statusCode: 500 };
+    }
+  } catch (catchError: any) {
+    return { message: catchError.message, statusCode: 500 };
+  }
+}*/
+
 
 export {handleApiError, handleUIError, errorUtils};
