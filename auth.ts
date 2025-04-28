@@ -22,7 +22,7 @@ async function findUser(credentials: Partial<Record<"email" | "password", unknow
     });
 
     if (!inRange(response.status, 200, 299)) {
-        errorUtils.getError(response);
+        return errorUtils.getError(response);
         // throw new Error("Invalid email or password.");
     }
 

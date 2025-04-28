@@ -233,7 +233,19 @@ const SELLER_TYPE = [
     {label: 'Company', value: 'company', tooltip: 'Business Seller (Business-to-Consumer or B2C)'},
 ];
 
+const APP_COOKIE_KEYS = [
+    'authjs.session-token',
+    'access_token',
+    'profile',
+    'signin_method',
+    'signup_token',
+    '__Secure-authjs.session-token',
+    '__Secure-authjs.callback-url',
+    '__Host-authjs.csrf-token',
+];
+
 export {
+    APP_COOKIE_KEYS,
     APP_NAME,
     ACC_ROLE,
     SELLER_TYPE,

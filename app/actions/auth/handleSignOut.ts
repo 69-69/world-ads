@@ -4,25 +4,24 @@ import authOptions from "@/auth";
 import {getApiClientWithAuth} from "@/app/api/external/apiClient";
 import {signOutEndpoint} from "@/app/api/external/endPoints";
 import {cookies} from "next/headers";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {APP_COOKIE_KEYS, HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 // Clear all relevant auth cookies and redirect
 const clearCookiesAndRedirect = async () => {
     const cookieStore = await cookies();
-    cookieStore.delete('authjs.session-token');
-    cookieStore.delete('access_token');
-    cookieStore.delete('profile');
-    cookieStore.delete('signin_method');
-    cookieStore.delete('signup_token');
-    cookieStore.delete('__Secure-authjs.session-token');
-    cookieStore.delete('__Secure-authjs.callback-url');
-    cookieStore.delete('__Host-authjs.csrf-token');
 
-    revalidatePath(HOME_ROUTE) // clears cache for this route
-    revalidatePath(SIGNIN_ROUTE) // clears cache for this route
-    redirect(`${SIGNIN_ROUTE}?logout=true`); // will load fresh data
+    for (const key of APP_COOKIE_KEYS) {
+        cookieStore.delete(key);
+    }
+
+    // Clear cache for relevant routes
+    revalidatePath(HOME_ROUTE);
+    revalidatePath(SIGNIN_ROUTE);
+
+    // Redirect to sign In with logout indicator
+    redirect(`${SIGNIN_ROUTE}?logout=true`);
 };
 
 export const signOut = async (): Promise<void> => {
