@@ -43,7 +43,7 @@ export const signOut = async (): Promise<void> => {
         const apiClient = await getApiClientWithAuth();
         await apiClient.request({method: 'POST', url: `/${signOutEndpoint}`});
 
-        await clearCookiesAndRedirect();
+        return await clearCookiesAndRedirect();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         // console.error("Error during sign-out:", error);
