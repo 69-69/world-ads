@@ -1,17 +1,19 @@
+'use client';
 import {useEffect, useState} from "react";
 import StatusSnackbar from "@/app/components/StatusSnackbar";
 import StatusAlert from "@/app/components/StatusAlert";
 
 
 interface StatusSnackbarProps {
-    isSignIn: boolean;
+    isOpen: boolean;
     message: string;
 }
 
-const SessionStatusSnackbar = ({isSignIn, message}: StatusSnackbarProps) => {
+const SessionStatusSnackbar = ({isOpen, message}: StatusSnackbarProps) => {
     const [open, setOpen] = useState(true);
 
-    useEffect(() => setOpen(isSignIn), [isSignIn]);
+    // Open or close the Snackbar based on `isSignIn`
+    useEffect(() => setOpen(isOpen), [isOpen]);
 
     const handleClose = () => setOpen(false);
     return (
@@ -23,7 +25,7 @@ const SessionStatusSnackbar = ({isSignIn, message}: StatusSnackbarProps) => {
                 StatusAlert({
                     message: message,
                     onClose: handleClose,
-                    severity: isSignIn ? "success" : "error",
+                    severity: isOpen ? "success" : "error",
                 })
             }
         </StatusSnackbar>

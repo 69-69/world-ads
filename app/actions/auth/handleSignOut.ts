@@ -16,10 +16,13 @@ const clearCookiesAndRedirect = async () => {
     cookieStore.delete('profile');
     cookieStore.delete('signin_method');
     cookieStore.delete('signup_token');
+    cookieStore.delete('__Secure-authjs.session-token');
+    cookieStore.delete('__Secure-authjs.callback-url');
+    cookieStore.delete('__Host-authjs.csrf-token');
 
     revalidatePath(HOME_ROUTE) // clears cache for this route
     revalidatePath(SIGNIN_ROUTE) // clears cache for this route
-    redirect(SIGNIN_ROUTE) // will load fresh data
+    redirect(`${SIGNIN_ROUTE}?logout=true`); // will load fresh data
 };
 
 export const signOut = async (): Promise<void> => {

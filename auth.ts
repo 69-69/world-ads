@@ -17,6 +17,7 @@ async function findUser(credentials: Partial<Record<"email" | "password", unknow
         method: 'POST',
         url: `/${signinEndpoint}`,
         data: {email, password},
+        headers: {'Content-Type': 'application/json'},
     });
 
     if (!inRange(response.status, 200, 299)) {

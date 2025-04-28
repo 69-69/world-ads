@@ -30,7 +30,7 @@ const generateRandomHash = (length: number = 32): string => {
     return result;
 };
 
-// Utility function to check dynamic & static route matching
+// Utility: Match route with optional dynamic segments
 const matchRouteWithParams = (route: string, pathname: string): boolean => {
     const routeParts = route.split('/');
     const pathParts = pathname.split('/');
@@ -53,33 +53,33 @@ const routeWithHashKey = (req: string, pathname: string): NextResponse => {
     return NextResponse.redirect(new URL(newUrl, req));
 }
 
-// Function to determine if a route needs to be (protected) for authenticated users
+// Helper: protect auth routes (e.g., /signin, /signup) from logged-in users
 const isProtectedAuthRoute = (pathname: string): boolean =>
     PROTECTED_AUTH_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
-// Function to determine if a route needs to be (protected) for unauthenticated users
+// Helper: protect resource routes (e.g., /settings, /orders) from guests
 const isProtectedResourceRoute = (pathname: string): boolean =>
     PROTECTED_RESOURCES_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
+// MAIN MIDDLEWARE FUNCTION
 export default authOptions.auth((req) => {
-    // Get user session token
-    const session = req.auth;
-    // await getToken({req, secret: process.env.AUTH_SEC});
-    const {pathname} = req.nextUrl;
+    const session = req.auth; // Get user session token
+    const { pathname, searchParams } = req.nextUrl; // Extract pathname and search parameters from the request URL
+
     console.log('steve-middleware-pathname', pathname);
 
+    // Allow logged-in user to access /signin if it's part of a logout flow
+    const isLoggingOut = pathname === SIGNIN_ROUTE && searchParams.get("logout") === "true";
+
+    // Logged-in user
     if (session) {
-        // If user is authenticated, protect auth routes (e.g. sign-in, sign-up, setup-store,...)
-        if (isProtectedAuthRoute(pathname)) {
+        // Prevent access to signin/signup/setup/etc unless logging out
+        if (isProtectedAuthRoute(pathname) && !isLoggingOut) {
             return NextResponse.redirect(new URL(HOME_ROUTE, req.url));
         }
-
-        // Special case: Handle marketplace ads route with dynamic hash generation
-        /*if (pathname === POST_ADS_ROUTE) {
-            return routeWithHashKey(req.url, POST_ADS_ROUTE);
-        }*/
     }
 
+    // Guest user
     if (!session) {
         // If user is not authenticated, protect resource routes (e.g. settings, posts,...)
         if (isProtectedResourceRoute(pathname)) {

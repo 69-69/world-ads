@@ -1,3 +1,4 @@
+/** @type {import('next').NextConfig} */
 import type {NextConfig} from "next";
 import {BACKEND_API_BASE_URL, BACKEND_IMAGE_DIR} from "@/env_config";
 
@@ -27,6 +28,8 @@ const urlParts = extractProtocolHostAndPort(BACKEND_API_BASE_URL);
 // console.log('steve-urlParts-hostname', urlParts.path ?? 'no-path'); // { protocol: 'https', hostname: 'istorezhona.shop', port: undefined }
 const nextConfig: NextConfig = {
     env: {
+        // Add your environment variables here
+        NEXTAUTH_SECRET: process.env.AUTH_SECRET,
         NEXTAUTH_URL: process.env.NEXTAUTH_URL,
         BACKEND_API_BASE_URL: BACKEND_API_BASE_URL,
         BACKEND_IMAGE_DIR: BACKEND_IMAGE_DIR,
@@ -50,7 +53,7 @@ const nextConfig: NextConfig = {
     experimental: {
         serverActions: {
             bodySizeLimit: '1024mb',
-            allowedOrigins: ['istorezhona.shop', '*.istorezhona.shop'],
+            allowedOrigins: ['istorezhona.shop', '*.istorezhona.shop', '127.0.0.1:5000'],
         },
     },
 };

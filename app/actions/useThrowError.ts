@@ -22,5 +22,23 @@ function handleUIError(error: unknown, tag: string): never {
     throw new Error(pleaseTryAgain);
 }
 
+const errorUtils = {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    getError: (error: any) => {
+        let e = error;
+        if (error.response) {
+            e = error.response.data;                   // data, status, headers
+            if (error.response.data && error.response.data.error) {
+                e = error.response.data.error;           // my app specific keys override
+            }
+        } else if (error.message) {
+            e = error.message;
+        } else {
+            e = "Steve-Unknown error occurred";
+        }
+        return e;
+    },
+};
 
-export {handleApiError, handleUIError};
+
+export {handleApiError, handleUIError, errorUtils};

@@ -13,6 +13,7 @@ import {
     ADMIN_PRODUCT_ROUTE, ADMIN_PROMO_REVIEW_ROUTE,
     ADMIN_PROMO_ROUTE, ADMIN_REFUND_ROUTE
 } from "@/app/actions/useConstants";
+import {generateRandomHash} from "@/app/actions/useHelper";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -27,14 +28,14 @@ const SidebarMenu: AppLinks[] = [
         id: 2, title: 'Products', url: ADMIN_PRODUCT_ROUTE,
         dropdown: [
             {id: 1, title: 'Product List', url: ADMIN_PRODUCT_ROUTE},
-            {id: 2, title: 'Create Product', url: ADMIN_PRODUCT_CREATE_ROUTE},
+            {id: 2, title: 'Create Product', url: `${ADMIN_PRODUCT_CREATE_ROUTE}?session=${generateRandomHash()}`},
             {id: 3, title: 'Product Review', url: ADMIN_PRODUCT_REVIEW_ROUTE},
         ],
     },
     {
         id: 2, title: 'Deal of the Day', url: ADMIN_PROMO_ROUTE,
         dropdown: [
-            {id: 1, title: 'All Deals', url: ADMIN_PROMO_ROUTE},
+            {id: 1, title: 'All Deals', url: `${ADMIN_PROMO_ROUTE}?session=${generateRandomHash()}`},
             {id: 3, title: 'Deal Review', url: ADMIN_PROMO_REVIEW_ROUTE},
         ],
     },

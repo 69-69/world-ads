@@ -77,8 +77,6 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
 
     const handleSidebarToggle = () => setOpenSidebar((prev) => !prev);
 
-    const snackBarMsg = isSessionExpired ? 'Session Expired' : 'Welcome ' + toTitleCase(user?.name ?? 'Guest');
-
     return (
         <Box sx={{flexGrow: 1}}>
             <HideOnScroll isDrawerOpen={openSidebar} onScrollUp={handleScrollUp}>
@@ -166,7 +164,12 @@ const Navbar: React.FC<{ userSession: UserSession | null, sideMenuLinks?: AppLin
                 />
             )}
 
-            {snackBarMsg && <SessionStatusSnackbar isSignIn={Boolean(user)} message={snackBarMsg}/>}
+            {
+                user && <SessionStatusSnackbar
+                    isOpen={Boolean(user)}
+                    message={'Welcome ' + toTitleCase(user?.name ?? 'Guest')}
+                />
+            }
         </Box>
     );
 };
