@@ -7,9 +7,7 @@ import {useSearchParams} from 'next/navigation';
 
 const SignInPage = () => {
     const searchParams = useSearchParams();
-
-    const getLogout = searchParams.get('logout') || '';
-    const isLoggingOut = getLogout === 'true';
+    const isLoggingOut = searchParams.get('logout') === 'true';
 
     return (
         <Container maxWidth='sm' sx={{flexGrow: 1, pt: 20}}>
