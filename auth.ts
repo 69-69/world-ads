@@ -58,7 +58,8 @@ const authConfig = [
         },
         authorize: async (credentials) => {
             if (!credentials?.email || !credentials?.password) {
-                throw new Error("Email and password are required.");
+                // throw new Error("Email and password are required.");
+                return {};
             }
 
             const user = await findUser(credentials);
