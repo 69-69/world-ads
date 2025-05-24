@@ -13,12 +13,12 @@ import {
     MailButton,
     NotificationButton,
 } from './menu';
-import {APP_NAME, HOME_ROUTE} from '@/app/actions/useConstants';
+import {APP_NAME, HOME_ROUTE} from '@/app/util/constants';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 import SessionStatusSnackbar from "@/app/components/SessionStatusSnackbar";
-import {toTitleCase} from "@/app/actions/useHelper";
+import {toTitleCase} from "@/app/util/clientUtils";
 import {UserSession} from "@/app/models/UserSession";
 import useSessionTimeout from "@/app/actions/auth/useSessionTimeout";
 import {AppLinks} from "@/app/models/AppLinks";

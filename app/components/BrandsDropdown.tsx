@@ -2,10 +2,10 @@
 import {Brand} from "@/app/models/Post";
 import CustomDropdown from "@/app/components/CustomDropdown";
 import getAdminData from "@/app/actions/admin/getAdminData";
-import {POST_BRANDS} from "@/app/actions/useConstants";
+import {POST_BRANDS} from "@/app/util/constants";
 import {useState, useEffect} from 'react';
-import {toSentenceCase} from "@/app/actions/useHelper";
-import {brandHandler} from "@/app/api/external/endPoints";
+import {toSentenceCase} from "@/app/util/clientUtils";
+import {brandHandler} from "@/app/util/endPoints";
 
 interface brandProps {
     onSelectChange?: (value: string) => void;
@@ -17,7 +17,7 @@ interface brandProps {
     sx?: object;
 }
 
-const BrandsDropdown = ({defaultVal, label, name, onSelectChange, isError, isFullWidth, sx}: brandProps) => {
+const BrandsDropdown = (props: brandProps) => {
     const [brands, setBrands] = useState<Brand[]>([]);
 
     useEffect(() => {
@@ -37,13 +37,13 @@ const BrandsDropdown = ({defaultVal, label, name, onSelectChange, isError, isFul
     return (
         <CustomDropdown
             options={brandOptions || POST_BRANDS}
-            onSelectChange={onSelectChange}
-            isFullWidth={isFullWidth}
-            defaultVal={defaultVal}
-            isError={isError}
-            label={label}
-            name={name}
-            sx={sx}
+            onSelectChange={props.onSelectChange}
+            isFullWidth={props.isFullWidth}
+            defaultVal={props.defaultVal}
+            isError={props.isError}
+            label={props.label}
+            name={props.name}
+            sx={props.sx}
         />
     );
 };

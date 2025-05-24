@@ -3,42 +3,32 @@ import Google from "@auth/core/providers/google";
 import GitHub from "@auth/core/providers/github";
 import Credentials from "@auth/core/providers/credentials";
 import {Profile} from "@/app/models/Profile";
-import {inRange} from "@/app/actions/useHelper";
-import {getApiClientWithAuth} from "@/app/api/external/apiClient";
-import {signinEndpoint} from "@/app/api/external/endPoints";
+import {inRange} from "@/app/util/clientUtils";
+import {getApiClientWithAuth} from "@/app/api/apiClient";
+import {errorUtils} from "@/app/util/serverUtils";
 import {cookies} from "next/headers";
-import {errorUtils} from "@/app/actions/useThrowError";
 
 
 async function findUser(credentials: Partial<Record<"email" | "password", unknown>>) {
     const {email, password} = credentials;
 
+    const signinEndpoint = 'auth/signin';
     const apiClient = await getApiClientWithAuth();
+
     const response = await apiClient.request({
         method: 'POST',
         url: `/${signinEndpoint}`,
         data: {email, password},
         headers: {'Content-Type': 'application/json'},
     });
+    // console.log('Steve-Response:', response.headers);
 
     if (!inRange(response.status, 200, 299)) {
         return errorUtils.getError(response);
         // throw new Error("Invalid email or password.");
     }
 
-    const profile = response.data as Profile;
-    if (profile.access_token) {
-        const cookieStore = await cookies();
-        cookieStore.set('access_token', profile.access_token, {
-            httpOnly: true,
-            secure: process.env.COOKIE_SECURE === 'production',
-            sameSite: 'lax',
-            path: '/',
-            maxAge: 60 * 60, // 1 hour in seconds  * 1000
-        });
-    }
-    return profile;
-
+    return response.data as Profile;
 }
 
 const authConfig = [
@@ -95,8 +85,20 @@ const authOptions = NextAuth({
         },
 
         async jwt({token, user}) {
+            const cookieStore = await cookies();
+
             // Add user to token on first sign-in
             if (user) {
+                cookieStore.set({
+                    name: 'access_token',
+                    value: token.access_token as string,
+                    httpOnly: true,
+                    secure: process.env.COOKIE_SECURE === 'production',
+                    sameSite: 'lax',
+                    path: '/',
+                    maxAge: 60 * 60, // 1 hour in seconds  * 1000
+                });
+
                 token.id = user.id;
                 token.email = user.email;
                 token.store_id = user.store_id;
@@ -108,6 +110,7 @@ const authOptions = NextAuth({
         },
 
         async session({session, token}) {
+
             // If not remember me, set session to expire in 24 hours
             if (!token?.remember_me) {
                 const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds

@@ -1,6 +1,6 @@
 'use client';
 import {usePathname } from "next/navigation";
-import {SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {SIGNIN_ROUTE} from "@/app/util/constants";
 import AlertDialog from "@/app/components/AlertDialog";
 import {signOut} from "@/app/actions/auth/handleSignOut";
 import { useEffect, useState} from "react";

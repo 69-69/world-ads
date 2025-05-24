@@ -9,7 +9,7 @@ type UserInterface = {
     email: string;
     phone?: string;
     store_id?: string;
-    image?: string;
+    imageUrl?: string;
     is_active?: boolean;
     access_token?: string;
     // [key: string]: string | boolean | undefined;
@@ -24,7 +24,7 @@ export class User {
     email: string;
     phone?: string;
     store_id?: string;
-    image?: string;
+    imageUrl?: string;
     is_active?: boolean;
     access_token?: string;
     [key: string]: string | unknown | undefined;
@@ -37,7 +37,7 @@ export class User {
                     lastname,
                     email,
                     phone,
-                    image,
+                    imageUrl,
                     store_id,
                     is_active,
                     access_token,
@@ -50,7 +50,7 @@ export class User {
         this.role = role;
         this.phone = phone;
         this.store_id = store_id;
-        this.image = image;
+        this.imageUrl = imageUrl;
         this.is_active = is_active;
         this.access_token = access_token;
     }

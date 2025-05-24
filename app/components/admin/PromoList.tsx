@@ -3,9 +3,9 @@
 import React, {useState} from 'react';
 import {Promo} from "@/app/models/Post";
 import PromoRow from "@/app/components/admin/PromoRow";
-import {promoHandler} from "@/app/api/external/endPoints";
+import {promoHandler} from "@/app/util/endPoints";
 import ListTable from "@/app/components/admin/ListTable";
-import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_PRODUCT_ROUTE} from "@/app/util/constants";
 import {deleteAction} from "@/app/actions/admin/deleteAction";
 import {Box} from "@mui/material";
 import UpdateDialogPage from "@/app/(protected)/admin/deal-of-the-day/updateDialogPage";

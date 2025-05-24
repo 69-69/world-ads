@@ -8,7 +8,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {CategoryProps} from "@/app/models/Post";
-import {toSentenceCase} from "@/app/actions/useHelper";
+import {toSentenceCase} from "@/app/util/clientUtils";
 
 const CategoryRow = ({category, onAction}: CategoryProps) => {
     const items = [category.category, category.parent_category];

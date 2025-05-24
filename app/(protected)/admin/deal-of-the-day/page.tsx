@@ -3,8 +3,8 @@ import {Promo} from "@/app/models/Post";
 import {Box, Typography} from "@mui/material";
 import PromoList from "@/app/components/admin/PromoList";
 import getAdminData from "@/app/actions/admin/getAdminData";
-import {promoHandler} from "@/app/api/external/endPoints";
-import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
+import {promoHandler} from "@/app/util/endPoints";
+import {ADMIN_PRODUCT_ROUTE} from "@/app/util/constants";
 import NoItemFound from "@/app/components/NoItemFound";
 
 const PromosPage = async () => {

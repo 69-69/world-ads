@@ -1,6 +1,6 @@
 'use client';
 import CustomDropdown from "@/app/components/CustomDropdown";
-import {PARENT_CATEGORIES} from "@/app/actions/useConstants";
+import {PARENT_CATEGORIES} from "@/app/util/constants";
 
 interface brandProps {
     onSelectChange?: (value: string) => void;

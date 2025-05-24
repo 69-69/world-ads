@@ -6,7 +6,7 @@ const ToastMessage = ({message, type, sx, href}: { message: string; type?: strin
         <Typography key={message} color={type || 'error'} variant="body2" sx={{my: 2, textAlign: "center", ...sx}}>
             {href ? (
                 <Link href={href} target="_blank" rel="noopener noreferrer">
-                    {message}
+                    {message} {'->>'}
                 </Link>
             ) : (
                 message

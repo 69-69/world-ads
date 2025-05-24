@@ -1,6 +1,6 @@
 import {Drawer, Box, ListItemButton, ListItemText, Collapse, List} from '@mui/material';
 import Link from 'next/link';
-import {HEADER_LINKS} from "@/app/actions/useConstants";
+import {HEADER_LINKS} from "@/app/util/constants";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import React, {useState} from "react";
 import {AppLinks} from "@/app/models/AppLinks";

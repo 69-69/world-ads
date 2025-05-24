@@ -5,9 +5,9 @@ import {Brand} from "@/app/models/Post";
 import {Box, Typography} from "@mui/material";
 import BrandList from "@/app/components/admin/BrandList";
 import getAdminData from "@/app/actions/admin/getAdminData";
-import {brandHandler} from "@/app/api/external/endPoints";
+import {brandHandler} from "@/app/util/endPoints";
 import NoItemFound from "@/app/components/NoItemFound";
-import {ADMIN_BRAND_CREATE_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_BRAND_CREATE_ROUTE} from "@/app/util/constants";
 
 const BrandPage = async () => {
     const tableHeader = ['Name', 'Action'];

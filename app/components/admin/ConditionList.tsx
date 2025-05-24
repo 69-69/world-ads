@@ -2,9 +2,9 @@
 
 import React, {useState} from 'react';
 import {Condition} from "@/app/models/Post";
-import {conditionHandler} from "@/app/api/external/endPoints";
+import {conditionHandler} from "@/app/util/endPoints";
 import ListTable from "@/app/components/admin/ListTable";
-import {ADMIN_PRO_CONDITION_CREATE_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_PRO_CONDITION_CREATE_ROUTE} from "@/app/util/constants";
 import ConditionRow from "@/app/components/admin/ConditionRow";
 import {deleteAction} from "@/app/actions/admin/deleteAction";
 

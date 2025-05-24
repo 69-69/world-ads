@@ -3,9 +3,9 @@ import {Category} from "@/app/models/Post";
 import {Box, Typography} from "@mui/material";
 import CategoryList from "@/app/components/admin/CategoryList";
 import getAdminData from "@/app/actions/admin/getAdminData";
-import {categoryHandler} from "@/app/api/external/endPoints";
+import {categoryHandler} from "@/app/util/endPoints";
 import NoItemFound from "@/app/components/NoItemFound";
-import {ADMIN_CATEGORY_CREATE_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_CATEGORY_CREATE_ROUTE} from "@/app/util/constants";
 
 const CategoryPage = async () => {
     const tableHeader = ['Category', 'Parent', 'Action'];

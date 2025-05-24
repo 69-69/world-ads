@@ -1,7 +1,9 @@
+'use server';
 // export const runtime = 'nodejs';
 import axios, {AxiosError, AxiosInstance} from "axios";
 import {BACKEND_API_ENDPOINT} from "@/env_config";
 import {cookies} from "next/headers";
+import authOptions from "@/auth";
 
 declare module 'axios' {
     export interface AxiosRequestConfig {
@@ -9,18 +11,25 @@ declare module 'axios' {
     }
 }
 
-export const extractTokenFromRequest = async (
+export const extractAccessTokenFromRequest = async (
     req?: Request | { headers: Headers | Record<string, string> }
 ): Promise<string | null> => {
+    // 1. Check for token in the session
+    const session = await authOptions.auth();
+    const sessionToken = session?.user.access_token || null;
+    if (sessionToken) {
+        return sessionToken;
+    }
+
+    // 2. If no request is provided, check cookies directly
     if (!req) {
         const cookieStore = await cookies();
         return cookieStore.get('access_token')?.value ?? null;
     }
 
+    // 3. Extract headers if the request object is available
     let headers: Headers | Record<string, string> | undefined;
-
     if (typeof req === 'object') {
-        // If it's a Fetch API Request
         if ('headers' in req && typeof req.headers.get === 'function') {
             headers = req.headers as Headers;
         } else if ('headers' in req) {
@@ -28,10 +37,11 @@ export const extractTokenFromRequest = async (
         }
     }
 
+    // 4. If no headers were found, return null
     if (!headers) return null;
 
+    // 5. Look for the 'Authorization' header and extract the token
     let authHeader: string | null | undefined;
-
     if (headers instanceof Headers) {
         authHeader = headers.get('authorization');
     } else {
@@ -44,20 +54,19 @@ export const extractTokenFromRequest = async (
 export async function getApiClientWithAuth(
     req?: Request | { headers: Headers | Record<string, string> }
 ): Promise<AxiosInstance> {
-    let token = await extractTokenFromRequest(req);
-    // console.log('Extracted Token:', token);
+    let token = await extractAccessTokenFromRequest(req);
 
     const instance = axios.create({
         baseURL: BACKEND_API_ENDPOINT,
         withCredentials: true,
     });
+    // console.log('Steve-API-Client:', instance.defaults.baseURL);
 
     // Request interceptor to add Authorization header
     instance.interceptors.request.use((config) => {
         if (token) {
             config.headers = config.headers || {};
             config.headers['Authorization'] = `Bearer ${token}`;
-            // console.log('Authorization Header:', config.headers['Authorization']); // Log header
         }
         return config;
     });
@@ -77,12 +86,9 @@ export async function getApiClientWithAuth(
 
                 try {
                     const refreshResponse = await axios.post(
-                        `${instance.defaults.baseURL}/refresh-token`,
-                        {},
-                        {
-                            withCredentials: true,
-                        }
+                        `${instance.defaults.baseURL}/refresh-token`, {}, {withCredentials: true}
                     );
+                    // console.log('Refresh-steve-Response:', refreshResponse.data);
 
                     const newAccessToken = refreshResponse.data.access_token;
 
@@ -109,18 +115,18 @@ export async function getApiClientWithAuth(
 
 
 /* Create an Axios instance
-const apiClient: AxiosInstance = axios.create({
+const apiClients: AxiosInstance = axios.create({
     baseURL: BACKEND_API_ENDPOINT,
     withCredentials: true,  // Send cookies with cross-origin requests
 });
 
 // Interceptor to inject the access token into each request
-apiClient.interceptors.request.use(
+apiClients.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
         // const fullUrl = `${config.baseURL}${config.url}`;
         // console.log('Steve-Full-URL:', fullUrl);
         const cookieStore = await cookies();
-        const accessToken = cookieStore.get('access_token')?.value;
+        const accessToken = await cookieStore.get('access_token')?.value;
 
         if (accessToken) {
             config.headers = config.headers || {}; // Ensure headers are initialized
@@ -133,6 +139,7 @@ apiClient.interceptors.request.use(
     },
     (error: AxiosError) => Promise.reject(error)
 );
+export {apiClients};
 
 // Response Interceptor for refreshing access token
 apiClient.interceptors.response.use(

@@ -3,10 +3,10 @@
 import {Category} from "@/app/models/Post";
 import CustomDropdown from "@/app/components/CustomDropdown";
 import {useState, useEffect} from 'react';
-import {toSentenceCase} from "@/app/actions/useHelper";
-import {SUB_CATEGORIES} from "@/app/actions/useConstants";
+import {toSentenceCase} from "@/app/util/clientUtils";
+import {SUB_CATEGORIES} from "@/app/util/constants";
 import getAdminData from "@/app/actions/admin/getAdminData";
-import {categoryHandler} from "@/app/api/external/endPoints";
+import {categoryHandler} from "@/app/util/endPoints";
 
 interface categoryProps {
     onSelectChange?: (value: string) => void;

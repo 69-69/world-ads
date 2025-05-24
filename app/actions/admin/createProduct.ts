@@ -1,12 +1,12 @@
 'use server';
 import {FormDataModel, to_FormData} from "@/app/models/FormDataModel";
-import {inRange} from "@/app/actions/useHelper";
-import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {marketplaceHandler} from "@/app/api/external/endPoints";
-import {handleApiError} from "@/app/actions/useThrowError";
+import {inRange} from "@/app/util/clientUtils";
+import fetchWithRetry from "@/app/actions/fetchWithRetry";
+import {marketplaceHandler} from "@/app/util/endPoints";
+import {errorUtils} from "@/app/util/serverUtils";
 import authOptions from "@/auth";
 import {NextResponse} from "next/server";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
 import {redirect} from "next/navigation";
 
 const createProduct = async (form: FormDataModel) => {
@@ -37,8 +37,8 @@ const createProduct = async (form: FormDataModel) => {
 
         return {message: 'Post was not successful', status: response.status};
     } catch (error: unknown) {
-        handleApiError(error);
-        return {message: 'An error occurred during sign-in', status: 500}
+        const err = errorUtils.getError(error);
+        return {message: err, status: 500}
     }
 }
 export default createProduct;

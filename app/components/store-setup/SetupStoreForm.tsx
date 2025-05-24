@@ -4,7 +4,7 @@ import React from 'react';
 import StoreForm from '@/app/components/store-setup/StoreForm';
 import {ApiResponse} from "@/app/models";
 import {createStore} from "@/app/actions/auth/createStore";
-import {SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {SIGNIN_ROUTE} from "@/app/util/constants";
 import {FormDataModel} from "@/app/models/FormDataModel";
 
 

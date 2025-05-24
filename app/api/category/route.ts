@@ -1,5 +1,5 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 import axios from "axios";
 

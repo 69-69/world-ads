@@ -1,11 +1,11 @@
 import Container from "@mui/material/Container";
 import {Condition} from "@/app/models/Post";
-import {conditionHandler} from "@/app/api/external/endPoints";
+import {conditionHandler} from "@/app/util/endPoints";
 import {Box, Typography} from "@mui/material";
 import ConditionList from "@/app/components/admin/ConditionList";
 import getAdminData from "@/app/actions/admin/getAdminData";
 import NoItemFound from "@/app/components/NoItemFound";
-import {ADMIN_PRO_CONDITION_CREATE_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_PRO_CONDITION_CREATE_ROUTE} from "@/app/util/constants";
 
 const ConditionPage = async () => {
     const tableHeader = ['Condition', 'Action'];

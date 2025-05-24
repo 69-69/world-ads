@@ -2,7 +2,7 @@ import {IconButton, InputAdornment, TextField} from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import React, {useState} from "react";
-import {toSentenceCase} from "@/app/actions/useHelper";
+import {toSentenceCase} from "@/app/util/clientUtils";
 import {Field} from "@/app/models/TextField";
 
 
@@ -21,15 +21,15 @@ interface CustomTextProp {
 const toFullWidth = '1/-1';
 
 
-const CustomTextField = ({fields, formData, handleChange, errors}: CustomTextProp) => {
+const CustomTextField = (prop: CustomTextProp) => {
 
     const [showPassword, setShowPassword] = useState(false);
     const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-    const hiddenFields = fields.filter((f) => f.type === 'hidden');
+    const hiddenFields = prop.fields.filter((f) => f.type === 'hidden');
 
     const renderTextInput = (field: Field, lastIndexIsOdd: boolean, index: number) => {
-        const isError: string = errors[field.name];
+        const isError: string = (prop.errors)[field.name];
         const isPassword: boolean = field.type === 'password';
         const fieldType: string = isPassword
             ? (showPassword ? 'text' : 'password')
@@ -44,8 +44,8 @@ const CustomTextField = ({fields, formData, handleChange, errors}: CustomTextPro
                 label={toSentenceCase(field.value || field.label!)}
                 type={fieldType}
                 variant="outlined"
-                defaultValue={field.value || formData[field.name]}
-                onChange={handleChange}
+                defaultValue={field.value || (prop.formData)[field.name]}
+                onChange={prop.handleChange}
                 fullWidth={lastIndexIsOdd}
                 multiline={field.isTextArea}
                 rows={field.isTextArea ? 3 : 1}
@@ -81,8 +81,8 @@ const CustomTextField = ({fields, formData, handleChange, errors}: CustomTextPro
     };
 
 
-    return fields.map((field: Field, index: number) => {
-        const visibleFields = fields.filter((f) => f.type !== 'hidden');
+    return prop.fields.map((field: Field, index: number) => {
+        const visibleFields = prop.fields.filter((f) => f.type !== 'hidden');
         const isOdd = field.fullWidth ?? true;
         const totalFields = visibleFields.length;
         const isLast = index === totalFields - 1;

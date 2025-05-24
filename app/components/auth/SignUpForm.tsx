@@ -4,7 +4,7 @@ import {createSignUp} from '@/app/actions/auth/createSignUp';
 import AuthForm from '@/app/components/auth/AuthForm';
 import {ApiResponse} from "@/app/models";
 import {SignUpForm, SignUpResponse} from "@/app/models/SignUp";
-import {SIGNIN_ROUTE, VERIFICATION_ROUTE} from '@/app/actions/useConstants';
+import {SIGNIN_ROUTE, VERIFICATION_ROUTE} from '@/app/util/constants';
 
 
 const SignInForm = () => {

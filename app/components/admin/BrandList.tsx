@@ -2,9 +2,9 @@
 
 import React, {useState} from 'react';
 import {Brand} from "@/app/models/Post";
-import {brandHandler} from "@/app/api/external/endPoints";
+import {brandHandler} from "@/app/util/endPoints";
 import ListTable from "@/app/components/admin/ListTable";
-import {ADMIN_BRAND_CREATE_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_BRAND_CREATE_ROUTE} from "@/app/util/constants";
 import BrandRow from "@/app/components/admin/BrandRow";
 import {deleteAction} from "@/app/actions/admin/deleteAction";
 

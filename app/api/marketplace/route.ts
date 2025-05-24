@@ -1,8 +1,13 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 import axios from "axios";
 
+/*export const config = {
+  api: {
+    responseLimit: false,
+  },
+}*/
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(req: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
@@ -29,6 +34,7 @@ async function handleRequest(req: NextRequest, method: 'GET' | 'POST' | 'PUT' | 
             }
         }
 
+        // console.log('Steve-Request-Method-2-2:', method, data.get('user_id'), data.get('name'), data.get('description'), data.get('regular_price'), data.get('sales_price'), data.get('stock_level'));
         const res = await apiClient.request({method, url: fullEndpoint, data, headers});
         return NextResponse.json(res.data, {status: res.status});
 
@@ -49,20 +55,3 @@ export const POST = async (request: NextRequest) => await handleRequest(request,
 export const PUT = async (request: NextRequest) => await handleRequest(request, 'PUT');
 export const DELETE = async (request: NextRequest) => await handleRequest(request, 'DELETE');
 
-/*export const GET = async (request: NextRequest) => {
-
-    try {
-
-
-        const response = await apiClient({
-            method: 'GET',
-            url: '/listings',
-        });
-
-        const {data} = response;
-
-        return NextResponse.json(data);
-    } catch (error: unknown) {
-        return NextResponse.json({error: 'Something went wrong'}, {status: 500});
-    }
-}*/

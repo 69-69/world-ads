@@ -1,6 +1,6 @@
 import {Suspense} from 'react';
-import {getCountries} from "@/app/api/external/backend";
 import UseCountrySelector from "@/app/components/CountrySelector/useCountrySelector";
+import getCountries from '@/app/actions/getCountries';
 
 const CountrySelector = (
     {handleChange, sx, isError, label}: {

@@ -1,10 +1,10 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 import authOptions from "@/auth";
 import axios from "axios";
 import {redirect} from "next/navigation";
-import {SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {SIGNIN_ROUTE} from "@/app/util/constants";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {

@@ -2,9 +2,9 @@
 
 import React, {useState} from 'react';
 import {Category} from "@/app/models/Post";
-import {categoryHandler} from "@/app/api/external/endPoints";
+import {categoryHandler} from "@/app/util/endPoints";
 import ListTable from "@/app/components/admin/ListTable";
-import {ADMIN_CATEGORY_CREATE_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_CATEGORY_CREATE_ROUTE} from "@/app/util/constants";
 import CategoryRow from "@/app/components/admin/CategoryRow";
 import {deleteAction} from "@/app/actions/admin/deleteAction";
 

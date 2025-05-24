@@ -15,7 +15,7 @@ import React, {use, useState} from "react";
 import {handleEdit} from "@/app/actions/admin/editProduct";
 import {useSearchParams} from 'next/navigation';
 import {Product} from '@/app/models/Post';
-import {removeSpecialChars, toTitleCase} from '@/app/actions/useHelper';
+import {removeSpecialChars, toTitleCase} from '@/app/util/clientUtils';
 import BrandsDropdown from "@/app/components/BrandsDropdown";
 import SubCategoriesDropdown from "@/app/components/SubCategoriesDropdown";
 import ConditionsDropdown from "@/app/components/ConditionsDropdown";

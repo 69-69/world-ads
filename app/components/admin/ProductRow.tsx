@@ -13,7 +13,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
-import {ADMIN_PROMO_CREATE_ROUTE, ADMIN_PROMO_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_PROMO_CREATE_ROUTE, ADMIN_PROMO_ROUTE} from "@/app/util/constants";
 import {useRouter} from "next/navigation";
 import {useState} from 'react';
 import {ProductRowProps} from "@/app/models/Post";

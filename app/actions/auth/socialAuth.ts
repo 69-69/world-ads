@@ -1,6 +1,6 @@
 'use server';
 import authOptions from "@/auth";
-import {handleUIError} from "@/app/actions/useThrowError";
+import {handleUIError} from "@/app/util/serverUtils";
 
 // Google Sign-In function
 const googleSignIn = async () => {

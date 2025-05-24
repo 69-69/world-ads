@@ -1,11 +1,11 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 import axios from "axios";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-    const setupEndpoint = '/setup-seller';
+    const setupEndpoint = '/seller/setup-store';
     // console.log('Steve-Setup-Store-routeHandler:', request);
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.formData() : undefined;
@@ -15,14 +15,12 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
             method,
             url: setupEndpoint,
             data: body,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+            headers: {'Content-Type': 'multipart/form-data'},
         });
 
         const {data} = response;
 
-        return NextResponse.json(data, { status: response.status });
+        return NextResponse.json(data, {status: response.status});
     } catch (error: unknown) {
         // Type-guarding the error to ensure it's an AxiosError
         if (axios.isAxiosError(error)) {
@@ -30,10 +28,10 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
             const errorMessage = error.response?.data?.message || 'Something went wrong';
             const statusCode = error.response?.status || 500; // Use status from the error response or default to 500
 
-            return NextResponse.json({ error: errorMessage }, { status: statusCode });
+            return NextResponse.json({error: errorMessage}, {status: statusCode});
         } else {
             // Handle non-Axios errors (if any)
-            return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+            return NextResponse.json({error: 'Something went wrong'}, {status: 500});
         }
     }
 }

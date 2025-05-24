@@ -1,19 +1,5 @@
 // models/Post.ts
 //
-/*interface Post {
-    id: number | string;
-    slug: string;
-    hashed_id: string;
-    store_id: number | string;
-    published: boolean;
-    title: string;
-    category: string;
-    description: string;
-    price: number | string;
-    discount_price: number;
-    product_color: string;
-    images: string[];
-}*/
 
 interface ids {
     id?: number | string;
@@ -23,6 +9,8 @@ interface ids {
 interface Product extends ids {
     slug: string;
     store_id: number | string;
+    star_rating?: number | string;
+    promo_price?: number | string;
     is_promo: boolean;
     name: string;
     images: string[];

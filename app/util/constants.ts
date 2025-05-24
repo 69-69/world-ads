@@ -45,6 +45,7 @@ const PROTECTED_RESOURCES_ROUTES = [
     CHECKOUT_ROUTE,
     ADMIN_ROUTE,
     ADMIN_ROUTE + '/:path*',
+    ADMIN_ROUTE + '/:path*/:path*',
 ];
 
 const PROTECTED_AUTH_ROUTES = [
@@ -233,7 +234,7 @@ const SELLER_TYPE = [
     {label: 'Company', value: 'company', tooltip: 'Business Seller (Business-to-Consumer or B2C)'},
 ];
 
-const APP_COOKIE_KEYS = [
+/*const APP_COOKIE_KEYS = [
     'access_token',
     '__Secure-authjs.session-token',
     '__Secure-authjs.callback-url',
@@ -244,10 +245,9 @@ const APP_COOKIE_KEYS = [
     'signin_method',
     'profile',
     'signup_token',
-];
+];*/
 
 export {
-    APP_COOKIE_KEYS,
     APP_NAME,
     ACC_ROLE,
     SELLER_TYPE,

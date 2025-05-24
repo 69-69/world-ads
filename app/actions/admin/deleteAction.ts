@@ -1,8 +1,8 @@
 // app/actions/deleteProduct.ts
 'use server';
 
-import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import fetchWithRetry from "@/app/actions/fetchWithRetry";
+import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
 import authOptions from "@/auth";
 import {redirect} from "next/navigation";
 

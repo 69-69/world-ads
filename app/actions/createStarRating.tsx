@@ -2,9 +2,9 @@
 
 import {useState} from 'react';
 import StarRating from "@/app/components/StarRating";
-import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {HOME_ROUTE} from "@/app/actions/useConstants";
-import {reviewHandler} from "@/app/api/external/endPoints";
+import fetchWithRetry from "@/app/actions/fetchWithRetry";
+import {HOME_ROUTE} from "@/app/util/constants";
+import {reviewHandler} from "@/app/util/endPoints";
 
 // Post star rating
 const postStarRating = async (star: number, post_id: number | string) => {
@@ -24,7 +24,9 @@ export default function StarRatingClient({postId}: { postId: number | string }) 
         if (newValue !== null) {
             setRating(newValue);
             // Call the postStarRating function to submit the rating
-            postStarRating(newValue, postId);
+            postStarRating(newValue, postId).then(() => {
+                console.log('Rating submitted successfully');
+            });
         }
     };
 

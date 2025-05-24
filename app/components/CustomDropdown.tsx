@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
-import {replaceSpaces, toSentenceCase} from '@/app/actions/useHelper';
+import {replaceSpaces, toSentenceCase} from '@/app/util/clientUtils';
 
 type data = { name: string; value: string };
 
@@ -29,39 +29,31 @@ const sortList = (a: data, b: data) => {
     return 0; // names are equal
 }
 
-const CustomDropdown: React.FC<CustomDropdownProps> = ({
-                                                           options = [],
-                                                           onSelectChange,
-                                                           defaultVal,
-                                                           label,
-                                                           name,
-                                                           isError,
-                                                           sx,
-                                                           isFullWidth
-                                                       }) => {
+const CustomDropdown: React.FC<CustomDropdownProps> = (props) => {
+    const options = props.options === undefined ? [] : props.options;
     const [selectedOption, setSelectedOption] = React.useState('');
 
     const handleChange = (e: SelectChangeEvent<string>) => {
         const {value} = e.target as HTMLInputElement;
         setSelectedOption(value);
-        if (onSelectChange) {
-            onSelectChange(value);
+        if (props.onSelectChange) {
+            props.onSelectChange(value);
         }
     };
 
     return (
-        <FormControl fullWidth={isFullWidth || true} size='small' error={Boolean(isError)} sx={sx}>
-            <InputLabel id="select-dropdown-label">{toSentenceCase(label)}</InputLabel>
+        <FormControl fullWidth={props.isFullWidth || true} size='small' error={Boolean(props.isError)} sx={props.sx}>
+            <InputLabel id="select-dropdown-label">{toSentenceCase(props.label)}</InputLabel>
             <Select
                 labelId="select-dropdown-label"
                 id="select-dropdown"
-                label={toSentenceCase(label) || 'Select Option'}
-                defaultValue={defaultVal || ''}
-                name={name || replaceSpaces({str: label})}
+                label={toSentenceCase(props.label) || 'Select Option'}
+                defaultValue={props.defaultVal || ''}
+                name={props.name || replaceSpaces({str: props.label})}
                 fullWidth
                 value={selectedOption}
                 onChange={handleChange}
-                error={Boolean(isError)}
+                error={Boolean(props.isError)}
                 size='small'
             >
                 {options.length > 0 ? (
@@ -72,7 +64,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                     <MenuItem value="" disabled>No options available</MenuItem>
                 )}
             </Select>
-            {isError && <FormHelperText>{isError || 'This field is required.'}</FormHelperText>}
+            {props.isError && <FormHelperText>{props.isError || 'This field is required.'}</FormHelperText>}
         </FormControl>
     );
 };

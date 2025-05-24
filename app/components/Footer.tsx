@@ -3,7 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import {Box, Typography, Container, IconButton, Grid2 as Grid} from '@mui/material';
 import {Facebook, Twitter, Instagram, LinkedIn} from '@mui/icons-material';
-import {APP_NAME, FOOTER_LINKS} from "@/app/actions/useConstants";
+import {APP_NAME, FOOTER_LINKS} from "@/app/util/constants";
 
 const Footer = () => {
 

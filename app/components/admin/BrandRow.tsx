@@ -8,7 +8,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {BrandProps} from "@/app/models/Post";
-import {toSentenceCase} from "@/app/actions/useHelper";
+import {toSentenceCase} from "@/app/util/clientUtils";
 
 const BrandRow = ({brand, onAction}: BrandProps) => {
 

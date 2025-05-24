@@ -13,7 +13,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {PromoRowProps} from "@/app/models/Post";
 import {BACKEND_PROMO_IMAGE_PATH} from "@/env_config";
-import {isExpired, toSentenceCase} from "@/app/actions/useHelper";
+import {isExpired, toSentenceCase} from "@/app/util/clientUtils";
 import React, {useMemo} from "react";
 
 

@@ -15,31 +15,22 @@ type alertInterface = {
     secLabel?: string;
     maxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | false;
 };
-export default function AlertDialog({
-                                        open,
-                                        handleClose,
-                                        handleAction,
-                                        title,
-                                        content,
-                                        firstLabel,
-                                        secLabel,
-                                        maxWidth
-                                    }: alertInterface) {
+export default function AlertDialog(props: alertInterface) {
     return (
         <Dialog
-            open={open}
-            onClose={handleClose}
+            open={props.open}
+            onClose={props.handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
-            maxWidth={maxWidth || "sm"}
+            maxWidth={props.maxWidth || "sm"}
         >
-            {title && <DialogTitle id="alert-dialog-title" align={'center'}>{title}</DialogTitle>}
+            {props.title && <DialogTitle id="alert-dialog-title" align={'center'}>{props.title}</DialogTitle>}
             <DialogContent dividers>
-                <DialogContentText id="alert-dialog-description">{content}</DialogContentText>
+                <DialogContentText id="alert-dialog-description">{props.content}</DialogContentText>
             </DialogContent>
             <DialogActions sx={{justifyContent: 'space-around'}}>
-                <Button variant={"contained"} size={'small'} onClick={handleAction}>{firstLabel}</Button>
-                {secLabel && <Button variant={"outlined"} size={'small'} onClick={handleClose} autoFocus>{secLabel}</Button>}
+                <Button variant={"contained"} size={'small'} onClick={props.handleAction}>{props.firstLabel}</Button>
+                {props.secLabel && <Button variant={"outlined"} size={'small'} onClick={props.handleClose} autoFocus>{props.secLabel}</Button>}
             </DialogActions>
         </Dialog>
     );

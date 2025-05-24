@@ -1,5 +1,5 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/external/apiClient";
+import {getApiClientWithAuth} from "@/app/api/apiClient";
 import {NextRequest, NextResponse} from "next/server";
 
 // Set Cookies utility function
@@ -16,7 +16,7 @@ const setCookie = (res: NextResponse, name: string, value: string, days: number 
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
-    const signupEndpoint = '/signup';
+    const signupEndpoint = '/auth/signup';
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.json() : undefined;
 

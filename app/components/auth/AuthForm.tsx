@@ -13,10 +13,10 @@ import {
     ACC_ROLE,
     HOME_ROUTE,
     POLICY_ROUTE
-} from "@/app/actions/useConstants";
+} from "@/app/util/constants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/actions/useHelper";
-import {useFormDataChange} from "@/app/actions/useFormDataChange";
+import {inRange} from "@/app/util/clientUtils";
+import {useFormDataChange} from "@/app/util/formDataChange";
 import CountrySelector from "@/app/components/CountrySelector/CountrySelector";
 import {FormDataModel} from "@/app/models/FormDataModel";
 import {Field} from "@/app/models/TextField";
@@ -40,20 +40,12 @@ interface AuthFormProps<T = unknown, U = unknown> {
 
 const toFullWidth = '1/-1';
 
-const AuthForm = <T, U extends ApiResponse>({
-                                                onSubmit,
-                                                title,
-                                                buttonText,
-                                                fields,
-                                                auxButton,
-                                                isSignUp,
-                                                redirectTo,
-                                            }: AuthFormProps<T, U>) => {
+const AuthForm = <T, U extends ApiResponse>(prop: AuthFormProps<T, U>) => {
     const router = useRouter();
 
     // Assuming 'fields' is an array that contains the fields for your form
     const [formData, setFormData] = useState<FormDataModel>(
-        fields.reduce<FormDataModel>((acc, field) => {
+        prop.fields.reduce<FormDataModel>((acc, field) => {
             acc[field.name] = field.name === 'images' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
             return acc;
         }, {} as FormDataModel) // Initial accumulator type as FormDataModel
@@ -71,7 +63,7 @@ const AuthForm = <T, U extends ApiResponse>({
 
     const handleCountry = (country: string, state_region: string, dial: string) => {
         // Prepend the dial code to the phone number
-        const telField = fields.find((field: Field) => field?.type === 'tel');
+        const telField = prop.fields.find((field: Field) => field?.type === 'tel');
         if (telField) {
             telField.suffix = dial;
             // Update the hidden dial_code field with the selected country's dial code
@@ -87,7 +79,7 @@ const AuthForm = <T, U extends ApiResponse>({
     const validateFormFields = () => {
         const errors: Record<string, string> = {};
 
-        fields.forEach((field) => {
+        prop.fields.forEach((field) => {
             const fieldValue = formData[field.name];
 
             if (field.name !== 'account_type' && field.name !== 'remember_me') {
@@ -133,7 +125,7 @@ const AuthForm = <T, U extends ApiResponse>({
         }
 
         try {
-            const response = await onSubmit(formData as T);
+            const response = await prop.onSubmit(formData as T);
 
             if (response.status && inRange(response.status, 200, 299)) {
                 setMessage({success: 'Please wait...'});
@@ -143,7 +135,7 @@ const AuthForm = <T, U extends ApiResponse>({
                 // Redirect the user to the specified 'redirectTo' path if provided,
                 // or to 'redirectPath' from the response data if available.
                 // If neither is provided, fallback to the 'HOME_ROUTE'.
-                router.push(redirectTo || (data ?? HOME_ROUTE));
+                router.push(prop.redirectTo || (data ?? HOME_ROUTE));
                 return;
             }
             setMessage({error: 'Something went wrong, please try again'});
@@ -167,19 +159,19 @@ const AuthForm = <T, U extends ApiResponse>({
 
     return (
         <Paper elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
-            <Box key={title} sx={{mb: 2}}>
+            <Box key={prop.title} sx={{mb: 2}}>
                 <Typography key="form-title" variant="h4" align="center" gutterBottom>
-                    {title}
+                    {prop.title}
                 </Typography>
 
-                <GoogleSignInButton text={buttonText + ' With Google'}
+                <GoogleSignInButton text={prop.buttonText + ' With Google'}
                                     size="medium"
                                     color="primary"
                                     variant="outlined"
                                     onSubmit={googleSignIn}/>
 
                 <OrSeparator text={'||'} sxd={{borderColor: '#ddd'}} sx={{my: 0, mx: 20}}/>
-                <GitHubSignInButton text={buttonText + ' With GitHub'}
+                <GitHubSignInButton text={prop.buttonText + ' With GitHub'}
                                     size="medium"
                                     color="info"
                                     variant="contained"
@@ -199,25 +191,25 @@ const AuthForm = <T, U extends ApiResponse>({
                 noValidate
                 autoComplete="off"
             >
-                {isSignUp && (
+                {prop.isSignUp && (
                     <CountrySelector
                         handleChange={handleCountry}
                         isError={errors['country']}
                         sx={{mt: 2, gridColumn: toFullWidth}}
                     />)
                 }
-                <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
+                <CustomTextField fields={prop.fields} formData={formData} handleChange={handleChange} errors={errors}/>
 
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
                     <Box key="acc-me"
                          sx={{
                              display: 'flex',
-                             justifyContent: isSignUp ? 'space-between' : 'right',
+                             justifyContent: prop.isSignUp ? 'space-between' : 'right',
                              alignItems: 'center',
                              width: '100%',
                              mb: 2,
                          }}>
-                        {isSignUp ? (
+                        {prop.isSignUp ? (
                             <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
                                 <CustomSwitch label='I am Seller?' onSwitchChange={handleSwitchChange}
                                               name='account_type'/>
@@ -231,13 +223,13 @@ const AuthForm = <T, U extends ApiResponse>({
                     {message.error && <ToastMessage message={message.error}/>}
                     {message.success && <ToastMessage message={message.success} type="success"/>}
 
-                    <Button type="submit" variant="outlined" color="primary" fullWidth
+                    <Button type="submit" name="sign-in-with-email-password" variant="outlined" color="primary" fullWidth
                             disabled={Boolean(message.success)}>
-                        {message.success || buttonText}
+                        {message.success || prop.buttonText}
                     </Button>
 
                     <Divider sx={{my: 1}}/>
-                    {auxButton && auxButton.map(renderOptButton)}
+                    {prop.auxButton && prop.auxButton.map(renderOptButton)}
                 </Box>
             </Box>
         </Paper>

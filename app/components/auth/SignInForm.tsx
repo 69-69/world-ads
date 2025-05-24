@@ -5,9 +5,9 @@ import AuthForm from '@/app/components/auth/AuthForm';
 import {
     ADMIN_DASHBOARD_ROUTE,
     SIGNUP_ROUTE,
-} from '@/app/actions/useConstants';
+} from '@/app/util/constants';
 import {ApiResponse, SignIn} from "@/app/models";
-import { generateRandomHash } from '@/app/actions/useHelper';
+import { generateRandomHash } from '@/app/util/clientUtils';
 
 
 const SignInForm = () => {

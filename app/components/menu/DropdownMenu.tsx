@@ -1,7 +1,7 @@
 import React from "react";
 import {Menu, MenuItem} from '@mui/material';
-import {toTitleCase} from "@/app/actions/useHelper";
-import {ADMIN_DASHBOARD_ROUTE} from "@/app/actions/useConstants";
+import {toTitleCase} from "@/app/util/clientUtils";
+import {ADMIN_DASHBOARD_ROUTE} from "@/app/util/constants";
 import {useRouter} from "next/navigation";
 import {signOut} from "@/app/actions/auth/handleSignOut";
 

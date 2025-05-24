@@ -3,7 +3,7 @@ import {Button, Paper, Box, Typography, Divider, Stack, Tooltip} from '@mui/mate
 import ImageUpload from './ImageUpload';
 import CustomTextField from "@/app/components/CustomTextField";
 import ToastMessage from "@/app/components/ToastMessage";
-import {useFormDataChange} from "@/app/actions/useFormDataChange";
+import {useFormDataChange} from "@/app/util/formDataChange";
 import MulticolorSelector from "@/app/components/post/MulticolorSelector";
 import {FormDataModel} from "@/app/models/FormDataModel";
 import {Field} from "@/app/models/TextField";
@@ -13,9 +13,9 @@ import ConditionsDropdown from "@/app/components/ConditionsDropdown";
 import ParentCategoriesDropdown from "@/app/components/ParentCategoriesDropdown";
 import {useRouter} from 'next/navigation';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_PRODUCT_ROUTE} from "@/app/util/constants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/actions/useHelper";
+import {inRange} from "@/app/util/clientUtils";
 
 interface PostFormProps {
     onSubmit: (formData: FormDataModel) => Promise<ApiResponse>;
@@ -26,18 +26,18 @@ interface PostFormProps {
 
 const toFullWidth = '1/-1';
 
-const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}) => {
-    // State to store form values
-    // const [formData, setFormData] = useState<FormDataModel>(
-    //     fields.reduce<FormDataModel>((acc, field) => {
-    //         acc[field.name] = '';
-    //         return acc;
-    //     }, {images: [] as File[]})
-    // );
+const PostForm: React.FC<PostFormProps> = (props) => {
+    /*State to store form values
+    const [formData, setFormData] = useState<FormDataModel>(
+        fields.reduce<FormDataModel>((acc, field) => {
+            acc[field.name] = '';
+            return acc;
+        }, {images: [] as File[]})
+    );*/
     const router = useRouter();
     const [formKey, setFormKey] = useState(0);
     const [formData, setFormData] = useState<FormDataModel>(
-        fields.reduce<FormDataModel>((acc, field) => {
+        props.fields.reduce<FormDataModel>((acc, field) => {
             acc[field.name] = field.name === 'images' ? [] : ''; // Initialize 'images' as an empty array and others as an empty string
             return acc;
         }, {} as FormDataModel)
@@ -87,7 +87,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
     const validateFormFields = () => {
         const errors: Record<string, string> = {};
 
-        fields.forEach((field) => {
+        props.fields.forEach((field) => {
             const fieldValue = formData[field.name];
 
             // Check for required fields and empty values in the form data
@@ -133,7 +133,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
     const resetForm = () => {
         setFormData((prev) => {
             const resetFormData = {...prev};
-            fields.forEach((field) => resetFormData[field.name] = field.name === 'images' ? [] : '');
+            props.fields.forEach((field) => resetFormData[field.name] = field.name === 'images' ? [] : '');
             resetFormData.product_colors = '';
             resetFormData.category = '';
             resetFormData.sub_category = '';
@@ -159,7 +159,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
         }
 
         try {
-            const response = await onSubmit(formData);
+            const response = await props.onSubmit(formData);
 
             if (typeof response === 'object' && response !== null && 'message' in response) {
                 if (response.status && inRange(response.status, 200, 299)) {
@@ -176,11 +176,11 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
     };
 
     return (
-        <Paper key={formKey} elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
+        <Paper id={props.title+formKey} key={formKey} elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
 
-            <Box key={title} sx={{mb: 2}} display="flex" justifyContent="space-between" alignItems="center">
+            <Box key={props.title} sx={{mb: 2}} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography fontWeight="bold" variant="h6" align="center" gutterBottom>
-                    {title}
+                    {props.title}
                 </Typography>
                 <Tooltip title="Refresh data">
                     <Button variant="outlined" onClick={() => refreshPage()} size='small' startIcon={<RefreshIcon/>}>
@@ -233,7 +233,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                         />
                     </>
                 )}
-                <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
+                <CustomTextField fields={props.fields} formData={formData} handleChange={handleChange} errors={errors}/>
                 <MulticolorSelector onColorChange={handleProductColors} isError={errors['product_colors']}/>
                 <ImageUpload onFileChange={handleFileChange} isError={errors['images']}/>
 
@@ -257,7 +257,7 @@ const PostForm: React.FC<PostFormProps> = ({onSubmit, title, buttonText, fields}
                             </Button>
                         </Tooltip>
                         <Button type="submit" variant="outlined" sx={{width: {lg: 'auto'}}} fullWidth>
-                            {buttonText}
+                            {props.buttonText}
                         </Button>
                     </Stack>
                 </Box>

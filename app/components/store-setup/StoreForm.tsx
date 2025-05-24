@@ -8,10 +8,10 @@ import {
     HOME_ROUTE,
     POLICY_ROUTE, SELLER_TYPE, SIGNIN_ROUTE,
     STORE_CATEGORIES
-} from "@/app/actions/useConstants";
+} from "@/app/util/constants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/actions/useHelper";
-import {useFormDataChange} from "@/app/actions/useFormDataChange";
+import {inRange} from "@/app/util/clientUtils";
+import {useFormDataChange} from "@/app/util/formDataChange";
 import CustomDropdown from "@/app/components/CustomDropdown";
 import CustomRadio from "@/app/components/CustomRadio";
 import CountrySelector from "@/app/components/CountrySelector/CountrySelector";
@@ -36,18 +36,12 @@ interface StoreFormProps<T = unknown, U = unknown> {
 
 const toFullWidth = '1/-1';
 
-const StoreForm = <T, U extends ApiResponse>({
-                                                 onSubmit,
-                                                 title,
-                                                 buttonText,
-                                                 fields,
-                                                 redirectTo,
-                                             }: StoreFormProps<T, U>) => {
+const StoreForm = <T, U extends ApiResponse>(prop: StoreFormProps<T, U>) => {
     const router = useRouter();
 
     // Assuming 'fields' is an array that contains the fields for your form
     const [formData, setFormData] = useState<FormDataModel>(
-        fields.reduce<FormDataModel>((acc, field) => {
+        prop.fields.reduce<FormDataModel>((acc, field) => {
             acc[field.name] = field.name === 'logo' ? [] : ''; // Initialize 'logo' as an empty array and others as an empty string
             return acc;
         }, {} as FormDataModel)
@@ -64,7 +58,7 @@ const StoreForm = <T, U extends ApiResponse>({
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
-        router.push(redirectTo || SIGNIN_ROUTE);
+        router.push(prop.redirectTo || SIGNIN_ROUTE);
         return;
     };
     const {errors, setErrors, message, setMessage, handleChange} = useFormDataChange(setFormData);
@@ -100,7 +94,7 @@ const StoreForm = <T, U extends ApiResponse>({
     const validateFormFields = () => {
         const errors: Record<string, string> = {};
 
-        fields.forEach((field) => {
+        prop.fields.forEach((field) => {
             const fieldValue = formData[field.name];
 
             // Check for required fields and empty values in the form data
@@ -120,7 +114,7 @@ const StoreForm = <T, U extends ApiResponse>({
     const resetForm = () => {
         setFormData((prev) => {
             const resetFormData = {...prev};
-            fields.forEach((field) => resetFormData[field.name] = field.name === 'logo' ? [] : '');
+            prop.fields.forEach((field) => resetFormData[field.name] = field.name === 'logo' ? [] : '');
             return resetFormData;
         });
     }
@@ -136,7 +130,7 @@ const StoreForm = <T, U extends ApiResponse>({
         }
 
         try {
-            const response = await onSubmit(formData as T);
+            const response = await prop.onSubmit(formData as T);
             // alert('steve-formData1::' + JSON.stringify(formData));
 
             if (response.status && inRange(response.status, 200, 299)) {
@@ -156,9 +150,9 @@ const StoreForm = <T, U extends ApiResponse>({
 
     return (
         <Paper elevation={1} component={Box} p={2} sx={{width: '100%', maxWidth: 'auto', margin: 'auto'}}>
-            <Box key={title} sx={{mb: 2}}>
+            <Box key={prop.title} sx={{mb: 2}}>
                 <Typography key="form-title" variant="h4" align="center" gutterBottom>
-                    {title}
+                    {prop.title}
                 </Typography>
             </Box>
             <Box
@@ -187,7 +181,7 @@ const StoreForm = <T, U extends ApiResponse>({
                     label="Store location"
                 />
                 <Divider sx={{gridColumn: toFullWidth}}/>
-                <CustomTextField fields={fields} formData={formData} handleChange={handleChange} errors={errors}/>
+                <CustomTextField fields={prop.fields} formData={formData} handleChange={handleChange} errors={errors}/>
 
                 {/* Render ImageUpload for handling multiple logo */}
                 <ImageUpload onFileChange={handleFileChange} isError={errors['logo']}/>
@@ -216,7 +210,7 @@ const StoreForm = <T, U extends ApiResponse>({
                     {message.success && <ToastMessage message={message.success} type="success"/>}
 
                     <Button type="submit" variant="outlined" color="primary" fullWidth>
-                        {buttonText}
+                        {prop.buttonText}
                     </Button>
 
                     <Divider sx={{my: 1}}/>

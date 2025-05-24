@@ -1,9 +1,9 @@
 // app/actions/createBrand.ts
 'use server';
 
-import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {brandHandler} from "@/app/api/external/endPoints";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import fetchWithRetry from "@/app/actions/fetchWithRetry";
+import {brandHandler} from "@/app/util/endPoints";
+import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
 import authOptions from "@/auth";
 import {redirect} from "next/navigation";
 

@@ -2,7 +2,7 @@
 
 import authOptions from '@/auth';
 import {SignIn} from "@/app/models/SignIn";
-import {errorUtils} from "@/app/actions/useThrowError";
+import {errorUtils} from "@/app/util/serverUtils";
 import {ApiResponse} from "@/app/models/ApiResponse";
 
 export const useSignIn = async (formData: SignIn): Promise<ApiResponse> => {
@@ -22,12 +22,13 @@ export const useSignIn = async (formData: SignIn): Promise<ApiResponse> => {
 
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     } catch (error: any) {
-        console.error('Error during sign-in:', errorUtils.getError(error));
+        const err = errorUtils.getError(error);
+        console.error('Error during sign-in:', err);
         // handleUIError(error, 'Sign-in');
         return {
-            data: error.response.data,
+            data: error.response?.data || null,
             status: 400,
-            message: error.response.data.message || 'Sign-in failed',
+            message: err || 'Sign-in failed',
         };
     }
 };

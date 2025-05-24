@@ -3,10 +3,10 @@
 import {Condition} from "@/app/models/Post";
 import CustomDropdown from "@/app/components/CustomDropdown";
 import {useState, useEffect} from 'react';
-import {toSentenceCase} from "@/app/actions/useHelper";
-import {PRODUCT_CONDITIONS} from "@/app/actions/useConstants";
+import {toSentenceCase} from "@/app/util/clientUtils";
+import {PRODUCT_CONDITIONS} from "@/app/util/constants";
 import getAdminData from "@/app/actions/admin/getAdminData";
-import {conditionHandler} from "@/app/api/external/endPoints";
+import {conditionHandler} from "@/app/util/endPoints";
 
 interface conditionProps {
     onSelectChange?: (value: string) => void;

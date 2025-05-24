@@ -1,8 +1,11 @@
+'use client';
 import React from 'react';
 import {Typography, Container, Box} from '@mui/material';
 import Hero from '@/app/components/home/Hero';
 import HomeContent from "@/app/components/home/HomeContent";
-import {APP_NAME, SIGNUP_ROUTE} from "@/app/actions/useConstants";
+import {APP_NAME, SIGNUP_ROUTE} from "@/app/util/constants";
+
+// import WidgetLoader from "@/app/actions/widgetLoader";
 
 // Importing the local image
 const heroImage = '../assets/images/istorezhona-bg.png';
@@ -31,21 +34,49 @@ export default HomePage;
 
 
 /*
-import Image from "next/image";
-import styles from "../page.module.css";
+// fetch and display client data with filtering from a demo api json server
+    const [clients, setClients] = useState([]);
+    const [filtered, setFiltered] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-        <h1>Home</h1>
-        <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js logo"
-            priority={true}
-            width={200}
-            height={200}
+    useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then((res) => res.json())
+            .then((data) => {
+                setClients(data);
+                setFiltered(data);
+            })
+    }, []);
+
+    useEffect(() => {
+        const filteredClients = clients.filter((client: any) => client.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        setFiltered(filteredClients);
+    }, [searchTerm, clients]);
+<Box>
+    <Container>
+        <Typography variant="h3" gutterBottom mb={30}> Welcome to iStoreZhona </Typography>
+        <input onChange={(e) => setSearchTerm(e.target.value)}
+               value={searchTerm}
+               placeholder="Search clients..."
         />
-    </div>
-  );
-}*/
+        <button onClick={()=> setSearchTerm('')}>Clear</button>
+        <ul>
+            {
+                filtered.length > 0 ? (
+                        filtered.map((client: any) => (
+                                <li key={client.id}>{client.name}</li>
+                            )
+                        )) :
+                    (
+                        <li>No clients found</li>
+                    )
+
+            }
+            {/!*<WidgetLoader fileName="app/(root)/demo/aryee"/>*!/}
+
+        </ul>
+
+    </Container>
+
+</Box>*/
+

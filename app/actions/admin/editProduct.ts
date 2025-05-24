@@ -1,8 +1,8 @@
 // app/actions/createCategory.ts
 'use server';
-import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {marketplaceHandler} from "@/app/api/external/endPoints";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import fetchWithRetry from "@/app/actions/fetchWithRetry";
+import {marketplaceHandler} from "@/app/util/endPoints";
+import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
 import authOptions from "@/auth";
 import {redirect} from "next/navigation";
 

@@ -12,10 +12,10 @@ import Image from "next/image";
 
 import ListTable from "@/app/components/admin/ListTable";
 import ProductRow from "@/app/components/admin/ProductRow";
-import {ADMIN_PRODUCT_CREATE_ROUTE, ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_PRODUCT_CREATE_ROUTE, ADMIN_PRODUCT_ROUTE} from "@/app/util/constants";
 import {deleteAction} from "@/app/actions/admin/deleteAction";
 import {Product} from "@/app/models/Post";
-import {marketplaceHandler} from "@/app/api/external/endPoints";
+import {marketplaceHandler} from "@/app/util/endPoints";
 import {BACKEND_MARKETPLACE_IMAGE_PATH} from "@/env_config";
 import StatusSnackbar from "@/app/components/StatusSnackbar";
 
@@ -150,7 +150,7 @@ const ProductList = ({products, tableHeader}: ProProps) => {
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <ImageList variant="masonry" cols={3} gap={8}>
+                <ImageList variant="masonry" cols={getImg.length > 3 ? 3 : getImg.length} gap={8}>
                     {getImg.map((image) => (
                         <ImageListItem key={image}>
                             <Image

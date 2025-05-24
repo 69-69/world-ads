@@ -10,7 +10,7 @@ interface ImageUploadProps {
     warningMsg?: string | null;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({onFileChange, isError, warningMsg}) => {
+const ImageUpload: React.FC<ImageUploadProps> = (props) => {
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -30,7 +30,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({onFileChange, isError, warning
             // Update preview images and notify parent with selected files
             setImagePreviews((prev) => [...prev, ...newPreviews]);
             setSelectedFiles((prev) => [...prev, ...newFiles]);
-            onFileChange([...selectedFiles, ...newFiles]); // Pass updated files to parent
+            props.onFileChange([...selectedFiles, ...newFiles]); // Pass updated files to parent
         }
     };
 
@@ -46,7 +46,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({onFileChange, isError, warning
         // Update state
         setImagePreviews(newPreviews);
         setSelectedFiles(newFiles);
-        onFileChange(newFiles); // Notify parent with updated files
+        props.onFileChange(newFiles); // Notify parent with updated files
     };
 
     return (
@@ -98,7 +98,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({onFileChange, isError, warning
 
             {/* Display message when no images are selected */}
             {imagePreviews.length === 0 && (
-                <ToastMessage key={isError} message={isError || warningMsg || 'No images selected'}/>
+                <ToastMessage key={props.isError} message={props.isError || props.warningMsg || 'No images selected'}/>
             )}
         </Box>
     );

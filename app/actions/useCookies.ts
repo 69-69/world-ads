@@ -12,7 +12,7 @@ const setNextCookies = async (res: NextResponse, name: string, value: string, da
         maxAge: days * 24 * 60 * 60, // Default is 7 days
         secure: process.env.COOKIE_SECURE === "production",
         path: '/',
-        sameSite: 'lax',
+        sameSite: 'none',
     });
 };
 

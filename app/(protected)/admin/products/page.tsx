@@ -3,9 +3,9 @@ import {Product} from "@/app/models/Post";
 import {Box, Typography} from "@mui/material";
 import ProductList from "@/app/components/admin/ProductList";
 import getAdminData from "@/app/actions/admin/getAdminData";
-import {marketplaceHandler} from "@/app/api/external/endPoints";
+import {marketplaceHandler} from "@/app/util/endPoints";
 import NoItemFound from "@/app/components/NoItemFound";
-import {ADMIN_PRODUCT_ROUTE} from "@/app/actions/useConstants";
+import {ADMIN_PRODUCT_CREATE_ROUTE} from "@/app/util/constants";
 
 const ProductsPage = async () => {
     const tableHeader = ['Name', 'Category', 'Sub', 'Brand', 'Stock', 'Price', 'Published', 'Promo', 'Action'];
@@ -21,7 +21,7 @@ const ProductsPage = async () => {
                 {
                     products.length === 0 ?
                         <NoItemFound
-                            route={ADMIN_PRODUCT_ROUTE}
+                            route={ADMIN_PRODUCT_CREATE_ROUTE}
                             message={'No Product Found'}
                             label={'Add Product'}
                         /> :

@@ -1,11 +1,11 @@
 import authOptions from "@/auth";
-import {NextResponse} from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 import {
     HOME_ROUTE,
     SIGNIN_ROUTE,
     PROTECTED_AUTH_ROUTES,
     PROTECTED_RESOURCES_ROUTES, SIGNUP_ROUTE, VERIFICATION_ROUTE, SETUP_STORE_ROUTE,
-} from '@/app/actions/useConstants';
+} from '@/app/util/constants';
 // import {getToken} from '@auth/core/jwt';
 
 /* const removeParams = (pathname: string): string => {
@@ -17,6 +17,7 @@ import {
 }
 const compareRoute = (route: string, pathname: string): boolean => route === removeParams(pathname);
 */
+
 
 // Helper function to generate a random hash (8-character random string)
 const generateRandomHash = (length: number = 32): string => {
@@ -30,7 +31,7 @@ const generateRandomHash = (length: number = 32): string => {
     return result;
 };
 
-// Utility: Match route with optional dynamic segments
+// Helper: Match route with optional dynamic segments
 const matchRouteWithParams = (route: string, pathname: string): boolean => {
     const routeParts = route.split('/');
     const pathParts = pathname.split('/');
@@ -39,6 +40,9 @@ const matchRouteWithParams = (route: string, pathname: string): boolean => {
     if (routeParts.length !== pathParts.length) return false;
 
     // Compare each segment, allowing for dynamic segments
+    /*return routeParts.every((part, index) =>
+        part.startsWith(':') || part === pathParts[index]
+    );*/
     for (let i = 0; i < routeParts.length; i++) {
         if (routeParts[i].startsWith(':') || routeParts[i] === pathParts[i]) continue;
         return false;
@@ -46,6 +50,7 @@ const matchRouteWithParams = (route: string, pathname: string): boolean => {
     return true;
 };
 
+// Helper: Generate random hash for routes like verification
 const routeWithHashKey = (req: string, pathname: string): NextResponse => {
     const randomHash = generateRandomHash();
     const newUrl = `${pathname}/${randomHash}`;
@@ -53,20 +58,51 @@ const routeWithHashKey = (req: string, pathname: string): NextResponse => {
     return NextResponse.redirect(new URL(newUrl, req));
 }
 
-// Helper: protect auth routes (e.g., /signin, /signup) from logged-in users
+// Helper: Protect auth routes from logged-in users
 const isProtectedAuthRoute = (pathname: string): boolean =>
     PROTECTED_AUTH_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
-// Helper: protect resource routes (e.g., /settings, /orders) from guests
+// Helper: Protect resource routes from guests
 const isProtectedResourceRoute = (pathname: string): boolean =>
     PROTECTED_RESOURCES_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
-// MAIN MIDDLEWARE FUNCTION
+const allowedOrigins = [
+    'https://istorezhona.shop',
+    'https://*.istorezhona.shop',
+    'http://127.0.0.1:5000',
+];
+
+function isOriginAllowed(origin: string): boolean {
+    return allowedOrigins.some((allowed) => {
+        if (allowed.startsWith('https://!*.')) {
+            const domain = allowed.replace('https://!*.', '');
+            return origin === `https://${domain}` || origin.endsWith(`.${domain}`);
+        }
+        return origin === allowed;
+    });
+}
+
+export const corsMiddleware = (request: NextRequest) => {
+    const origin = request.headers.get('origin') || '';
+
+    if (isOriginAllowed(origin)) {
+        const response = NextResponse.next();
+        response.headers.set('Access-Control-Allow-Origin', origin);
+        response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        return response;
+    }
+
+    return NextResponse.next();
+};
+
+
+// Auth Middleware (with session checks)
 export default authOptions.auth((req) => {
     const session = req.auth; // Get user session token
-    const { pathname, searchParams } = req.nextUrl; // Extract pathname and search parameters from the request URL
+    const {pathname, searchParams} = req.nextUrl; // Extract pathname and search parameters from the request URL
 
-    console.log('steve-middleware-pathname', pathname);
+    // console.log('steve-middleware-pathname', pathname);
 
     // Allow logged-in user to access /signin if it's part of a logout flow
     const isLoggingOut = pathname === SIGNIN_ROUTE && searchParams.get("logout") === "true";
@@ -116,12 +152,15 @@ export const config = {
         // - favicon.ico (favicon file)
         '/((?!api|_next/static|_next/image|favicon.ico).*)',
 
+        '/api/:path*', // Apply CORS to all API routes
+
         // Resource Routes
         '/orders',
         '/checkout',
         '/setup-store',
-        '/post/:path*', // Dynamic route
-        '/admin/:path*', // Dynamic route
+        '/post/:path*', // Matches /post/anything
+        '/admin/:path*', // Matches /admin/anything
+        '/admin/:path*/:path*/', // Matches anything under /admin/:path* (e.g., /admin/settings, /admin/users/details)
 
         // Auth Routes
         '/signin',

@@ -4,7 +4,7 @@ import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import theme from "@/app/theme";
 import "./globals.css";
-import {APP_NAME} from "@/app/actions/useConstants";
+import {APP_NAME} from "@/app/util/constants";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",

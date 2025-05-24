@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "playwright test"
   },
   "packageManager": "npm@10.9.2",
   "overrides": {
@@ -23,7 +24,8 @@
     "@mui/x-date-pickers": "^7.28.3",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
-    "next": "15.2.4",
+    "dotenv": "^16.5.0",
+    "next": "^15.3.2",
     "next-auth": "^5.0.0-beta.25",
     "nookies": "^2.5.2",
     "react": "^19.0.0",
@@ -32,6 +34,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.52.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

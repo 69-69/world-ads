@@ -1,0 +1,285 @@
+# ------------------------------------------------------------
+# GitHub Actions Workflow for Docker Image Testing, Building, and Deployment
+# Workflow Breakdown:
+#Job 1: Run Playwright E2E Tests
+#
+#Checks out your code.
+#
+#Installs Node.js and project dependencies.
+#
+#Installs Playwright and required browsers.
+#
+#Runs the Playwright automated regression tests.
+#
+#Fails the workflow if the tests fail, preventing further steps.
+#
+#Job 2: Build Docker Image and Push to Docker Hub & GitHub Container Registry
+#
+#Checks out your code again.
+#
+#Sets up Docker Buildx for building multi-platform images.
+#
+#Logs into Docker Hub and GitHub Container Registry using your secrets.
+#
+#Builds the Docker image from the repository’s Dockerfile.
+#
+#Tags the Docker image with both the Git commit SHA and latest tag.
+#
+#Pushes the image to both Docker Hub and GitHub Container Registry.
+#
+#Job 3: Deploy Docker Image to Kubernetes on AWS EKS
+#
+#Configures AWS credentials using secrets.
+#
+#Updates the kubeconfig for connecting to your AWS EKS cluster.
+#
+#Installs kubectl and eksctl to manage the Kubernetes cluster.
+#
+#Deploys the Docker image to your Kubernetes cluster, updating the deployment to use the newly built image with the commit SHA tag.
+#
+#Waits for the deployment to be fully rolled out.
+# --------------------------------------------------------------------------
+
+name: Docker Test, Build, Deploy & Publish
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # ------------------------------------------------------------
+  # Job 1: Run Playwright E2E Tests
+  # ------------------------------------------------------------
+  test:
+    name: Run Automated Regression Tests with Playwright
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code 🛎️
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 🚀
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies and Playwright browsers 🧪
+        run: |
+          npm install
+          npx playwright install --with-deps
+
+      - name: Run Playwright tests 🧪
+        run: npx playwright test
+
+  # ------------------------------------------------------------
+  # Job 2: Build Docker Image and Push to Docker Hub & GHCR
+  # ------------------------------------------------------------
+  push_to_registries:
+    name: Push Docker image to multiple registries
+    runs-on: ubuntu-latest
+    needs: test  # This job will only run after the tests have passed
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Check out repository code 🛎️
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx 🚀
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub 🚢
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build and push Docker image to Docker Hub and GHCR
+      - name: Build and push 🏗️
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/docker_repository:${{ github.sha }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/docker_repository:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:latest
+#
+#  # ------------------------------------------------------------
+#  # Job 3: Deploy Docker Image to Kubernetes on AWS EKS
+#  # ------------------------------------------------------------
+#  deploy_to_eks:
+#    name: Deploy Docker Image to Kubernetes (AWS EKS)
+#    runs-on: ubuntu-latest
+#    needs: push_to_registries  # Only runs if the image is pushed successfully
+#
+#    steps:
+#      - name: Checkout code 🛎️
+#        uses: actions/checkout@v4
+#
+#      - name: Configure AWS credentials 🔑
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: us-east-1
+#
+#      - name: Update kubeconfig for EKS
+#        run: aws eks update-kubeconfig --name my-cluster
+#
+#      - name: Install kubectl and eksctl
+#        run: |
+#          curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.4/2021-08-10/bin/linux/amd64/kubectl
+#          chmod +x ./kubectl
+#          sudo mv ./kubectl /usr/local/bin
+#
+#          curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/v0.62.0/eksctl_Linux_amd64.tar.gz" | tar xz -C /tmp
+#          sudo mv /tmp/eksctl /usr/local/bin
+#
+#      - name: Deploy to Kubernetes
+#        run: |
+#          kubectl apply -f k8s/deployment.yaml
+#          kubectl apply -f k8s/service.yaml
+#          kubectl set image deployment/$APP_NAME $APP_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/$APP_NAME:${{ github.sha }}
+#
+#      - name: Wait for deployment
+#        run: |
+#          kubectl rollout status deployment/$APP_NAME
+
+
+
+#------------------------------
+
+
+
+# ---------------------------------------------------------
+# Multi-Job GitHub Actions Workflow for:
+# Multi-Job Workflow to run TEST and then BUILD and DEPLOY to AWS EKS - Kubernetes
+#
+# 1. Running tests on push/pull request to main branch
+# 2. Building and pushing a Docker image to DockerHub
+# 3. Deploying to AWS EKS using Kubernetes manifests
+# k8s/deployment.yaml: This file defines how your application should be deployed to Kubernetes — number of replicas, container image to use, resource limits, ...
+# k8s/service.yaml: This file defines how your application is exposed — internal service, NodePort, LoadBalancer, ...
+# ---------------------------------------------------------
+#name: RUN TESTS (Automated Regression Test), BUILD & DEPLOY TO AWS EKS
+#
+## Triggers: This workflow runs on push or pull request to the `main` branch
+#on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+#
+## Environment Variables: These are set for the entire workflow
+#env:
+#  APP_NAME: my-next-js-app
+#  AWS_REGION: us-east-1
+#  AWS_EKS_CLUSTER_NAME: my-cluster
+#  IMAGE_TAG: ${{ github.sha }}
+#
+#jobs:
+#  #----------------------------------------------------------
+#  # Job 1: Run Automated Regression Tests
+#  #----------------------------------------------------------
+#  test:
+#    name: Run Automated Regression Tests
+#    runs-on: ubuntu-latest # This specifies the environment (Ubuntu VM)
+#
+#    steps:
+#      # Job 1.1: Check out your code from GitHub
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#
+#      # Job 1.2: Set up Node.js environment
+#      - name: Set up Node.js
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: '18'
+#
+#      # Job 1.3: Cache Node.js modules
+#      - name: Install dependencies
+#        run: npm ci
+#
+#      # Job 1.4: Install Playwright browsers and dependencies
+#      - name: Install Playwright and required browsers
+#        run: npx playwright install --with-deps
+#
+#      # Job 1.5: Type-check code with TypeScript
+#      - name: Type-check with TypeScript
+#        run: npx tsc --noEmit
+#
+#      # Job 1.6: Run unit tests
+#      - name: Lint codebase
+#        run: npm run lint
+#
+#      # Job 1.7: Run unit tests
+#      - name: Run Playwright end-to-end tests
+#        run: npx playwright test
+#
+#  # ----------------------------------------------------------
+#  # Job 2: Build Docker Image & Deploy to AWS EKS (K8s)
+#  # ----------------------------------------------------------
+#  build-and-deploy:
+#    name: Build Docker Image & Deploy to Kubernetes
+#    runs-on: ubuntu-latest
+#    needs: test  # Ensures tests pass before deployment
+#
+#    # Permissions: This job requires permissions to write to packages and read contents
+#    steps:
+#      # Job 2.1: Check out your code from GitHub
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#
+#      # Job 2.2: Configure AWS credentials (from GitHub Secrets)
+#      - name: Configure AWS credentials for EKS
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: $AWS_REGION
+#
+#      # Job 2.3: Update kubeconfig to connect to your EKS cluster
+#      - name: Update kubeconfig for the EKS cluster
+#        run: aws eks update-kubeconfig --name $AWS_EKS_CLUSTER_NAME
+#
+#      # Job 2.4: Log in to DockerHub using your credentials
+#      - name: Login to Docker registries 🚢
+#        uses: docker/login-action@v3
+#        with:
+#          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+#          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+#
+#      # Job 2.5: Build your Docker image from Dockerfile in the repo
+#      - name: Build Docker image with commit SHA and latest tags
+#        run: |
+#          docker build -t $APP_NAME:$IMAGE_TAG -t $APP_NAME:latest .
+#
+#      # Job 2.6: Tag the image and push to DockerHub
+#      - name: Tag & Push Docker image to DockerHub
+#        run: |
+#          docker tag $APP_NAME:$IMAGE_TAG ${{ secrets.DOCKER_HUB_USERNAME }}/$APP_NAME:$IMAGE_TAG
+#          docker tag $APP_NAME:latest ${{ secrets.DOCKER_HUB_USERNAME }}/$APP_NAME:latest
+#          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/$APP_NAME:$IMAGE_TAG
+#          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/$APP_NAME:latest
+#
+#      # Job 2.7: # Step 2.7: Deploy the updated image to Kubernetes using manifests
+#      - name: Deploy updated image to Kubernetes
+#        run: |
+#          kubectl set image deployment/$APP_NAME $APP_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/$APP_NAME:$IMAGE_TAG
+#          kubectl apply -f k8s/deployment.yaml
+#          kubectl apply -f k8s/service.yaml

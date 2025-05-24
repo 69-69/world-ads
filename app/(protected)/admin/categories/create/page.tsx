@@ -2,7 +2,7 @@
 import {Container, Box, Paper, Typography, TextField, Button} from "@mui/material";
 import {handleSubmit} from "@/app/actions/admin/createCategory";
 import MiniDropdown from "@/app/components/MiniDropdown";
-import {PARENT_CATEGORIES} from "@/app/actions/useConstants";
+import {PARENT_CATEGORIES} from "@/app/util/constants";
 
 const CreatePage = () => {
     const errors = {

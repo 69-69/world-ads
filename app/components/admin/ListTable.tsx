@@ -17,7 +17,7 @@ import {Search} from '@mui/icons-material';
 import Link from "next/link";
 import AlertDialog from "@/app/components/AlertDialog";
 
-type Props = {
+type ListParams = {
     tableHeader: string[];
     rows: React.ReactNode;
     openDialog: boolean;
@@ -33,29 +33,15 @@ type Props = {
     labelLink?: Record<string, string>;
 };
 
-const ListTable = ({
-                       tableHeader,
-                       rows,
-                       openDialog,
-                       onCloseDialog,
-                       onConfirmAction,
-                       dialogTitle = 'Confirm Action',
-                       dialogContent = 'Are you sure you want to proceed?',
-                       confirmLabel = 'Confirm',
-                       cancelLabel = 'Cancel',
-                       showSearch = false,
-                       searchValue = '',
-                       onSearchChange,
-                       labelLink,
-                   }: Props) => (
+const ListTable = (props: ListParams) => (
     <Box>
-        {showSearch && (
+        {props.showSearch && (
             <Box display="flex" justifyContent="space-between" mb={2}>
                 <TextField
                     variant="outlined"
                     placeholder="Search..."
-                    value={searchValue}
-                    onChange={(e) => onSearchChange?.(e.target.value)}
+                    value={props.searchValue || ''}
+                    onChange={(e) => props.onSearchChange?.(e.target.value)}
                     size="small"
                     sx={{width: 'auto'}}
                     slotProps={{
@@ -65,9 +51,9 @@ const ListTable = ({
                     }}
                 />
 
-                {labelLink && (
-                    <Link href={labelLink?.ref}>
-                        <Button variant="contained" color="primary">{labelLink?.label}</Button>
+                {props.labelLink && (
+                    <Link href={props.labelLink?.ref}>
+                        <Button variant="contained" color="primary">{props.labelLink?.label}</Button>
                     </Link>
                 )}
             </Box>
@@ -77,23 +63,23 @@ const ListTable = ({
             <Table>
                 <TableHead>
                     <TableRow>
-                        {(tableHeader || []).map((header, index) => (
+                        {(props.tableHeader || []).map((header, index) => (
                             <TableCell key={index}><b>{header}</b></TableCell>
                         ))}
                     </TableRow>
                 </TableHead>
-                <TableBody>{rows}</TableBody>
+                <TableBody>{props.rows}</TableBody>
             </Table>
         </TableContainer>
 
         <AlertDialog
-            open={openDialog}
-            handleClose={onCloseDialog}
-            handleAction={onConfirmAction}
-            title={dialogTitle}
-            content={dialogContent}
-            firstLabel={confirmLabel}
-            secLabel={cancelLabel}
+            open={props.openDialog}
+            handleClose={props.onCloseDialog}
+            handleAction={props.onConfirmAction}
+            title={props.dialogTitle || 'Confirm Action'}
+            content={props.dialogContent || 'Are you sure you want to proceed?'}
+            firstLabel={props.confirmLabel || 'Confirm'}
+            secLabel={props.cancelLabel}
         />
     </Box>
 )

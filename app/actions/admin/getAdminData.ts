@@ -2,25 +2,25 @@
 'use server';
 
 import authOptions from "@/auth";
-import {HOME_ROUTE} from "@/app/actions/useConstants";
-import fetchWithRetry from "@/app/api/external/fetchWithRetry";
-import {inRange} from "@/app/actions/useHelper";
+import {HOME_ROUTE} from "@/app/util/constants";
+import fetchWithRetry from "@/app/actions/fetchWithRetry";
+import {inRange} from "@/app/util/clientUtils";
 
 type AdminDataParams = {
     route: string;
     endpoint?: string;
 };
 
-const getAdminData = async <T>({route, endpoint}: AdminDataParams): Promise<T | []> => {
+const getAdminData = async <T>(x: AdminDataParams): Promise<T | []> => {
     const session = await authOptions.auth();
     if (!session?.user) {
         return [];
     }
 
     try {
-        const extra = endpoint ? endpoint : '';
+        const extra = x.endpoint ? x.endpoint : '';
 
-        const {response, data} = await fetchWithRetry(HOME_ROUTE + route, {
+        const {response, data} = await fetchWithRetry(HOME_ROUTE + x.route, {
             method: 'GET',
             endpoint: `/${extra}${session?.user.store_id}`,
             headers: {Authorization: `Bearer ${session?.user.access_token}`}

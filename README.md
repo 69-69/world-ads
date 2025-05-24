@@ -1,3 +1,20 @@
+# Automated Regression Testing
+> Install PlayWright dependencies
+> ```bash
+> npm init playwright@latest
+> ```
+> ---- OR ----
+> ```bash
+> npm install @playwright/test
+> npx playwright install
+> ```
+> Run PlayWright tests
+> ```bash
+> npx playwright test
+> ```
+
+
+# World Ads
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

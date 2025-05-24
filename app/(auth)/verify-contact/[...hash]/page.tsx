@@ -3,8 +3,8 @@
 import VerifyContactForm from '@/app/components/auth/VerifyContactForm';
 import Container from "@mui/material/Container";
 import {useVerifyContact} from "@/app/actions/auth/useVerifyContact";
-import {ADMIN_DASHBOARD_ROUTE} from "@/app/actions/useConstants";
-import {generateRandomHash} from "@/app/actions/useHelper";
+import {ADMIN_DASHBOARD_ROUTE} from "@/app/util/constants";
+import {generateRandomHash} from "@/app/util/clientUtils";
 
 
 const VerifyContactPage = () => {

@@ -29,8 +29,8 @@ const urlParts = extractProtocolHostAndPort(BACKEND_API_BASE_URL);
 const nextConfig: NextConfig = {
     env: {
         // Add your environment variables here
-        NEXTAUTH_SECRET: process.env.AUTH_SECRET,
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+        AUTH_SECRET: process.env.AUTH_SECRET,
+        AUTH_URL: process.env.AUTH_URL,
         BACKEND_API_BASE_URL: BACKEND_API_BASE_URL,
         BACKEND_IMAGE_DIR: BACKEND_IMAGE_DIR,
         BACKEND_IMAGE_PATH: BACKEND_API_BASE_URL + BACKEND_IMAGE_DIR,
@@ -45,7 +45,8 @@ const nextConfig: NextConfig = {
                 protocol: urlParts.protocol ?? 'http',
                 hostname: urlParts.hostname,
                 port: urlParts.port ?? '',
-                pathname: (urlParts.path ?? '') + BACKEND_IMAGE_DIR + '/**', // The path pattern for your images
+                // pathname: (urlParts.path ?? '') + BACKEND_IMAGE_DIR + '/**', // The path pattern for your images
+                pathname: `${urlParts.path ?? ''}${BACKEND_IMAGE_DIR}/**`.replace(/\/{2,}/g, '/'),
                 search: '', // Optional
             }
         ],
@@ -56,6 +57,8 @@ const nextConfig: NextConfig = {
             allowedOrigins: ['istorezhona.shop', '*.istorezhona.shop', '127.0.0.1:5000'],
         },
     },
+
+    // output: "standalone",
 };
 
 export default nextConfig;

@@ -1,12 +1,12 @@
 'use server';
 
 import authOptions from "@/auth";
-import {getApiClientWithAuth} from "@/app/api/external/apiClient";
-import {signOutEndpoint} from "@/app/api/external/endPoints";
+import {getApiClientWithAuth} from "@/app/api/apiClient";
 import {cookies} from "next/headers";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/actions/useConstants";
+import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
 import {revalidatePath} from 'next/cache'
 import {redirect} from 'next/navigation'
+import {errorUtils} from "@/app/util/serverUtils";
 
 // Clear all relevant auth cookies and redirect
 const clearCookiesAndRedirect = async () => {
@@ -36,14 +36,23 @@ export const signOut = async (): Promise<void> => {
             return;
         }
 
+        const signOutEndpoint = 'auth/sign-out';
         // Handle credential-based sign-out via backend API
         const apiClient = await getApiClientWithAuth();
-        await apiClient.request({method: 'POST', url: `/${signOutEndpoint}`});
+        await apiClient.request({
+                method: 'POST',
+                url: `/${signOutEndpoint}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.user.access_token}`,
+                },
+            }
+        );
 
         return await clearCookiesAndRedirect();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-        // console.error("Error during sign-out:", error);
+        const errorMessage = errorUtils.getError(error);
+        console.error("Error during sign-out:", errorMessage);
         // Optionally, redirect or notify the user even on failure
         await clearCookiesAndRedirect(); // fallback cleanup
     }
