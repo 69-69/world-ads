@@ -78,7 +78,7 @@ const MulticolorSelector: React.FC<MultiColors> = (props) => {
 
     useEffect(() => {
         props.onColorChange(selectedColors.toString());
-    }, [props.onColorChange, selectedColors]);
+    }, [props, props.onColorChange, selectedColors]);
 
     return (
         <Box py={1}>

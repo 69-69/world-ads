@@ -8,16 +8,29 @@ const getParts = (token: string, index: number, char: string = '_') =>
     token.indexOf(char) > -1 ? token.split(char)[index] : token;
 
 // Convert a string to sentence case
-const toSentenceCase = (val: string | number) => {
-    // check if it's a number
-    if (typeof val === 'number') {
-        return val.toString();
+const toSentenceCase = (val: string | number): string => {
+    if (typeof val === 'number') return val.toString();
+
+    const trimmed = val.trim();
+
+    // Special case: if it starts with "iPhone" (case-insensitive)
+    if (/^iphone/i.test(trimmed)) {
+        return 'iPhone';
     }
-    return val.toString()
-        .replaceAll(/([a-z0-9])([A-Z])/g, '$1 $2') // Adds space before capital letters in camelCase
-        .toLowerCase() // Convert to lowercase
-        .replace(/^./, (match) => match.toUpperCase()); // Capitalize the first letter
+
+    // Check if it looks like camelCase or PascalCase
+    const needsConversion = /[a-z0-9][A-Z]/.test(trimmed);
+
+    if (!needsConversion) {
+        return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+    }
+
+    return trimmed
+        .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+        .toLowerCase()
+        .replace(/^./, match => match.toUpperCase());
 };
+
 
 // Convert each first letter of a string to uppercase
 const toTitleCase = (str: string) => {

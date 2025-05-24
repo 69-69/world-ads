@@ -60,7 +60,7 @@ const authConfig = [
                 email: profile.email,
                 name: `${profile.firstname} ${profile.lastname}`,
                 store_id: profile.store_id,
-                image: profile.image,
+                image: profile.imageUrl,
                 access_token: profile.access_token,
                 remember_me: credentials.remember_me as boolean,
                 signin_method: "credentials",
