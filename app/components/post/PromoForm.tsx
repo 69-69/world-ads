@@ -40,14 +40,23 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
     // Handle changes to file input (images)
     const handleFileChange = (files: File[]) => {
         if (JSON.stringify(formData.bg_image) === JSON.stringify(files)) return; // Only update if the files array is different
-        setFormData((prev) => ({...prev, bg_image: files[0]}));
+
+        setFormData((prev) => ({...prev, bg_image: files[0], bg_color: ''}));
         setErrors((prev) => ({...prev, bg_image: ''})); // Clear error
     };
 
     // Handle product colors selection
     const handleProductColors = (colors: string) => {
-        if (formData.bg_color === colors) return; // Only update if the colors have changed
-        setFormData((prev) => ({...prev, bg_color: colors}));
+        // If an image is uploaded, don't allow changing the background color
+        if (formData.bg_image) return;
+
+        // If multiple colors are selected (comma-separated), get the first one
+        const selectedColor = colors.split(',')[0];
+
+        // Only update if the color is different
+        if (formData.bg_color === selectedColor) return;
+
+        setFormData((prev) => ({...prev, bg_color: selectedColor, bg_image: ''}));
         setErrors((prev) => ({...prev, bg_color: ''})); // Clear error
     };
 
@@ -78,8 +87,8 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
         });
 
         if (!formData.bg_color && !formData.bg_image) {
-            errors.bg_color = 'Background color or image is required';
-            errors.bg_image = 'Background color or image is required';
+            // errors.bg_color = 'Background color or image is required';
+            errors.bg_image = 'Provide either a background color or image';
         }
 
         return errors;
@@ -117,6 +126,7 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
         }
 
         try {
+
             const response = await props.onSubmit(formData, props.product_id);
 
             if (typeof response === 'object' && response !== null && 'message' in response) {
@@ -163,15 +173,21 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
                 <PromoSchedule onScheduleChange={handleScheduleChange} errors={errors}/>
                 <CustomTextField fields={props.fields} formData={formData} handleChange={handleChange} errors={errors}/>
 
-                <Box key="color-selector" sx={{gridColumn: toFullWidth}}>
-                    <Typography variant="body2" align='center' gutterBottom>
-                        Add background color or image
-                    </Typography>
-                </Box>
-                <MulticolorSelector onColorChange={handleProductColors} label='Add Background color'
-                                    isError={errors['bg_color']}/>
-                <ImageUpload onFileChange={handleFileChange} isError={errors['bg_image']}
-                             warningMsg='Add background image'/>
+                {!formData.bg_image && (
+                    <MulticolorSelector
+                        onColorChange={handleProductColors}
+                        label="Add Background color"
+                        isError={errors['bg_color']}
+                    />
+                )}
+
+                {!formData.bg_color && (
+                    <ImageUpload
+                        onFileChange={handleFileChange}
+                        isError={errors['bg_image']}
+                        warningMsg="Add background image"
+                    />
+                )}
 
                 <Box key="btn-group" sx={{gridColumn: toFullWidth, mb: 2}}>
                     {message.error && <ToastMessage message={message.error}/>}

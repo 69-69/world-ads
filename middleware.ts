@@ -111,6 +111,8 @@ export default authOptions.auth((req) => {
     if (session) {
         // Prevent access to signin/signup/setup/etc unless logging out
         if (isProtectedAuthRoute(pathname) && !isLoggingOut) {
+            // delete cookies
+            req.cookies.getAll().forEach(cookie => req.cookies.delete(cookie.name));
             return NextResponse.redirect(new URL(HOME_ROUTE, req.url));
         }
     }

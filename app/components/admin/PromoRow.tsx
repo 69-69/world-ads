@@ -18,7 +18,7 @@ import React, {useMemo} from "react";
 
 
 const PromoRow: React.FC<PromoRowProps> = ({promo, onAction}) => {
-
+    let bg = promo.background_image;
     // Memoize the expiration status to avoid recalculating it multiple times
     const expirationStatus = useMemo(() => isExpired(promo.end_at), [promo.end_at]);
 
@@ -26,17 +26,14 @@ const PromoRow: React.FC<PromoRowProps> = ({promo, onAction}) => {
 
     // check if promo.background_image a color code or image path
     if (!promo.background_image.includes('#')) {
-        promo.background_image = BACKEND_PROMO_IMAGE_PATH + '/resize/' + promo.background_image;
+        // If it's an image path, prepend the backend promo image path
+        bg = BACKEND_PROMO_IMAGE_PATH + '/resize/' + promo.background_image;
     }
 
     return <TableRow hover>
         <TableCell>
             <Box display="flex" alignItems="center" gap={2}>
-                <Avatar
-                    src={promo.background_image}
-                    alt={promo.title}
-                    sx={{background: promo.background_image}}
-                />
+                <Avatar src={bg} alt={promo.title} sx={{background: bg}}/>
                 <Box>
                     <Typography variant="body1">{toSentenceCase(promo.title)}</Typography>
                     <Typography variant="caption" color="error" fontWeight='bold'>
