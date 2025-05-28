@@ -91,9 +91,14 @@ const PostForm: React.FC<PostFormProps> = (props) => {
             const fieldValue = formData[field.name];
 
             // Check for required fields and empty values in the form data
-            if ((typeof fieldValue === 'string' && fieldValue.trim() === '') ||
+            if ((typeof fieldValue === 'string' && !field.isTextArea && fieldValue.trim() === '') ||
                 (fieldValue === undefined || fieldValue === null)) {
                 errors[field.name] = `${field.label} is required`;
+            }
+
+            // check that description is greater than 10 characters
+            if (field.name === 'description' && typeof fieldValue === 'string' && fieldValue.length < 10) {
+                errors[field.name] = 'Description must be at least 10 characters long';
             }
 
             // Check if price is a valid number
