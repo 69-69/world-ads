@@ -1,5 +1,5 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/apiClient";
+import {createApiClient} from "@/app/api/createApiClient";
 import {NextRequest, NextResponse} from "next/server";
 import axios from "axios";
 
@@ -12,15 +12,12 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
         const body = (method === 'POST' || method === 'PUT') ? await request.json() : undefined;
 
         // Make the API request using the provided method
-        const apiClient = await getApiClientWithAuth(request);
+        const apiClient = await createApiClient(request);
         const response = await apiClient.request({
             method,
             url: `/brand${endpoint ?? ''}`,
             data: body,
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: request.headers.get('Authorization') || '',
-            },
+            headers: {'Content-Type': 'application/json'},
         });
 
         // Return the response from the API
@@ -32,11 +29,11 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
         if (axios.isAxiosError(error)) {
             const errorMessage = error.response?.data?.message || 'Something went wrong';
             const statusCode = error.response?.status || 500; // Fallback to 500 if no status is available
-            console.error('API request failed:', errorMessage, error.response?.data); // Log the error for debugging
+            // console.error('API request failed:', errorMessage, error.response?.data); // Log the error for debugging
             return NextResponse.json({error: errorMessage}, {status: statusCode});
         } else {
             // Handle non-Axios errors (e.g., network errors, unexpected errors)
-            console.error('Unexpected error occurred:', error);
+            // console.error('Unexpected error occurred:', error);
             return NextResponse.json({error: 'An unexpected error occurred'}, {status: 500});
         }
     }

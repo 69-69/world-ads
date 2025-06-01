@@ -1,18 +1,8 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/apiClient";
+import {createApiClient} from "@/app/api/createApiClient";
 import {NextRequest, NextResponse} from "next/server";
+import {setCookie} from "@/app/util/serverUtils";
 
-// Set Cookies utility function
-// Next-JS Ref Cookies: https://nextjs.org/docs/app/api-reference/functions/cookies#getting-all-cookies
-const setCookie = (res: NextResponse, name: string, value: string, days: number = 7) => {
-    res.cookies.set(name, value, {
-        httpOnly: true,
-        maxAge: days * 24 * 60 * 60, // Default is 7 days
-        secure: process.env.COOKIE_SECURE === "production",
-        path: '/',
-        sameSite: 'lax',
-    });
-};
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
@@ -20,21 +10,23 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.json() : undefined;
 
-        const apiClient = await getApiClientWithAuth();
-        const response = await apiClient.request({method, url: signupEndpoint, data: body});
+        const apiClient = await createApiClient();
+        const axiosResponse = await apiClient.request({method, url: signupEndpoint, data: body});
 
-        const {data} = response;
+        const {data} = axiosResponse;
 
-        const res = NextResponse.json(data);
+        const response = NextResponse.json(data);
         // console.log('Route-Steve-Response:', data, '\nRoute-Steve-Status:', response.status, '\nRoute-res: ', res, '\n');
 
         // Set a signup token from the API response if available
         if (data.signup_token && data.access_token) {
-            setCookie(res, 'access_token', data.access_token);
-            setCookie(res, 'signup_token', data.signup_token);
+            await Promise.all([
+                setCookie({response, name: 'signup_token', value: data.signup_token}),
+                setCookie({response, name: 'access_token', value: data.access_token})
+            ]);
         }
 
-        return res;
+        return response;
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
         return NextResponse.json({error: errorMessage}, {status: 500});

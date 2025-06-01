@@ -1,6 +1,6 @@
 'use client';
 import CustomDropdown from "@/app/components/CustomDropdown";
-import {PARENT_CATEGORIES} from "@/app/util/constants";
+import {IMAGE_DISPLAY_MODE} from "@/app/util/constants";
 
 interface brandParams {
     onSelectChange?: (value: string) => void;
@@ -12,11 +12,12 @@ interface brandParams {
     sx?: object;
 }
 
-const ParentCategoriesDropdown = (param: brandParams) => {
+// Promo background Image Display Mode Dropdown
+const ImageDisplayModeDropdown = (param: brandParams) => {
 
     return (
         <CustomDropdown
-            options={PARENT_CATEGORIES}
+            options={IMAGE_DISPLAY_MODE}
             label={param.label}
             name={param.name}
             defaultVal={param.defaultVal}
@@ -28,5 +29,5 @@ const ParentCategoriesDropdown = (param: brandParams) => {
     );
 };
 
-export default ParentCategoriesDropdown;
+export default ImageDisplayModeDropdown;
 

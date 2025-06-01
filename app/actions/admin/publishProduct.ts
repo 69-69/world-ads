@@ -3,23 +3,20 @@ import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {marketplaceHandler} from "@/app/util/endPoints";
 import {handleApiError} from "@/app/util/serverUtils";
 import authOptions from "@/auth";
-import {NextResponse} from "next/server";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
-import {redirect} from "next/navigation";
+import {HOME_ROUTE} from "@/app/util/constants";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 const publishProduct = async (hashed_id: string) => {
     const session = await authOptions.auth();
     if (!session) {
-        redirect(SIGNIN_ROUTE);
-        return NextResponse.json({error: 'Unauthorized. Please sign in.'}, {status: 401});
+        await signOut();
+        console.log('Unauthorized. Please sign in.', 401);
     }
 
     try {
         await fetchWithRetry(HOME_ROUTE + marketplaceHandler, {
             method: 'PUT',
-            body: JSON.stringify({}),
             endpoint: `/publish/${hashed_id}`,
-            headers: {Authorization: `Bearer ${session?.user.access_token}`}
         });
 
     } catch (error: unknown) {

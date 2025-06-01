@@ -2,22 +2,21 @@
 'use server';
 
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
+import {HOME_ROUTE} from "@/app/util/constants";
 import authOptions from "@/auth";
-import {redirect} from "next/navigation";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 export const deleteAction = async (param: { route: string; id: string }) => {
     const session = await authOptions.auth();
     if (!session) {
-        redirect(SIGNIN_ROUTE);
-        return {success: false, error: 'Unauthorized. Please login'};
+        await signOut();
+        console.log('Unauthorized. Please sign in.', 401);
     }
 
     try {
         await fetchWithRetry(HOME_ROUTE + param.route, {
             method: 'DELETE',
             endpoint: `/${param.id}`,
-            headers: {Authorization: `Bearer ${session?.user.access_token}`}
         });
         return {success: true};
     } catch (error) {

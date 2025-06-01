@@ -8,7 +8,7 @@ import {PRODUCT_CONDITIONS} from "@/app/util/constants";
 import getAdminData from "@/app/actions/admin/getAdminData";
 import {conditionHandler} from "@/app/util/endPoints";
 
-interface conditionProps {
+interface conditionParams {
     onSelectChange?: (value: string) => void;
     isError?: string | null | undefined
     isFullWidth?: boolean;
@@ -18,7 +18,7 @@ interface conditionProps {
     sx?: object;
 }
 
-const ConditionsDropdown = ({defaultVal, label, name, onSelectChange, isError, isFullWidth, sx}: conditionProps) => {
+const ConditionsDropdown = (param: conditionParams) => {
     const [conditions, setConditions] = useState<Condition[]>([]);
 
     useEffect(() => {
@@ -38,13 +38,13 @@ const ConditionsDropdown = ({defaultVal, label, name, onSelectChange, isError, i
     return (
         <CustomDropdown
             options={conditionOptions || PRODUCT_CONDITIONS}
-            onSelectChange={onSelectChange}
-            isFullWidth={isFullWidth}
-            defaultVal={defaultVal}
-            isError={isError}
-            label={label}
-            name={name}
-            sx={sx}
+            onSelectChange={param.onSelectChange}
+            isFullWidth={param.isFullWidth}
+            defaultVal={param.defaultVal}
+            isError={param.isError}
+            label={param.label}
+            name={param.name}
+            sx={param.sx}
         />
     );
 };

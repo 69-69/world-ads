@@ -11,8 +11,9 @@ import {Field} from "@/app/models/TextField";
 import {useRouter} from "next/navigation";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {ADMIN_PROMO_ROUTE} from "@/app/util/constants";
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode} from "@/app/util/clientUtils";
 import {ApiResponse} from "@/app/models";
+import ImageDisplayModeDropdown from "@/app/components/ImageDisplayModeDropdown";
 
 interface PromoFormProps {
     onSubmit: (formData: FormDataModel, productId: string) => Promise<ApiResponse>;
@@ -60,6 +61,13 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
         setErrors((prev) => ({...prev, bg_color: ''})); // Clear error
     };
 
+    // Handle background image display mode change
+    const bgImgDisplayModeChange = (value: string) => {
+        if (formData.bg_img_display_mode === value) return;  // Only update if the value has changed
+        setFormData((prev) => ({...prev, bg_img_display_mode: value}));
+        setErrors((prev) => ({...prev, bg_img_display_mode: ''}));// Clear error
+    };
+
     const handleScheduleChange = (data: { start: string; end: string }) => {
         // console.log('Send this to backend:', data);
         if (formData.start_at === data.start && formData.end_at === data.end) return; // Only update if the colors have changed
@@ -94,6 +102,10 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
         if (!formData.bg_color && !formData.bg_image) {
             // errors.bg_color = 'Background color or image is required';
             errors.bg_image = 'Provide either a background color or image';
+        }
+
+        if (formData.bg_image && !formData.bg_img_display_mode) {
+            errors.bg_img_display_mode = 'Display mode is required when background image is provided';
         }
 
         return errors;
@@ -135,7 +147,7 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
             const response = await props.onSubmit(formData, props.product_id);
 
             if (typeof response === 'object' && response !== null && 'message' in response) {
-                if (response.status && inRange(response.status, 200, 299)) {
+                if (response.status && isSuccessCode(response.status)) {
                     setMessage({success: (response as { message: string }).message});
                     // Reset form data after successful submission
                     resetForm();
@@ -176,6 +188,7 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
                 autoComplete="off"
             >
                 <PromoSchedule onScheduleChange={handleScheduleChange} errors={errors}/>
+
                 <CustomTextField fields={props.fields} formData={formData} handleChange={handleChange} errors={errors}/>
 
                 {!formData.bg_image && (
@@ -183,6 +196,16 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
                         onColorChange={handleProductColors}
                         label="Add Background color"
                         isError={errors['bg_color']}
+                    />
+                )}
+
+                {formData.bg_image && (
+                    <ImageDisplayModeDropdown
+                        label="Image Display Mode"
+                        name="bg_img_display_mode"
+                        onSelectChange={bgImgDisplayModeChange}
+                        isError={errors['bg_img_display_mode']}
+                        isFullWidth={true}
                     />
                 )}
 
@@ -201,7 +224,7 @@ const PromoForm: React.FC<PromoFormProps> = (props) => {
 
                     <Stack
                         spacing={2}
-                        direction= {{ xs: 'column', sm: 'row', md: 'row', lg: 'row' }}
+                        direction={{xs: 'column', sm: 'row', md: 'row', lg: 'row'}}
                         sx={{display: 'flex', justifyContent: 'space-between'}}
                     >
                         <Tooltip title="Reset the form">

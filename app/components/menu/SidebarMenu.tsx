@@ -27,7 +27,6 @@ const SidebarMenu: React.FC<{
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
     const toggleDropdown = (title: string) => {
-        // setOpenDropdown((prev: { [x: string]: boolean }) => ({...prev, [title]: !prev[title]}));
         setOpenDropdown((prev: string | null): string | null => prev === title ? null : title);
     };
 

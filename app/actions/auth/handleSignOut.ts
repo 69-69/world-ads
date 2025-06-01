@@ -1,24 +1,24 @@
 'use server';
 
 import authOptions from "@/auth";
-import {getApiClientWithAuth} from "@/app/api/apiClient";
-import {cookies} from "next/headers";
+import {createApiClient} from "@/app/api/createApiClient";
 import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
 import {revalidatePath} from 'next/cache'
 import {redirect} from 'next/navigation'
-import {errorUtils} from "@/app/util/serverUtils";
+import {deleteCookie} from "@/app/util/serverUtils";
+import {generateRandomHash, errorUtils} from "@/app/util/clientUtils";
 
 // Clear all relevant auth cookies and redirect
 const clearCookiesAndRedirect = async () => {
-    const cookieStore = await cookies();
 
-    cookieStore.getAll().map((cookie) => cookieStore.delete(cookie.name));
+    await deleteCookie({});
     // Clear cache for relevant routes
     revalidatePath(HOME_ROUTE);
     revalidatePath(SIGNIN_ROUTE);
 
+    const randomChar = `${new Date().getTime()}#${generateRandomHash()}`;
     // Redirect to sign In with logout indicator
-    redirect(`${SIGNIN_ROUTE}?logout=true`);
+    redirect(`${SIGNIN_ROUTE}?logout=true&auth=${randomChar}`);
 };
 
 export const signOut = async (): Promise<void> => {
@@ -38,7 +38,7 @@ export const signOut = async (): Promise<void> => {
 
         const signOutEndpoint = 'auth/sign-out';
         // Handle credential-based sign-out via backend API
-        const apiClient = await getApiClientWithAuth();
+        const apiClient = await createApiClient();
         await apiClient.request({
                 method: 'POST',
                 url: `/${signOutEndpoint}`,

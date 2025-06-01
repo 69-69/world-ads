@@ -1,5 +1,5 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/apiClient";
+import {createApiClient} from "@/app/api/createApiClient";
 import {NextRequest, NextResponse} from "next/server";
 import axios from "axios";
 
@@ -13,7 +13,7 @@ async function handleRequest(req: NextRequest, method: 'GET' | 'POST' | 'PUT' | 
 
     try {
 
-        const apiClient = await getApiClientWithAuth(req);
+        const apiClient = await createApiClient(req);
         const headers: Record<string, string> = {};
 
         let data = undefined;

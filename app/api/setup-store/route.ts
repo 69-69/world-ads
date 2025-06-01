@@ -1,5 +1,5 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/apiClient";
+import {createApiClient} from "@/app/api/createApiClient";
 import {NextRequest, NextResponse} from "next/server";
 import axios from "axios";
 
@@ -10,7 +10,7 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.formData() : undefined;
 
-        const apiClient = await getApiClientWithAuth();
+        const apiClient = await createApiClient();
         const response = await apiClient.request({
             method,
             url: setupEndpoint,

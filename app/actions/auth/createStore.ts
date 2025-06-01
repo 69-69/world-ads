@@ -1,7 +1,6 @@
-import {handleApiError} from "@/app/util/serverUtils";
-import {getSignupToken} from "@/app/actions/useCookies";
+import {handleApiError, getSignupToken} from "@/app/util/serverUtils";
 import {setupStoreHandler} from "@/app/util/endPoints";
-import {getParts, inRange} from "@/app/util/clientUtils";
+import {getParts, isSuccessCode} from "@/app/util/clientUtils";
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {FormDataModel, to_FormData} from "@/app/models/FormDataModel";
 
@@ -22,7 +21,7 @@ export const createStore = async (form: FormDataModel) => {
             body,
         });
 
-        if (inRange(response.status, 200, 299)) {
+        if (isSuccessCode(response.status)) {
             return { status: response.status, message: data.message };
         } else {
             return { message: data.message || 'Check your entering', status: response.status };

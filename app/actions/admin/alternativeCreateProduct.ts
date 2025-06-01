@@ -1,20 +1,17 @@
 'use server';
 
 import {FormDataModel, to_FormData} from "@/app/models/FormDataModel";
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode, errorUtils} from "@/app/util/clientUtils";
 import {BACKEND_API_ENDPOINT} from "@/env_config";
-import {errorUtils} from "@/app/util/serverUtils";
 import authOptions from "@/auth";
-import {NextResponse} from "next/server";
-import {SIGNIN_ROUTE} from "@/app/util/constants";
-import {redirect} from "next/navigation";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 const alternativeCreateProduct = async (form: FormDataModel) => {
     const session = await authOptions.auth();
 
     if (!session) {
-        redirect(SIGNIN_ROUTE);
-        return NextResponse.json({error: 'Unauthorized. Please sign in.'}, {status: 401});
+        await signOut();
+        return {message: 'Unauthorized. Please sign in.', status: 401};
     }
 
     try {
@@ -23,7 +20,6 @@ const alternativeCreateProduct = async (form: FormDataModel) => {
 
         const response = await fetch(`${BACKEND_API_ENDPOINT}/market-place`, {
             method: 'POST',
-            headers: {Authorization: `Bearer ${session.user.access_token}`},
             body,
             // include credentials if backend requires cookies
             credentials: 'include',
@@ -31,7 +27,7 @@ const alternativeCreateProduct = async (form: FormDataModel) => {
 
         const data = await response.json();
 
-        if (inRange(response.status, 200, 299)) {
+        if (isSuccessCode(response.status)) {
             return {
                 data: JSON.stringify(data),
                 status: response.status,

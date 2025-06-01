@@ -2,7 +2,7 @@
 
 import authOptions from '@/auth';
 import {SignIn} from "@/app/models/SignIn";
-import {errorUtils} from "@/app/util/serverUtils";
+import {errorUtils} from "@/app/util/clientUtils";
 import {ApiResponse} from "@/app/models/ApiResponse";
 
 export const useSignIn = async (formData: SignIn): Promise<ApiResponse> => {
@@ -10,6 +10,7 @@ export const useSignIn = async (formData: SignIn): Promise<ApiResponse> => {
         const response = await authOptions.signIn("credentials", {
             ...formData,
             redirect: false,
+            callbackUrl: '/admin/dashboard',
         });
         // console.log('Sign-in response:', response);
 

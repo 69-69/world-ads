@@ -1,6 +1,6 @@
 'use server';
 
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode} from "@/app/util/clientUtils";
 import {AllCountries} from "@/app/models/AllCountries";
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {restCountriesHandler} from "@/app/util/endPoints";
@@ -20,7 +20,7 @@ const getCountries = async (): Promise<AllCountries[]> => {
             },
         });
 
-        if (inRange(response.status, 200, 299)) {
+        if (isSuccessCode(response.status)) {
             countries = data as AllCountries[];
         }
 

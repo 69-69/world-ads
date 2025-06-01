@@ -230,8 +230,13 @@ const STORE_CATEGORIES = [
 ];
 
 const SELLER_TYPE = [
-    {label: 'Individual', value: 'individual', tooltip: ' Individual Seller (Person-to-Person or P2P)'},
+    {label: 'Individual', value: 'individual', tooltip: 'Individual Seller (Person-to-Person or P2P)'},
     {label: 'Company', value: 'company', tooltip: 'Business Seller (Business-to-Consumer or B2C)'},
+];
+
+const IMAGE_DISPLAY_MODE = [
+    {name: 'Inline', value: 'inline', tooltip: 'Image is displayed within the flow of text'},
+    {name: 'Fullscreen', value: 'fullscreen', tooltip: 'Image is displayed in entire screen'},
 ];
 
 /*const APP_COOKIE_KEYS = [
@@ -251,6 +256,7 @@ export {
     APP_NAME,
     ACC_ROLE,
     SELLER_TYPE,
+    IMAGE_DISPLAY_MODE,
     PARENT_CATEGORIES,
     SUB_CATEGORIES,
     POST_BRANDS,

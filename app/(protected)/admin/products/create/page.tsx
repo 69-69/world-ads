@@ -9,6 +9,8 @@ import {Box} from "@mui/material";
 import PostForm from '@/app/components/post/PostForm';
 import createProduct from '@/app/actions/admin/createProduct';
 import alternativeCreateProduct from "@/app/actions/admin/alternativeCreateProduct";
+import {ApiResponse} from "@/app/models";
+import {FormDataModel} from "@/app/models/FormDataModel";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -81,7 +83,7 @@ const CreatePage = () => {
                         title={tab.title}
                         fields={fields}
                         buttonText={tab.btnText}
-                        onSubmit={tab.onSubmit}
+                        onSubmit={tab.onSubmit as (formData: FormDataModel) => Promise<ApiResponse>}
                     />
                 </CustomTabPanel>
             ))}

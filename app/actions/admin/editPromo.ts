@@ -2,15 +2,15 @@
 'use server';
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {promoHandler} from "@/app/util/endPoints";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
+import {HOME_ROUTE} from "@/app/util/constants";
 import authOptions from "@/auth";
-import {redirect} from "next/navigation";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 
 export async function handlePromoEdit(formData: FormData, hashed_id: string) {
     const session = await authOptions.auth();
     if (!session) {
-        redirect(SIGNIN_ROUTE);
+        await signOut();
         console.log('Unauthorized. Please sign in.', 401);
     }
 
@@ -23,7 +23,6 @@ export async function handlePromoEdit(formData: FormData, hashed_id: string) {
         method: 'PUT',
         body,
         endpoint: `/${hashed_id}`,
-        headers: {Authorization: `Bearer ${session?.user.access_token}`}
     });
     return {success: response?.ok, error: response?.statusText};
 

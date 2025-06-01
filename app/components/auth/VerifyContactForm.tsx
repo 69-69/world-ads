@@ -6,9 +6,9 @@ import {useRouter} from 'next/navigation';
 import {ACC_ROLE, SETUP_STORE_ROUTE} from "@/app/util/constants";
 import {ApiResponse} from "@/app/models";
 import ToastMessage from "@/app/components/ToastMessage";
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode} from "@/app/util/clientUtils";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
-import {getIsVerified} from "@/app/actions/useCookies";
+import {getIsVerified} from "@/app/util/serverUtils";
 import {Field} from "@/app/models/TextField";
 
 interface PostFormProps {
@@ -103,7 +103,7 @@ const VerifyContactForm: React.FC<PostFormProps> = ({title, fields, buttonText, 
         setShouldFetch(true); // Trigger the fetch
 
         // Redirect to the appropriate page if verification is successful
-        if (inRange(response.status!, 200, 299)) {
+        if (isSuccessCode(response.status!)) {
             console.log('verifyStatus: ', verifyStatus.email, response.data!.role!);
             if (verifyStatus.email /*&& verifyStatus.phone*/) {
                 const navigateTo = getNavigateTo(response.data!.role!, redirectTo);

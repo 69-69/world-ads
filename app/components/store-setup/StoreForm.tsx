@@ -10,7 +10,7 @@ import {
     STORE_CATEGORIES
 } from "@/app/util/constants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode} from "@/app/util/clientUtils";
 import {useFormDataChange} from "@/app/util/formDataChange";
 import CustomDropdown from "@/app/components/CustomDropdown";
 import CustomRadio from "@/app/components/CustomRadio";
@@ -133,7 +133,7 @@ const StoreForm = <T, U extends ApiResponse>(prop: StoreFormProps<T, U>) => {
             const response = await prop.onSubmit(formData as T);
             // alert('steve-formData1::' + JSON.stringify(formData));
 
-            if (response.status && inRange(response.status, 200, 299)) {
+            if (response.status && isSuccessCode(response.status)) {
                 setMessage({success: 'Please wait...'});
 
                 // const data = typeof response.data === 'string' ? response.data as string : null;

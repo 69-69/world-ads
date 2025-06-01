@@ -2,15 +2,15 @@
 'use server';
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {marketplaceHandler} from "@/app/util/endPoints";
-import {HOME_ROUTE, SIGNIN_ROUTE} from "@/app/util/constants";
+import {HOME_ROUTE} from "@/app/util/constants";
 import authOptions from "@/auth";
-import {redirect} from "next/navigation";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 
 export async function handleEdit(formData: FormData) {
     const session = await authOptions.auth();
     if (!session) {
-        redirect(SIGNIN_ROUTE);
+        await signOut();
         console.log('Unauthorized. Please sign in.', 401);
     }
 
@@ -23,7 +23,6 @@ export async function handleEdit(formData: FormData) {
         method: 'PUT',
         body,
         endpoint: `/${hashed_id}`,
-        headers: {Authorization: `Bearer ${session?.user.access_token}`}
     });
     /*if (response?.status === 200) {
         const product = data as Partial<Product>;

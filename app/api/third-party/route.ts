@@ -15,26 +15,26 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.json() : undefined;
 
-        const response = await axios({method, url: endpoint, data: body})
+        const axiosResponse = await axios({method, url: endpoint, data: body})
 
-        const res = NextResponse.json(response.data);
+        const nextResponse = NextResponse.json(axiosResponse.data);
 
         // Set cookies based on headers
         const cookieName = request.headers.get('Cookie_Name');
         const dataKey = request.headers.get('Data-Key');
 
         if (cookieName) {
-            setCookiesFromResponse(res, response, cookieName, dataKey);
+            setCookiesFromResponse(nextResponse, axiosResponse, cookieName, dataKey);
         }
 
         // Optionally set additional cookies like Custom_Cookie
         const defaultCookie = request.headers.get('Custom_Cookie');
         if (defaultCookie) {
             const [key, value] = defaultCookie.split('=');
-            setCookie(res, key, value);
+            setCookie({response: nextResponse, name: key, value})
         }
 
-        return res;
+        return nextResponse;
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
         return NextResponse.json({error: errorMessage}, {status: 500});

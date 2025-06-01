@@ -1,8 +1,8 @@
 import {SignUp, SignUpForm, SignUpResponse} from "@/app/models/SignUp";
-import {errorUtils} from "@/app/util/serverUtils";
+import {errorUtils} from "@/app/util/clientUtils";
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {signupHandler} from "@/app/util/endPoints";
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode} from "@/app/util/clientUtils";
 
 export const createSignUp = async (formData: SignUpForm) => {
 
@@ -14,7 +14,7 @@ export const createSignUp = async (formData: SignUpForm) => {
             body,
         });
 
-        if (inRange(response.status, 200, 299)) {
+        if (isSuccessCode(response.status)) {
             const successData: SignUpResponse = {
                 signupToken: data.signup_token,
                 accessToken: data.access_token,

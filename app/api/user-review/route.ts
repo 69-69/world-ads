@@ -1,24 +1,21 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/apiClient";
+import {createApiClient} from "@/app/api/createApiClient";
 import {NextRequest, NextResponse} from "next/server";
 import authOptions from "@/auth";
 import axios from "axios";
-import {redirect} from "next/navigation";
-import {SIGNIN_ROUTE} from "@/app/util/constants";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
     const endpoint = new URL(request.url).searchParams.get('endpoint');
     const reviewEndpoint = `/review${endpoint ?? ''}`;
 
-    // console.log(`Steve-- ${method} REQUEST --`);
-
     try {
         // Get session from NextAuth
         const session = await authOptions.auth();
         if (!session) {
-            redirect(SIGNIN_ROUTE);
-            return NextResponse.json({error: 'You must be logged in to perform this action'}, {status: 401});
+            await signOut();
+            return NextResponse.json({error: 'Unauthorized. Please sign in.'}, {status: 401});
         }
 
         // Get the user_id from the session
@@ -35,11 +32,10 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
             // Dynamically assign user_id from the session
             body.user_id = userId;
             headers = {'Content-Type': 'application/json'};
-            console.log('Steve-Prepared headers for POST/PUT');
         }
 
         // Make the API request using the provided method
-        const apiClient = await getApiClientWithAuth();
+        const apiClient = await createApiClient();
         const response = await apiClient.request({
             method,
             url: reviewEndpoint,

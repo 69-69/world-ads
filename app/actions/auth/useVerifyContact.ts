@@ -1,8 +1,7 @@
 import {ApiResponse} from "@/app/models";
-import {errorUtils} from "@/app/util/serverUtils";
-import {getSignupToken} from "@/app/actions/useCookies";
-import {getParts, inRange} from "@/app/util/clientUtils";
+import {getSignupToken} from "@/app/util/serverUtils";
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
+import {isSuccessCode, errorUtils, getParts} from "@/app/util/clientUtils";
 import {VerifyContactResponse} from "@/app/models/VerifyContactResponse";
 import {verifyHandler} from "@/app/util/endPoints";
 
@@ -25,7 +24,7 @@ const verifyUserEmail = async (email_code: string): Promise<ApiResponse<VerifyCo
             body: JSON.stringify({user_id, email_code}),
         });
 
-        if (inRange(response.status, 200, 299)) {
+        if (isSuccessCode(response.status)) {
             // Get the User Role from the Signup-signupToken
             const userRole = getParts(signupToken, 1);
 
@@ -70,7 +69,7 @@ const verifyUserPhone = async (sms_code: string): Promise<ApiResponse<VerifyCont
             body: JSON.stringify({user_id, sms_code}),
         });
 
-        if (inRange(response.status, 200, 299)) {
+        if (isSuccessCode(response.status)) {
             // Get the User Role from the Signup-signupToken
             const userRole = getParts(signupToken, 1);
 

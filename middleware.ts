@@ -1,62 +1,15 @@
 import authOptions from "@/auth";
-import {NextRequest, NextResponse} from 'next/server';
+import {NextResponse} from 'next/server';
 import {
     HOME_ROUTE,
     SIGNIN_ROUTE,
     PROTECTED_AUTH_ROUTES,
     PROTECTED_RESOURCES_ROUTES, SIGNUP_ROUTE, VERIFICATION_ROUTE, SETUP_STORE_ROUTE,
 } from '@/app/util/constants';
+import {matchRouteWithParams, routeWithHashKey} from "@/app/util/clientUtils";
+
 // import {getToken} from '@auth/core/jwt';
 
-/* const removeParams = (pathname: string): string => {
-    // If pathname has params, split the pathname and get the first part
-    if (pathname.split('/')[1]) {
-        pathname = `/${pathname.split('/')[1]}`;
-    }
-    return pathname;
-}
-const compareRoute = (route: string, pathname: string): boolean => route === removeParams(pathname);
-*/
-
-
-// Helper function to generate a random hash (8-character random string)
-const generateRandomHash = (length: number = 32): string => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let result = '';
-
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-};
-
-// Helper: Match route with optional dynamic segments
-const matchRouteWithParams = (route: string, pathname: string): boolean => {
-    const routeParts = route.split('/');
-    const pathParts = pathname.split('/');
-
-    // Check if the number of segments match
-    if (routeParts.length !== pathParts.length) return false;
-
-    // Compare each segment, allowing for dynamic segments
-    /*return routeParts.every((part, index) =>
-        part.startsWith(':') || part === pathParts[index]
-    );*/
-    for (let i = 0; i < routeParts.length; i++) {
-        if (routeParts[i].startsWith(':') || routeParts[i] === pathParts[i]) continue;
-        return false;
-    }
-    return true;
-};
-
-// Helper: Generate random hash for routes like verification
-const routeWithHashKey = (req: string, pathname: string): NextResponse => {
-    const randomHash = generateRandomHash();
-    const newUrl = `${pathname}/${randomHash}`;
-
-    return NextResponse.redirect(new URL(newUrl, req));
-}
 
 // Helper: Protect auth routes from logged-in users
 const isProtectedAuthRoute = (pathname: string): boolean =>
@@ -66,54 +19,25 @@ const isProtectedAuthRoute = (pathname: string): boolean =>
 const isProtectedResourceRoute = (pathname: string): boolean =>
     PROTECTED_RESOURCES_ROUTES.some(route => matchRouteWithParams(route, pathname));
 
-const allowedOrigins = [
-    'https://istorezhona.shop',
-    'https://*.istorezhona.shop',
-    'http://127.0.0.1:5000',
-];
-
-function isOriginAllowed(origin: string): boolean {
-    return allowedOrigins.some((allowed) => {
-        if (allowed.startsWith('https://!*.')) {
-            const domain = allowed.replace('https://!*.', '');
-            return origin === `https://${domain}` || origin.endsWith(`.${domain}`);
-        }
-        return origin === allowed;
-    });
-}
-
-export const corsMiddleware = (request: NextRequest) => {
-    const origin = request.headers.get('origin') || '';
-
-    if (isOriginAllowed(origin)) {
-        const response = NextResponse.next();
-        response.headers.set('Access-Control-Allow-Origin', origin);
-        response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        return response;
-    }
-
-    return NextResponse.next();
-};
-
 
 // Auth Middleware (with session checks)
 export default authOptions.auth((req) => {
     const session = req.auth; // Get user session token
     const {pathname, searchParams} = req.nextUrl; // Extract pathname and search parameters from the request URL
 
-    // console.log('steve-middleware-pathname', pathname);
-
     // Allow logged-in user to access /signin if it's part of a logout flow
     const isLoggingOut = pathname === SIGNIN_ROUTE && searchParams.get("logout") === "true";
 
     // Logged-in user
     if (session) {
-        // Prevent access to signin/signup/setup/etc unless logging out
+        // Prevent access to (signin/signup/setup/etc) unless logging out
         if (isProtectedAuthRoute(pathname) && !isLoggingOut) {
-            // delete cookies
-            req.cookies.getAll().forEach(cookie => req.cookies.delete(cookie.name));
-            return NextResponse.redirect(new URL(HOME_ROUTE, req.url));
+            const response = routeWithHashKey(req.url, `${HOME_ROUTE}?logout=true`, {char: '#'});
+
+            // Delete all cookies via response
+            req.cookies.getAll().forEach(cookie => response.cookies.delete(cookie.name));
+
+            return response;
         }
     }
 
@@ -172,3 +96,35 @@ export const config = {
         '/reset-password',
     ],
 };
+
+/*
+const allowedOrigins = [
+    'https://istorezhona.shop',
+    'https://!*.istorezhona.shop',
+    'http://127.0.0.1:5000',
+];
+
+function isOriginAllowed(origin: string): boolean {
+    return allowedOrigins.some((allowed) => {
+        if (allowed.startsWith('https://!*.')) {
+            const domain = allowed.replace('https://!*.', '');
+            return origin === `https://${domain}` || origin.endsWith(`.${domain}`);
+        }
+        return origin === allowed;
+    });
+}
+
+export const corsMiddleware = (request: NextRequest) => {
+    const origin = request.headers.get('origin') || '';
+
+    if (isOriginAllowed(origin)) {
+        const response = NextResponse.next();
+        response.headers.set('Access-Control-Allow-Origin', origin);
+        response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        return response;
+    }
+
+    return NextResponse.next();
+};
+*/

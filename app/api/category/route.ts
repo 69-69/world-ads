@@ -1,5 +1,5 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/apiClient";
+import {createApiClient} from "@/app/api/createApiClient";
 import {NextRequest, NextResponse} from "next/server";
 import axios from "axios";
 
@@ -12,15 +12,12 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
         const body = (method === 'POST' || method === 'PUT') ? await request.json() : undefined;
 
         // Make the API request using the provided method
-        const apiClient = await getApiClientWithAuth(request);
+        const apiClient = await createApiClient(request);
         const response = await apiClient.request({
             method,
             url: `/category${endpoint ?? ''}`,
             data: body,
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: request.headers.get('Authorization') || '',
-            },
+            headers: {'Content-Type': 'application/json'},
         });
 
         // Return the response from the API

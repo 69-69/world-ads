@@ -18,7 +18,7 @@ interface categoryProps {
     sx?: object;
 }
 
-const SubCategoriesDropdown = ({ defaultVal, label, name, onSelectChange, isError, isFullWidth, sx }: categoryProps) => {
+const SubCategoriesDropdown = (param: categoryProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
@@ -38,13 +38,13 @@ const SubCategoriesDropdown = ({ defaultVal, label, name, onSelectChange, isErro
     return (
         <CustomDropdown
             options={categoryOptions || SUB_CATEGORIES}
-            onSelectChange={onSelectChange}
-            isFullWidth={isFullWidth}
-            defaultVal={defaultVal}
-            isError={isError}
-            label={label}
-            name={name}
-            sx={sx}
+            onSelectChange={param.onSelectChange}
+            isFullWidth={param.isFullWidth}
+            defaultVal={param.defaultVal}
+            isError={param.isError}
+            label={param.label}
+            name={param.name}
+            sx={param.sx}
         />
     );
 };

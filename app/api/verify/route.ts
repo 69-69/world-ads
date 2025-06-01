@@ -1,18 +1,7 @@
 'use server';
-import {getApiClientWithAuth} from "@/app/api/apiClient";
+import {createApiClient} from "@/app/api/createApiClient";
 import {NextRequest, NextResponse} from "next/server";
-
-// Set Cookies utility function
-// Next-JS Ref Cookies: https://nextjs.org/docs/app/api-reference/functions/cookies#getting-all-cookies
-const setCookie = (res: NextResponse, name: string, value: string, days: number = 7) => {
-    res.cookies.set(name, value, {
-        httpOnly: true,
-        maxAge: days * 24 * 60 * 60, // Default is 7 days
-        secure: process.env.COOKIE_SECURE === "production",
-        path: '/',
-        sameSite: 'lax',
-    });
-};
+import {setCookie} from "@/app/util/serverUtils";
 
 // General API handler for GET, POST, PUT, DELETE
 async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT' | 'DELETE') {
@@ -27,18 +16,18 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
     try {
         const body = method === 'POST' || method === 'PUT' ? await request.json() : undefined;
 
-        const apiClient = await getApiClientWithAuth();
-        const response = await apiClient.request({method, url: `/${endpoint}`, data: body});
+        const apiClient = await createApiClient();
+        const axiosResponse = await apiClient.request({method, url: `/${endpoint}`, data: body});
 
-        const {data} = response;
+        const {data} = axiosResponse;
 
-        const res = NextResponse.json(data);
+        const response = NextResponse.json(data);
 
         if (verify_method) {
-            setCookie(res, `verified_${verify_method}`, verify_method);
+            await setCookie({response, name: `verified_${verify_method}`, value: verify_method})
         }
 
-        return res;
+        return response;
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
         return NextResponse.json({error: errorMessage}, {status: 500});

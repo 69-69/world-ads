@@ -3,17 +3,15 @@ import Google from "@auth/core/providers/google";
 import GitHub from "@auth/core/providers/github";
 import Credentials from "@auth/core/providers/credentials";
 import {Profile} from "@/app/models/Profile";
-import {inRange} from "@/app/util/clientUtils";
-import {getApiClientWithAuth} from "@/app/api/apiClient";
-import {errorUtils} from "@/app/util/serverUtils";
-import {cookies} from "next/headers";
+import {isSuccessCode} from "@/app/util/clientUtils";
+import {createApiClient} from "@/app/api/createApiClient";
+import {setCookie, extractRefreshToken} from "@/app/util/serverUtils";
 
-
-async function findUser(credentials: Partial<Record<"email" | "password", unknown>>) {
+async function _findUser(credentials: Partial<Record<"email" | "password", unknown>>) {
     const {email, password} = credentials;
 
     const signinEndpoint = 'auth/signin';
-    const apiClient = await getApiClientWithAuth();
+    const apiClient = await createApiClient();
 
     const response = await apiClient.request({
         method: 'POST',
@@ -21,12 +19,20 @@ async function findUser(credentials: Partial<Record<"email" | "password", unknow
         data: {email, password},
         headers: {'Content-Type': 'application/json'},
     });
-    // console.log('Steve-Response:', response.headers);
 
-    if (!inRange(response.status, 200, 299)) {
-        return errorUtils.getError(response);
-        // throw new Error("Invalid email or password.");
+    if (!isSuccessCode(response.status)) {
+        console.error('Invalid status code:', response.status);
+        throw new Error('Login failed with status: ' + response.status);
+
+        // return errorUtils.getError(response);
     }
+
+    const refreshTokenValue = extractRefreshToken(response.headers['set-cookie']);
+    if (refreshTokenValue) {
+        await setCookie({name: 'refresh_token', value: refreshTokenValue});
+    }
+    await setCookie({name: 'access_token', value: response.data.access_token});
+    // await new Promise(resolve => setTimeout(resolve, 10)); // Simulate delay for testing
 
     return response.data as Profile;
 }
@@ -47,28 +53,34 @@ const authConfig = [
             remember_me: {label: "Remember Me", name: 'remember_me', type: "checkbox"},
         },
         authorize: async (credentials) => {
-            if (!credentials?.email || !credentials?.password) {
-                // throw new Error("Email and password are required.");
-                return {};
-            }
+            // console.log('Credentials:', credentials);
+            try {
+                if (!credentials?.email || !credentials?.password) {
+                    throw new Error("Email and password are required.");
+                    // return {};
+                }
 
-            const user = await findUser(credentials);
-            const profile = new Profile(user);
-            return {
-                id: profile.id,
-                role: profile.role,
-                email: profile.email,
-                name: `${profile.firstname} ${profile.lastname}`,
-                store_id: profile.store_id,
-                image: profile.imageUrl,
-                access_token: profile.access_token,
-                remember_me: credentials.remember_me as boolean,
-                signin_method: "credentials",
-            };
+                const user = await _findUser(credentials);
+                const profile = new Profile(user);
+                return {
+                    id: profile.id,
+                    role: profile.role,
+                    email: profile.email,
+                    name: `${profile.firstname} ${profile.lastname}`,
+                    store_id: profile.store_id,
+                    image: profile.imageUrl,
+                    access_token: profile.access_token,
+                    remember_me: credentials.remember_me as boolean,
+                    signin_method: "credentials",
+                };
+            } catch (err) {
+                console.error('Authorize error:', err);
+                throw new Error('Invalid email or password'); // This will show up on the error page
+            }
         },
     }),
 ];
-
+//
 const authOptions = NextAuth({
     providers: authConfig,
     session: {
@@ -85,20 +97,10 @@ const authOptions = NextAuth({
         },
 
         async jwt({token, user}) {
-            const cookieStore = await cookies();
+            // const cookieStore = await cookies();
 
             // Add user to token on first sign-in
             if (user) {
-                cookieStore.set({
-                    name: 'access_token',
-                    value: token.access_token as string,
-                    httpOnly: true,
-                    secure: process.env.COOKIE_SECURE === 'production',
-                    sameSite: 'lax',
-                    path: '/',
-                    maxAge: 60 * 60, // 1 hour in seconds  * 1000
-                });
-
                 token.id = user.id;
                 token.email = user.email;
                 token.store_id = user.store_id;

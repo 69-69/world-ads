@@ -1,7 +1,7 @@
 import React from "react";
 import {MenuItem, TextField} from "@mui/material";
 
-type MiniDropdownProps = {
+type MiniDropdownParams = {
     options: { name: string; value: string }[];
     label: string;
     isError?: boolean;
@@ -11,31 +11,23 @@ type MiniDropdownProps = {
     defaultValue?: string;
 };
 
-const MiniDropdown = ({
-                          options,
-                          label,
-                          isError,
-                          isFullWidth,
-                          name,
-                          helperText,
-                          defaultValue
-                      }: MiniDropdownProps) => {
+const MiniDropdown = (param: MiniDropdownParams) => {
     return (
         <TextField
             select
-            name={name}
-            label={label}
-            defaultValue={defaultValue ?? ""}
+            name={param.name}
+            label={param.label}
+            defaultValue={param.defaultValue ?? ""}
             variant="outlined"
-            fullWidth={isFullWidth}
-            error={isError}
-            helperText={helperText}
+            fullWidth={param.isFullWidth}
+            error={param.isError}
+            helperText={param.helperText}
             size="small"
         >
             <MenuItem value="" disabled>
                 Select a category
             </MenuItem>
-            {options.map((option) => (
+            {param.options.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                     {option.name}
                 </MenuItem>

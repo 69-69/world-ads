@@ -15,7 +15,7 @@ import {
     POLICY_ROUTE
 } from "@/app/util/constants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode} from "@/app/util/clientUtils";
 import {useFormDataChange} from "@/app/util/formDataChange";
 import CountrySelector from "@/app/components/CountrySelector/CountrySelector";
 import {FormDataModel} from "@/app/models/FormDataModel";
@@ -127,7 +127,7 @@ const AuthForm = <T, U extends ApiResponse>(prop: AuthFormProps<T, U>) => {
         try {
             const response = await prop.onSubmit(formData as T);
 
-            if (response.status && inRange(response.status, 200, 299)) {
+            if (response.status && isSuccessCode(response.status)) {
                 setMessage({success: 'Please wait...'});
 
                 const data = typeof response.data === 'string' ? response.data as string : null;

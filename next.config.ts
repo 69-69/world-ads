@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
     experimental: {
         serverActions: {
             bodySizeLimit: '1024mb',
-            allowedOrigins: ['istorezhona.shop', '*.istorezhona.shop', '127.0.0.1:5000'],
+            allowedOrigins: ['istorezhona.shop', '*.istorezhona.shop', '*.vercel.app', '127.0.0.1:5000'],
         },
     },
 

@@ -15,7 +15,7 @@ import {useRouter} from 'next/navigation';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {ADMIN_PRODUCT_ROUTE} from "@/app/util/constants";
 import {ApiResponse} from "@/app/models";
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode} from "@/app/util/clientUtils";
 
 interface PostFormProps {
     onSubmit: (formData: FormDataModel) => Promise<ApiResponse>;
@@ -167,7 +167,7 @@ const PostForm: React.FC<PostFormProps> = (props) => {
             const response = await props.onSubmit(formData);
 
             if (typeof response === 'object' && response !== null && 'message' in response) {
-                if (response.status && inRange(response.status, 200, 299)) {
+                if (response.status && isSuccessCode(response.status)) {
                     setMessage({success: (response as { message: string }).message});
                     // Reset form data after successful submission
                     resetForm();

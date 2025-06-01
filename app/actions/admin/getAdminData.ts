@@ -4,30 +4,31 @@
 import authOptions from "@/auth";
 import {HOME_ROUTE} from "@/app/util/constants";
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
-import {inRange} from "@/app/util/clientUtils";
+import {isSuccessCode} from "@/app/util/clientUtils";
+import {signOut} from "@/app/actions/auth/handleSignOut";
 
 type AdminDataParams = {
     route: string;
     endpoint?: string;
 };
 
-const getAdminData = async <T>(x: AdminDataParams): Promise<T | []> => {
+const getAdminData = async <T>(param: AdminDataParams): Promise<T | []> => {
     const session = await authOptions.auth();
-    if (!session?.user) {
-        return [];
+    if (!session) {
+        await signOut();
+        console.log('Unauthorized. Please sign in.', 401);
+        // return [];
     }
 
     try {
-        const extra = x.endpoint ? x.endpoint : '';
+        const extra = param.endpoint ? param.endpoint : '';
 
-        const {response, data} = await fetchWithRetry(HOME_ROUTE + x.route, {
+        const {response, data} = await fetchWithRetry(HOME_ROUTE + param.route, {
             method: 'GET',
             endpoint: `/${extra}${session?.user.store_id}`,
-            headers: {Authorization: `Bearer ${session?.user.access_token}`}
         });
-        if (inRange(response.status, 200, 299)) {
-            return data as T;
-        }
+
+        if (isSuccessCode(response.status)) return data as T;
 
         return [] as T;
     } catch (error) {

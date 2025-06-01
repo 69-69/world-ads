@@ -1,6 +1,20 @@
-// Check if a number is within a specified range: >= min && <= max
+import {NextResponse} from "next/server";
 
-const inRange = (value: number, min: number = 200, max: number = 299) => {
+
+interface RouteWithHashKeyOptions {
+    char?: string;
+}
+
+interface SuccessCodeOptions {
+    min?: number;
+    max?: number;
+}
+
+// Check if a status code is a success code (default: 200-299)
+// This function can be used to validate HTTP response codes
+// and determine if the request was successful.
+const isSuccessCode = (value: number, options: SuccessCodeOptions = {}) => {
+    const {min = 200, max = 299} = options;
     return value >= min && value <= max;
 }
 
@@ -67,6 +81,7 @@ const validatePassword = (value: string) => {
     return value.length >= 8; // Example: password must be at least 8 characters long
 };
 
+
 // Helper function to generate a random hash (8-character random string)
 const generateRandomHash = (length: number = 32): string => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -79,6 +94,35 @@ const generateRandomHash = (length: number = 32): string => {
     return result;
 };
 
+// Helper: Match route with optional dynamic segments
+const matchRouteWithParams = (route: string, pathname: string): boolean => {
+    const routeParts = route.split('/');
+    const pathParts = pathname.split('/');
+
+    // Check if the number of segments match
+    if (routeParts.length !== pathParts.length) return false;
+
+    // Compare each segment, allowing for dynamic segments
+    /*return routeParts.every((part, index) =>
+        part.startsWith(':') || part === pathParts[index]
+    );*/
+    for (let i = 0; i < routeParts.length; i++) {
+        if (routeParts[i].startsWith(':') || routeParts[i] === pathParts[i]) continue;
+        return false;
+    }
+    return true;
+};
+
+// Helper: Generate random hash for routes like verification
+const routeWithHashKey = (req: string, pathname: string, options: RouteWithHashKeyOptions = {}): NextResponse => {
+    const {char = '/'} = options;
+    const randomHash = generateRandomHash();
+
+    const newUrl = `${pathname}${char}${randomHash}`;
+    return NextResponse.redirect(new URL(newUrl, req));
+}
+
+
 // Is Expired
 const isExpired = (dateStr: string) => {
 
@@ -88,8 +132,48 @@ const isExpired = (dateStr: string) => {
     return endDate < now;
 };
 
+const errorUtils = {
+    getError: (error: unknown): string => {
+        let errorMessage: { error?: string } | string;
+
+        // Check if the error is an AxiosError or has a response structure
+        if (isAxiosError(error)) {
+            // Attempt to extract the error message from the response
+            const responseData = error.response?.data;
+
+            // If the error response has a custom 'error' key, use that
+            if (responseData?.error) {
+                errorMessage = responseData.error;
+            } else {
+                errorMessage = responseData || "An unknown error occurred";
+            }
+        } else if (error instanceof Error) {
+            // If it's a regular JavaScript error, use the message
+            errorMessage = error.message;
+        } else {
+            // Fallback message for other unknown types
+            errorMessage = "Steve-Unknown error occurred";
+        }
+
+        return <string>errorMessage;
+    },
+};
+
+// Helper to check if the error is an AxiosError
+const isAxiosError = (error: unknown): error is { response?: { data?: { error?: string } } } => {
+    return (
+        typeof error === 'object' &&
+        error !== null &&
+        'response' in error &&
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        typeof (error as any).response?.data === 'object'
+    );
+};
+
+
 export {
-    inRange,
+    errorUtils,
+    isSuccessCode,
     isExpired,
     getParts,
     toTitleCase,
@@ -103,4 +187,6 @@ export {
     validateEmail,
     validatePassword,
     generateRandomHash,
+    matchRouteWithParams,
+    routeWithHashKey
 };
