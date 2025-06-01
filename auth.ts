@@ -27,12 +27,14 @@ async function _findUser(credentials: Partial<Record<"email" | "password", unkno
         // return errorUtils.getError(response);
     }
 
-    const refreshTokenValue = await extractRefreshToken(response.headers['set-cookie']);
+    const [refreshTokenValue] = await Promise.all([
+        extractRefreshToken(response.headers['set-cookie']),
+        setCookie({ name: 'access_token', value: response.data.access_token }),
+    ]);
+
     if (refreshTokenValue) {
-        await setCookie({name: 'refresh_token', value: refreshTokenValue});
+        await setCookie({ name: 'refresh_token', value: refreshTokenValue });
     }
-    await setCookie({name: 'access_token', value: response.data.access_token});
-    // await new Promise(resolve => setTimeout(resolve, 10)); // Simulate delay for testing
 
     return response.data as Profile;
 }
