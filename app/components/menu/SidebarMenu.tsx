@@ -5,6 +5,7 @@ import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import React, {useState} from "react";
 import {AppLinks} from "@/app/models/AppLinks";
 import {signOut} from "@/app/actions/auth/handleSignOut";
+import {useRouter} from "next/navigation";
 
 // Sidebar Component
 const SidebarMenu: React.FC<{
@@ -20,6 +21,7 @@ const SidebarMenu: React.FC<{
           isScrollingUp,
           onClose,
       }) => {
+    const router = useRouter();
 
     const marginTop = isOpen && isScrollingUp ? 0 : 8;
 
@@ -29,6 +31,16 @@ const SidebarMenu: React.FC<{
     const toggleDropdown = (title: string) => {
         setOpenDropdown((prev: string | null): string | null => prev === title ? null : title);
     };
+
+    const handleSignOut =  () => {
+        signOut().then(
+            () => {
+                router.refresh()
+                router.push('/'); // Redirect to home after sign out
+            }
+        );
+        onClose(); // Close the sidebar after sign out
+    }
 
     const renderLink = (link: AppLinks) => {
         // Hide some links when session is active
@@ -72,10 +84,6 @@ const SidebarMenu: React.FC<{
         );
     };
 
-    const handleSignOut = async () => {
-        await signOut();
-        onClose(); // Close the sidebar after sign out
-    }
 
     return (
         <Drawer

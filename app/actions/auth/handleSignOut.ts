@@ -12,13 +12,14 @@ import {generateRandomHash, errorUtils} from "@/app/util/clientUtils";
 const clearCookiesAndRedirect = async () => {
 
     await deleteCookie({});
+    await deleteCookie({name: '__Secure-authjs.session-token'});
     // Clear cache for relevant routes
     revalidatePath(HOME_ROUTE);
     revalidatePath(SIGNIN_ROUTE);
 
     const randomChar = `${new Date().getTime()}#${generateRandomHash()}`;
     // Redirect to sign In with logout indicator
-    redirect(`${HOME_ROUTE}?logout=true&auth=${randomChar}`);
+    redirect(`${SIGNIN_ROUTE}?logout=true&auth=${randomChar}`);
 };
 
 export const signOut = async (): Promise<void> => {
