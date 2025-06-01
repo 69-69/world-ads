@@ -27,7 +27,7 @@ async function _findUser(credentials: Partial<Record<"email" | "password", unkno
         // return errorUtils.getError(response);
     }
 
-    const refreshTokenValue = extractRefreshToken(response.headers['set-cookie']);
+    const refreshTokenValue = await extractRefreshToken(response.headers['set-cookie']);
     if (refreshTokenValue) {
         await setCookie({name: 'refresh_token', value: refreshTokenValue});
     }

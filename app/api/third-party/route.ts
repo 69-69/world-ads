@@ -24,7 +24,7 @@ async function handleRequest(request: NextRequest, method: 'GET' | 'POST' | 'PUT
         const dataKey = request.headers.get('Data-Key');
 
         if (cookieName) {
-            setCookiesFromResponse(nextResponse, axiosResponse, cookieName, dataKey);
+            await setCookiesFromResponse(nextResponse, axiosResponse, cookieName, dataKey);
         }
 
         // Optionally set additional cookies like Custom_Cookie

@@ -1,6 +1,6 @@
 'use server';
 import authOptions from "@/auth";
-import {handleUIError} from "@/app/util/serverUtils";
+import {handleError} from "@/app/util/clientUtils";
 
 // Google Sign-In function
 const googleSignIn = async () => {
@@ -9,7 +9,7 @@ const googleSignIn = async () => {
         console.log('Google Sign-In response:', response);
         return response;
     } catch (error) {
-        handleUIError(error, 'Google Sign-In');
+        handleError(error, 'Google Sign-In');
     }
 }
 
@@ -20,7 +20,7 @@ const githubSignIn = async () => {
         console.log('GitHub Sign-In response:', response);
         return response;
     } catch (error) {
-        handleUIError(error, 'GitHub Sign-In');
+        handleError(error, 'GitHub Sign-In');
     }
 }
 

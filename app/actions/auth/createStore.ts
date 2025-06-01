@@ -1,6 +1,6 @@
-import {handleApiError, getSignupToken} from "@/app/util/serverUtils";
+import {getSignupToken} from "@/app/util/serverUtils";
 import {setupStoreHandler} from "@/app/util/endPoints";
-import {getParts, isSuccessCode} from "@/app/util/clientUtils";
+import {errorUtils, getParts, isSuccessCode} from "@/app/util/clientUtils";
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {FormDataModel, to_FormData} from "@/app/models/FormDataModel";
 
@@ -27,35 +27,10 @@ export const createStore = async (form: FormDataModel) => {
             return { message: data.message || 'Check your entering', status: response.status };
         }
     } catch (error: unknown) {
-        handleApiError(error);
-        const errorMessage = error instanceof Error ? error.message : 'An error occurred during sign-in';
+        const errorMessage = errorUtils.getError(error);
         return { message: errorMessage, status: 500 }; // Internal Server Error status
     }
 };
 
-/*// Example in a Next.js component
-const fetchData = async () => {
-  try {
-    const response = await fetch('/api/setup-store', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ data: 'store setup' }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const data = await response.json();
-    console.log('API Data:', data);
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-};
-
-// You can call fetchData() on some user action, like a button click, or in a useEffect.
-*/
 
 

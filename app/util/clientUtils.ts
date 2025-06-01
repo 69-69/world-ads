@@ -132,35 +132,51 @@ const isExpired = (dateStr: string) => {
     return endDate < now;
 };
 
+const handleError = (error: unknown, tag?: string): never => {
+    const defaultMsg = 'Something went wrong, please try again';
+
+    // Extract error message using the unified logic from errorUtils.getError
+    const errorMessage = errorUtils.getError(error);
+
+    // If this is related to a UI error and a tag is provided, log it
+    if (tag) {
+        console.error(`${tag} with error:`, errorMessage);
+    }
+
+    // Throw a general error message
+    throw new Error(errorMessage || defaultMsg);
+}
+
 const errorUtils = {
     getError: (error: unknown): string => {
-        let errorMessage: { error?: string } | string;
+        const fallbackMessage = 'An unexpected error occurred';
 
         // Check if the error is an AxiosError or has a response structure
         if (isAxiosError(error)) {
             // Attempt to extract the error message from the response
             const responseData = error.response?.data;
 
-            // If the error response has a custom 'error' key, use that
-            if (responseData?.error) {
-                errorMessage = responseData.error;
-            } else {
-                errorMessage = responseData || "An unknown error occurred";
+            // If the response data is an object, check for the 'error' property
+            if (responseData && typeof responseData === 'object') {
+                // Ensure we extract a string from the object
+                return responseData?.error || JSON.stringify(responseData) || fallbackMessage;
             }
+
+            // If responseData is not an object, just return it (it should be a string)
+            return responseData || fallbackMessage;
         } else if (error instanceof Error) {
             // If it's a regular JavaScript error, use the message
-            errorMessage = error.message;
+            return error.message || fallbackMessage;
         } else {
             // Fallback message for other unknown types
-            errorMessage = "Steve-Unknown error occurred";
+            return fallbackMessage;
         }
-
-        return <string>errorMessage;
     },
 };
 
 // Helper to check if the error is an AxiosError
 const isAxiosError = (error: unknown): error is { response?: { data?: { error?: string } } } => {
+
     return (
         typeof error === 'object' &&
         error !== null &&
@@ -173,6 +189,7 @@ const isAxiosError = (error: unknown): error is { response?: { data?: { error?: 
 
 export {
     errorUtils,
+    handleError,
     isSuccessCode,
     isExpired,
     getParts,

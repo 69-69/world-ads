@@ -1,4 +1,5 @@
-import {AxiosError, AxiosResponse} from "axios";
+'use server';
+import {AxiosResponse} from "axios";
 import {NextResponse} from "next/server";
 import {cookies} from "next/headers";
 
@@ -18,28 +19,6 @@ type VerifyType = { contact: 'email' | 'phone' };
 
 type CookieControlOptions = { response?: NextResponse, name?: string };
 
-
-function handleApiError(error: unknown): void {
-    const msg = 'Something went wrong, please try again';
-
-    if (error instanceof AxiosError) {
-        throw new Error(error.response?.data?.message || msg);
-    } else if (error instanceof Error) {
-        throw new Error(error.message || msg);
-    } else {
-        throw new Error('An unexpected error occurred');
-    }
-}
-
-function handleUIError(error: unknown, tag: string): never {
-    const pleaseTryAgain = 'Something went wrong, please try again';
-    const msg = error instanceof Error ? error.message : pleaseTryAgain;
-
-    console.error(`${tag} with error: `, msg);
-
-    // Throw the general error message
-    throw new Error(pleaseTryAgain);
-}
 
 // Set Cookies utility function
 const setCookie = async ({
@@ -78,9 +57,9 @@ const setCookie = async ({
 };
 
 // Function to extract the refresh_token value from the set-cookie header
-const extractRefreshToken = (setCookieHeader: string[] | undefined): string | null => {
+const extractRefreshToken = async (setCookieHeader: string[] | undefined): Promise<string | null> => {
     // Find the refresh_token cookie in the set-cookie header
-    const refreshTokenCookie = setCookieHeader?.find(cookie => cookie.includes('refresh_token'));
+    const refreshTokenCookie = await setCookieHeader?.find(cookie => cookie.includes('refresh_token'));
 
     if (refreshTokenCookie) {
         // Use a regex to extract the refresh_token value (handles potential extra spaces or attributes)
@@ -144,13 +123,13 @@ const _selectDataFromResponse = (data: Record<string, unknown>, dataKey: string 
 };
 
 // Set Cookies from Response Data
-const setCookiesFromResponse = (nextResponse: NextResponse, axiosResponse: AxiosResponse, name: string | null, dataKey: string | null, days: number = 7) => {
+const setCookiesFromResponse = async (nextResponse: NextResponse, axiosResponse: AxiosResponse, name: string | null, dataKey: string | null, days: number = 7) => {
     if (!name || !dataKey) return;
 
     const {data} = axiosResponse;
     const selectedData = _selectDataFromResponse(data, JSON.parse(dataKey));
 
-    setCookie({
+    await setCookie({
         name,
         maxAge: days,
         response: nextResponse,
@@ -159,8 +138,6 @@ const setCookiesFromResponse = (nextResponse: NextResponse, axiosResponse: Axios
 };
 
 export {
-    handleApiError,
-    handleUIError,
     setCookie,
     getCookie,
     deleteCookie,

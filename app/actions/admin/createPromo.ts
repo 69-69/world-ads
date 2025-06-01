@@ -1,9 +1,8 @@
 'use server';
 import {FormDataModel, to_FormData} from "@/app/models/FormDataModel";
-import {isSuccessCode} from "@/app/util/clientUtils";
+import {handleError, isSuccessCode} from "@/app/util/clientUtils";
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {promoHandler} from "@/app/util/endPoints";
-import {handleApiError} from "@/app/util/serverUtils";
 import authOptions from "@/auth";
 import {HOME_ROUTE} from "@/app/util/constants";
 import {signOut} from "@/app/actions/auth/handleSignOut";
@@ -36,7 +35,7 @@ const createPromo = async (form: FormDataModel, productId: string) => {
 
         return {message: 'Promo was not successful', status: response.status};
     } catch (error: unknown) {
-        handleApiError(error);
+        handleError(error);
         return {message: 'An error occurred during sign-in', status: 500}
     }
 }

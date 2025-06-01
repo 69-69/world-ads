@@ -1,10 +1,10 @@
 'use server';
 import fetchWithRetry from "@/app/actions/fetchWithRetry";
 import {marketplaceHandler} from "@/app/util/endPoints";
-import {handleApiError} from "@/app/util/serverUtils";
 import authOptions from "@/auth";
 import {HOME_ROUTE} from "@/app/util/constants";
 import {signOut} from "@/app/actions/auth/handleSignOut";
+import {handleError} from "@/app/util/clientUtils";
 
 const publishProduct = async (hashed_id: string) => {
     const session = await authOptions.auth();
@@ -20,7 +20,7 @@ const publishProduct = async (hashed_id: string) => {
         });
 
     } catch (error: unknown) {
-        handleApiError(error);
+        handleError(error);
         return {message: 'An error occurred during publishing', status: 500}
     }
 }
