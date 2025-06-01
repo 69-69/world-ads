@@ -18,7 +18,7 @@ const clearCookiesAndRedirect = async () => {
 
     const randomChar = `${new Date().getTime()}#${generateRandomHash()}`;
     // Redirect to sign In with logout indicator
-    redirect(`${SIGNIN_ROUTE}?logout=true&auth=${randomChar}`);
+    redirect(`${HOME_ROUTE}?logout=true&auth=${randomChar}`);
 };
 
 export const signOut = async (): Promise<void> => {
