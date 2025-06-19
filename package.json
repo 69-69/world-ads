@@ -27,7 +27,6 @@
     "dotenv": "^16.5.0",
     "next": "^15.3.3",
     "next-auth": "^5.0.0-beta.25",
-    "nookies": "^2.5.2",
     "react": "^19.0.0",
     "react-color": "^2.19.3",
     "react-dom": "^19.0.0"
